@@ -1,0 +1,79 @@
+services:
+  - type: web
+    name: nexus-vpn-api
+    runtime: docker
+    rootDir: nexus-vpn
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    region: frankfurt
+    plan: free
+    healthCheckPath: /up
+    envVars:
+      - key: APP_ENV
+        value: production
+      - key: APP_DEBUG
+        value: "false"
+      - key: APP_URL
+        fromService:
+          type: web
+          name: nexus-vpn-api
+          envVarKey: RENDER_EXTERNAL_URL
+      - key: APP_KEY_SECRET
+        generateValue: true
+      - key: LOG_CHANNEL
+        value: stderr
+      - key: LOG_LEVEL
+        value: info
+      # Render terminates TLS and forwards the client IP; needed for per-IP rate limits.
+      - key: TRUSTED_PROXIES
+        value: "*"
+      - key: DB_CONNECTION
+        value: pgsql
+      - key: DB_URL
+        fromDatabase:
+          name: nexus-vpn-db
+          property: connectionString
+      - key: CACHE_STORE
+        value: database
+      - key: SESSION_DRIVER
+        value: database
+      - key: SESSION_SECURE_COOKIE
+        value: "true"
+      - key: SESSION_ENCRYPT
+        value: "true"
+      - key: SESSION_SAME_SITE
+        value: lax
+      - key: QUEUE_CONNECTION
+        value: database
+      - key: FRONTEND_URL
+        value: https://nexus-vpn-upgraded.vercel.app
+      # Switch to "live" (with the live secret key) only when going to production payments.
+      - key: CHARGILY_MODE
+        value: test
+      - key: CHARGILY_SECRET_KEY
+        sync: false
+      - key: MAIL_MAILER
+        value: smtp
+      - key: MAIL_HOST
+        sync: false
+      - key: MAIL_PORT
+        sync: false
+      - key: MAIL_USERNAME
+        sync: false
+      - key: MAIL_PASSWORD
+        sync: false
+      - key: MAIL_FROM_ADDRESS
+        sync: false
+      - key: MAIL_FROM_NAME
+        value: NexusVPN
+      - key: VPN_SERVER_PUBLIC_KEY
+        sync: false
+      - key: VPN_SERVER_ENDPOINT
+        sync: false
+
+databases:
+  - name: nexus-vpn-db
+    databaseName: nexus_vpn
+    user: nexus_vpn
+    region: frankfurt
+    plan: free
