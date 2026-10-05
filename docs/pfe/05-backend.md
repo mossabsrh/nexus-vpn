@@ -97,7 +97,7 @@ Définie dans `AppServiceProvider::configureRateLimiting()` (clé = id utilisate
 
 ## 6. Routes
 
-Liste obtenue par `php artisan route:list --except-vendor` (73 routes au total, dont 49 sous `/api` et `/up` pour la santé).
+Liste obtenue par `php artisan route:list --except-vendor` (73 routes au total : 48 sous `/api` et 25 routes web ; la route de santé `/up` est enregistrée par le framework et n'apparaît pas avec `--except-vendor`).
 
 ### 6.1 Routes API réelles (`routes/api.php`)
 
