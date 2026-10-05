@@ -125,7 +125,7 @@ Continuously collect and maintain information relevant to the PFE, when applicab
 * HTTP methods
 * Purpose
 * Authentication requirements
-* Request/response structure (including Inertia page props)
+* Request/response structure (JSON payloads exchanged through `/backend-api`)
 * Important validation rules
 * Relationships between frontend and backend
 
