@@ -8,7 +8,7 @@
 * Appels externes (Chargily) simulés avec `Http::fake()` (`PaymentFlowTest`, `ChargilyPaymentTest`) ; e-mails interceptés avec `Notification::fake()`.
 * Commande : `php artisan test --compact` (depuis `nexus-vpn/`).
 
-## 2. Fichiers de test existants
+## 2. Fichiers de test existants (backend)
 
 ### Tests de l'API réelle
 
@@ -45,7 +45,7 @@ Total : 94 tests (68 sur l'API réelle, 26 hérités).
 * Tests contre PostgreSQL (base de production) : aucun ; la suite tourne uniquement sur SQLite.
 * Commande `vpn:peers` : vérifiée seulement dans `SubscriptionLifecycleTest` (présence de la clé publique dans la sortie), pas de test dédié.
 
-## 3. Exécutions enregistrées
+## 3. Exécutions enregistrées (backend)
 
 ### 2026-10-05 — Référence backend (audit de base)
 
@@ -63,4 +63,35 @@ Sortie (résumé) :
 ```
 Tests:    94 passed (370 assertions)
 Duration: 12.98s
+```
+
+## 4. Frontend (application Next.js)
+
+### 4.1 Tests existants
+
+Aucun test automatisé du frontend : pas de fichier `*.test.*` / `*.spec.*`, pas d'outil de test (Jest, Vitest, Playwright, Cypress) dans `package.json`, pas de script `test`. La qualité du frontend est vérifiée uniquement par l'analyse statique (ESLint), le contrôle de types (TypeScript) et le build de production.
+
+### 4.2 Vérifications du 2026-10-05 — référence frontend (audit de base)
+
+Environnement : Windows 10, Node.js v22.15.0, pnpm 10.34.6 (`npx pnpm@10`), dépendances déjà installées (`node_modules/` présent, aucune installation effectuée). Commit vérifié : `05f64b7` (aucune modification du code). Commandes exécutées depuis la racine du dépôt, l'une après l'autre.
+
+| Vérification | Commande | Résultat | Durée (horloge) |
+|---|---|---|---|
+| Analyse statique | `pnpm lint` (`eslint .`) | **Réussi** : code de sortie 0, aucune erreur ni aucun avertissement affiché | ~48 s |
+| Contrôle de types | `pnpm exec tsc --noEmit` | **Réussi** : code de sortie 0, aucune erreur | ~21 s |
+| Build de production | `pnpm build` (`next build`, Next.js 16.2.6, Turbopack) | **Réussi** : code de sortie 0 ; « Compiled successfully in 20.8s », TypeScript terminé en 26.3s, 8/8 pages statiques générées | ~64 s |
+
+Routes produites par le build (toutes pré-rendues en statique « ○ »), plus le Proxy :
+
+```
+Route (app)
+┌ ○ /
+├ ○ /_not-found
+├ ○ /admin
+├ ○ /dashboard
+├ ○ /payment/result
+├ ○ /reset-password
+└ ○ /verify-email
+
+ƒ Proxy (Middleware)
 ```

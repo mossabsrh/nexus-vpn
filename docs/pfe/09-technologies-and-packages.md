@@ -55,4 +55,55 @@ Les dépendances npm de `nexus-vpn/` (`@inertiajs/react`, React 19, Radix UI, Ta
 
 ## Frontend (application Next.js à la racine)
 
-À compléter (étape 2).
+> Versions installées relevées dans `pnpm-lock.yaml` (section `importers`, lockfile v9) le 2026-10-05 ; contraintes déclarées dans `package.json`. Gestionnaire de paquets : **pnpm** (10.34.6 utilisé pour l'audit) ; Node.js v22.15.0 en local.
+
+### Socle
+
+| Paquet | Version installée | Rôle / où il est utilisé |
+|---|---|---|
+| `next` | 16.2.6 | Framework React (App Router, Turbopack, `proxy.ts`, réécriture `/backend-api`, en-têtes de sécurité, `next/font`, `next/dynamic`) |
+| `react`, `react-dom` | 19.2.4 | Bibliothèque d'interface |
+| `typescript` (dev) | 5.7.3 | Typage statique (`strict: true`) |
+| `@types/node`, `@types/react`, `@types/react-dom` (dev) | 22.19.11 / 19.2.14 / 19.2.3 | Définitions de types |
+
+### Styles et interface
+
+| Paquet | Version installée | Rôle / où il est utilisé |
+|---|---|---|
+| `tailwindcss` (dev) | 4.2.0 | Framework CSS utilitaire (`app/globals.css`) |
+| `@tailwindcss/postcss` (dev), `postcss` (dev) | 4.2.0 / 8.5.6 | Intégration de Tailwind 4 via PostCSS (`postcss.config.mjs`) |
+| `tw-animate-css` (dev) | 1.3.3 | Animations utilitaires (importé dans `globals.css`) |
+| `@radix-ui/react-*` (27 paquets) | versions figées dans `package.json` (ex. `react-dialog` 1.1.15) | Primitives accessibles sous-jacentes aux composants shadcn/ui |
+| `class-variance-authority` | 0.7.1 | Variantes de style des composants UI (`button`…) |
+| `clsx` + `tailwind-merge` | 2.1.1 / 3.4.0 | Fusion des classes CSS (`lib/utils.ts` → `cn()`) |
+| `lucide-react` | 0.564.0 | Icônes (admin, navbar, composants UI) |
+| `framer-motion` | 12.38.0 | Animations des sections marketing (8 composants) |
+| `next-themes` | 0.4.6 | Thème sombre/clair (`ThemeProvider`, `theme-toggle`) |
+
+### Qualité du code
+
+| Paquet | Version installée | Rôle |
+|---|---|---|
+| `eslint` (dev) | 9.39.5 | Analyse statique (`eslint.config.mjs`, configuration « flat ») |
+| `eslint-config-next` (dev) | 16.3.4 | Règles Next.js `core-web-vitals` + `typescript` |
+
+### Paquets installés mais non utilisés par le code applicatif
+
+Importés nulle part, ou seulement par des primitives `components/ui/` elles-mêmes inutilisées (voir `04-frontend.md` §12) :
+
+| Paquet | Version installée | Remarque |
+|---|---|---|
+| `@vercel/analytics` | 1.6.1 | Composant `Analytics` jamais monté |
+| `zod`, `@hookform/resolvers` | 3.25.76 / 3.10.0 | Aucune validation de schéma côté client |
+| `react-hook-form` | 7.71.1 | Seulement `components/ui/form.tsx` (inutilisé) |
+| `date-fns` | 4.1.0 | Aucun import |
+| `recharts` | 2.15.0 | Seulement `components/ui/chart.tsx` (les graphiques admin sont faits à la main) |
+| `sonner` | 1.7.4 | Seulement `components/ui/sonner.tsx` |
+| `embla-carousel-react`, `cmdk`, `vaul`, `input-otp`, `react-day-picker`, `react-resizable-panels` | 8.6.0 / 1.1.1 / 1.1.2 / 1.4.2 / 9.13.2 / 2.1.9 | Seulement leurs primitives UI respectives |
+| `autoprefixer` | 10.4.24 | Non référencé dans `postcss.config.mjs` |
+
+### Hébergement
+
+| Service | Rôle | Source |
+|---|---|---|
+| Vercel | Hébergement du frontend Next.js ; la variable `NEXT_PUBLIC_API_URL` y pointe vers le service Laravel | `DEPLOYMENT.md`, `next.config.mjs` |
