@@ -1,0 +1,98 @@
+# 14 — Problèmes rencontrés et solutions
+
+> Travaux significatifs **visibles dans le code** à la date de l'audit (2026-10-05). Le problème et la solution sont déduits du code, des commentaires et des tests ; le **symptôme d'origine, l'enquête et la date** ne sont pas traçables (historique antérieur non versionné, voir `11-development-history.md`) et sont marqués ⚠️ À VÉRIFIER. Les risques encore ouverts sont dans `08-authentication-security.md` §11.
+
+## P-01 — Abonnements « courants » en double et perte d'historique de facturation
+
+* **Problème** : un utilisateur pouvait avoir plusieurs abonnements actifs/en essai en même temps, et la suppression d'un utilisateur ou d'une offre pouvait faire disparaître l'historique de facturation.
+* **Solution** : migration `2026_10_05_000012_harden_billing_schema` : dédoublonnage des abonnements courants existants (seul le plus récent est conservé), **index unique partiel** `subscriptions_one_current_per_user`, clés étrangères `RESTRICT` sur `subscriptions.user_id` et `payments.user_id`, soft deletes sur `users`, `plans`, `subscriptions`, `payments`, statut `varchar(20)` au lieu d'un enum, `plans.is_active`. Les contrôleurs interceptent `UniqueConstraintViolationException` (essai concurrent, abonnement Team).
+* **Fichiers** : migration ci-dessus, `app/Models/Subscription.php`, `app/Http/Controllers/Api/PaymentController.php`, `AdminBillingController.php`.
+* **Vérification** : `PaymentFlowTest::test_the_database_refuses_a_second_current_subscription`.
+* ⚠️ À VÉRIFIER : symptôme observé (doublons constatés en base ? bug d'essai ?), date.
+
+## P-02 — Webhook de paiement falsifiable
+
+* **Problème** : un appel non authentifié au webhook aurait pu marquer un paiement comme réussi.
+* **Solution** : vérification HMAC-SHA256 du corps brut avec la clé secrète Chargily, comparaison en temps constant, rejet si la signature manque (400) ou est invalide (403) ; route hors session/CSRF avec limiteur `webhooks`.
+* **Fichiers** : `PaymentController::webhook()`, `verifySignature()`, `routes/api.php`.
+* **Vérification** : `ChargilyPaymentTest::test_webhook_rejects_invalid_signature`.
+* ⚠️ À VÉRIFIER : la vérification a-t-elle existé dès l'intégration Chargily ou a-t-elle été ajoutée après coup ?
+
+## P-03 — Double activation d'un paiement (webhook et vérification concurrents)
+
+* **Problème** : le webhook Chargily, ses rejeux et la vérification active depuis la page de résultat peuvent arriver en même temps et prolonger l'abonnement plusieurs fois.
+* **Solution** : transition `pending → succeeded` par mise à jour conditionnelle (`where status = pending`) sur une ligne verrouillée (`lockForUpdate`) dans une transaction ; seul l'appelant qui « réclame » la transition applique le paiement ; `provider_reference` unique.
+* **Fichiers** : `app/Models/Payment.php` (`markSucceeded`, `markFailed`), migration `000012`.
+* **Vérification** : `test_replayed_webhook_and_later_verify_apply_the_payment_only_once`, `test_a_payment_that_is_no_longer_pending_cannot_be_claimed_again`.
+* ⚠️ À VÉRIFIER : incident d'origine.
+
+## P-04 — Webhook reçu avant l'enregistrement du checkout
+
+* **Problème** : Chargily peut notifier très vite ; si le paiement local était créé après l'appel à Chargily, le webhook ne le retrouverait pas.
+* **Solution** : le paiement `pending` est enregistré **avant** l'appel à Chargily (commentaire « Recorded before calling Chargily so a fast webhook always finds it ») ; un checkout inconnu renvoie 404 pour que Chargily réessaie.
+* **Fichiers** : `PaymentController::createCheckout()`, `webhook()`.
+* **Vérification** : `test_checkout_records_the_payment_first_and_returns_to_the_frontend_result_page`, `test_webhook_for_unknown_checkout_returns_404_so_chargily_retries`.
+
+## P-05 — Montant de paiement contrôlé par le client
+
+* **Problème** : un client ne doit pas pouvoir choisir le montant payé, et un montant confirmé incohérent ne doit pas activer l'abonnement.
+* **Solution** : montant calculé côté serveur à partir de l'offre ; activation refusée si le montant confirmé par Chargily diffère (`error_code = amount_mismatch`).
+* **Fichiers** : `PaymentController::createCheckout()`, `applyCheckoutStatus()`.
+* **Vérification** : `test_checkout_ignores_client_supplied_amount`, `test_webhook_with_a_different_amount_does_not_activate`.
+
+## P-06 — Jeton CSRF expiré (erreur 419) côté frontend
+
+* **Problème** : après régénération de session (connexion, inscription) ou expiration, une requête modifiante échoue avec 419.
+* **Solution** : `apiFetch` obtient le cookie CSRF à la demande, partage la requête entre appels simultanés, et en cas de 419 force un nouveau jeton puis **rejoue une fois**.
+* **Fichiers** : `lib/api.ts`.
+* **Vérification** : ⚠️ À VÉRIFIER — aucun test automatisé frontend ; vérification manuelle à documenter.
+
+## P-07 — Interface d'administration livrée aux non-administrateurs
+
+* **Problème** : une protection uniquement côté client enverrait le code de la console à n'importe quel visiteur.
+* **Solution** : `proxy.ts` vérifie la session et le rôle auprès de `GET /api/me` avant de servir `/admin` ; en cas d'erreur ou de délai dépassé, **refus par défaut** (fail-closed). `/dashboard` reste servi en cas de panne backend (fail-open assumé).
+* **Fichiers** : `proxy.ts`, `app/admin/page.tsx`.
+* **Vérification** : ⚠️ À VÉRIFIER — pas de test automatisé ; vérification manuelle à documenter.
+
+## P-08 — Limites de débit partagées par tous les visiteurs derrière le proxy
+
+* **Problème** : toutes les requêtes passant par Vercel puis le proxy de Render, Laravel voyait la même IP pour tous les visiteurs ; les limites par IP auraient bloqué tout le monde ensemble (commentaire dans `bootstrap/app.php`).
+* **Solution** : configuration des proxys de confiance via `TRUSTED_PROXIES`.
+* **Fichiers** : `bootstrap/app.php`, `render.yaml`.
+* **Effet secondaire** : la valeur `*` ouvre la possibilité de forger `X-Forwarded-For` (risque R-05).
+
+## P-09 — Le démarrage du conteneur écrasait les offres modifiées par l'admin
+
+* **Problème** : `migrate --seed` s'exécute à chaque démarrage ; un seeder non idempotent réécrivait ou recréait les offres modifiées ou supprimées par l'administrateur.
+* **Solution** : `PlansTableSeeder` idempotent qui ne touche pas aux offres existantes ni aux offres supprimées.
+* **Fichiers** : `database/seeders/PlansTableSeeder.php`, `docker/entrypoint.sh`.
+* **Vérification** : `test_database_seeders_are_idempotent_when_run_twice`, `test_reseeding_does_not_overwrite_plans_edited_by_admins`, `test_reseeding_does_not_restore_plans_deleted_by_admins`.
+* ⚠️ À VÉRIFIER : date de découverte du problème.
+
+## P-10 — Jours payés perdus lors d'un réabonnement après annulation
+
+* **Problème** : un utilisateur qui annule puis se réabonne à la même offre perdait les jours déjà payés.
+* **Solution** : le nouvel abonnement démarre à la fin de la période payée restante d'un abonnement annulé à la même offre ; les abonnements annulés/expirés ne sont jamais « ressuscités ».
+* **Fichiers** : `Payment::applyToSubscription()`.
+* **Vérification** : `test_resubscribing_after_a_cancellation_keeps_the_days_already_paid_for`, `test_resubscribing_after_a_cancelled_period_ended_starts_from_now`, `test_paid_checkout_creates_a_new_subscription_instead_of_reviving_a_canceled_one`.
+
+## P-11 — Prix affichés différents des prix facturés
+
+* **Problème** : un prix codé en dur ou mis en cache trop longtemps dans le frontend pourrait différer du montant réellement facturé.
+* **Solution** : aucun prix de repli dans le frontend (`hooks/use-pricing.ts`, message d'erreur avec bouton de réessai) ; cache serveur des offres invalidé à chaque modification par l'administrateur (`PricingController::flushCache()`).
+* **Vérification** : `test_plans_with_history_are_deactivated_not_deleted_and_pricing_updates_immediately`.
+
+## P-12 — Liens des e-mails pointant vers le backend au lieu du frontend
+
+* **Problème** : les notifications natives de Laravel (vérification, réinitialisation) génèrent des liens vers l'application Laravel, alors que l'interface est le frontend Next.js ; de même pour les anciennes URL de retour Chargily.
+* **Solution** : `AppServiceProvider::configureEmailLinks()` construit des liens `FRONTEND_URL/verify-email?...` (avec la signature de la route API) et `FRONTEND_URL/reset-password?...` ; les routes `/payment/success|failed` redirigent vers `FRONTEND_URL/payment/result`.
+* **Vérification** : `test_signed_verification_link_verifies_the_email`, `test_legacy_payment_return_pages_redirect_to_the_frontend_result_page`.
+
+## P-13 — Collision d'adresses tunnel VPN en cas d'émissions simultanées
+
+* **Problème** : deux émissions concurrentes pouvaient calculer la même adresse IP de tunnel.
+* **Solution** : contrainte `unique` sur `vpn_credentials.address` et `public_key`, jusqu'à 5 tentatives en cas de violation ; adresses jamais réutilisées.
+* **Fichiers** : `app/Models/VpnCredential.php`.
+* **Vérification** : `test_peers_get_distinct_tunnel_addresses`.
+
+**Total : 13 problèmes documentés.**

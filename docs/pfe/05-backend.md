@@ -6,7 +6,7 @@
 
 ## 1. Rôle et architecture générale
 
-Le backend est une **API REST JSON** développée avec **Laravel 12** (PHP ^8.2). Il ne génère pas l'interface utilisateur réelle : celle-ci est fournie par l'application Next.js (racine du dépôt), qui appelle l'API via le préfixe `/backend-api` (réécriture côté Next.js ⚠️ À VÉRIFIER à l'étape 2 : configuration exacte de la réécriture).
+Le backend est une **API REST JSON** développée avec **Laravel 12** (PHP ^8.2). Il ne génère pas l'interface utilisateur réelle : celle-ci est fournie par l'application Next.js (racine du dépôt), qui appelle l'API via le préfixe `/backend-api` (réécriture Next.js décrite dans `04-frontend.md` §7 et `07-api.md` §1).
 
 Responsabilités du backend :
 
@@ -221,7 +221,8 @@ Le projet backend a été initialisé à partir du **Laravel React Starter Kit**
 * paquets `inertiajs/inertia-laravel` et `tightenco/ziggy` ; middleware `HandleInertiaRequests` (toujours ajouté au groupe `web`, donc exécuté aussi sur les routes API de session) ;
 * vue racine `resources/views/app.blade.php` (`@routes`, `@vite`, `@inertia`) et tout `resources/js/` (pages React/Inertia `welcome`, `dashboard`, `auth/*`, `settings/*`), `vite.config.js`, `package.json` du dossier `nexus-vpn/`, `components.json`, `eslint.config.js`, `tsconfig.json` ;
 * routes web `/`, `dashboard`, `routes/auth.php` (contrôleurs `app/Http/Controllers/Auth/*`) et `routes/settings.php` (contrôleurs `app/Http/Controllers/Settings/*`), FormRequests `LoginRequest` et `ProfileUpdateRequest` ;
-* tests associés : `tests/Feature/Auth/*`, `tests/Feature/Settings/*`, `tests/Feature/DashboardTest.php` ; fichier `tests/Pest.php` (Pest n'est pas installé).
+* tests associés : `tests/Feature/Auth/*`, `tests/Feature/Settings/*`, `tests/Feature/DashboardTest.php` ; fichier `tests/Pest.php` (Pest n'est pas installé) ;
+* workflows `nexus-vpn/.github/workflows/lint.yml` et `tests.yml` (PHP 8.4, build Vite), inactifs car hors de la racine du dépôt (voir `19-limitations-and-future-work.md` L-16).
 
 ⚠️ À VÉRIFIER : ces routes héritées restent **enregistrées et accessibles**. Notamment `POST /register` crée un compte sans essai, et `DELETE /settings/profile` supprime (soft delete) le compte sans annuler l'abonnement ni révoquer les identifiants VPN. Le Dockerfile n'exécute pas `npm run build` ; la page Inertia `/` échouerait donc probablement en production faute de manifeste Vite (non testé).
 
