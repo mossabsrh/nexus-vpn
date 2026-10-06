@@ -47,6 +47,16 @@ Total : 94 tests (68 sur l'API réelle, 26 hérités).
 
 ## 3. Exécutions enregistrées (backend)
 
+### Avant le versionnement (2026-10-04 → 2026-10-05)
+
+> Exécutions réelles relevées dans les journaux des sessions de développement (pas de commit associé, code inclus ensuite dans `067e68d`).
+
+| Date | Contexte | Commande | Résultat |
+|---|---|---|---|
+| 2026-10-04 | Avant la passe de débogage | `php artisan test` | 36 réussis, 4 échecs |
+| 2026-10-04 | Après la passe de débogage | `php artisan test` | 43 réussis, 0 échec |
+| 2026-10-05 | Après le durcissement (nouveaux fichiers `PaymentFlowTest`, `AccountSecurityTest`, `SubscriptionLifecycleTest`, `AdminBillingTest`, `ContactRequestTest`) | `php artisan test --compact` | 90 réussis, 0 échec (360 assertions) |
+
 ### 2026-10-05 — Référence backend (audit de base)
 
 | Élément | Valeur |

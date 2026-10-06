@@ -95,4 +95,50 @@
 * **Fichiers** : `app/Models/VpnCredential.php`.
 * **Vérification** : `test_peers_get_distinct_tunnel_addresses`.
 
-**Total : 13 problèmes documentés.**
+## P-14 — « Mot de passe oublié » n'envoyait jamais d'e-mail
+
+* **Problème** : la demande de réinitialisation échouait silencieusement.
+* **Cause** : `config/auth.php` visait la table `password_reset_tokens` alors que la migration crée `password_resets`.
+* **Solution** : valeur par défaut `password_resets` ; puis flux complet en API (`auth/forgot-password`, `auth/reset-password`) avec réponse identique que le compte existe ou non.
+* **Fichiers** : `nexus-vpn/config/auth.php`, `AuthController.php`, `app/reset-password/page.tsx`.
+* **Vérification** : `test_forgot_password_does_not_reveal_whether_an_account_exists`, `test_password_can_be_reset_with_a_valid_token_only`.
+
+## P-15 — Paramètres du compte : formulaires e-mail / mot de passe en échec
+
+* **Problème** : l'enregistrement plantait et le bouton restait bloqué.
+* **Cause** : `account-menu.tsx` appelait `auth.updateEmail` et `auth.updatePassword`, absents du contexte d'authentification, et l'API n'avait pas d'endpoint correspondant (erreur révélée par `tsc`, masquée au build par `ignoreBuildErrors`).
+* **Solution** : fonctions ajoutées dans `auth-provider.tsx`, endpoints `PUT /api/account/email` et `PUT /api/account/password` exigeant le mot de passe actuel ; `ignoreBuildErrors` supprimé ensuite.
+* **Vérification** : `test_user_can_update_email_and_password`, `test_email_change_returns_fresh_data_and_requires_reverification`.
+
+## P-16 — Rôle `null` dans la réponse d'inscription
+
+* **Cause** : la colonne `role` a une valeur par défaut en base, mais le modèle nouvellement créé ne la contient pas.
+* **Solution** : repli sur `"user"` dans la charge utile utilisateur.
+
+## P-17 — 2 431 faux problèmes de lint / types
+
+* **Cause** : `eslint .` et `tsconfig.json` à la racine analysaient l'application Laravel imbriquée, y compris `vendor/` et son `node_modules`.
+* **Solution** : exclusion de `nexus-vpn/` dans `eslint.config.mjs` et `tsconfig.json`. Résultat : quelques erreurs réelles restantes, ensuite corrigées (0 problème).
+
+## P-18 — Fuite d'informations internes à l'inscription
+
+* **Cause** : `register()` renvoyait `$e->getMessage()` (messages SQL/PHP) au client.
+* **Solution** : exception journalisée côté serveur, message générique renvoyé (500).
+* **Vérification** : `test_registration_failure_does_not_leak_internal_errors`.
+
+## P-19 — Chiffres fictifs dans la console d'administration
+
+* **Problème** : renouvellements, revenus, analytique et journaux étaient codés en dur ; le nombre d'« abonnements actifs » comptait en réalité tous les utilisateurs non-admin.
+* **Solution** : endpoint `GET /api/admin/stats` calculé depuis les tables `payments`, `subscriptions`, `users`, journal `audit_logs` réel ; section « Settings » sans backend retirée plutôt que laissée factice.
+* **Fichiers** : `AdminBillingController.php`, `components/admin/*`.
+* **Vérification** : `test_stats_are_computed_from_real_billing_data`.
+
+## P-20 — Bouton « Save name » perçu comme toujours désactivé
+
+* **Symptôme** : dans la liste des comptes, l'administrateur pensait ne pas pouvoir renommer un utilisateur.
+* **Investigation** : chaque ligne avait déjà son propre état local et le bouton s'activait bien après modification ; mais ses styles actif et désactivé étaient presque identiques.
+* **Solution** : style principal quand le nom est modifié, curseur « interdit » quand désactivé, état « Saving... », resynchronisation du nom enregistré (rogné) et conservation de la saisie en cas d'échec.
+* **Fichiers** : `components/admin/accounts.tsx`.
+* **Vérification** : `tsc` et ESLint réussis. ⚠️ À VÉRIFIER : test manuel dans le navigateur (aucun outil de test d'interface dans le projet).
+
+**Total : 20 problèmes documentés.**

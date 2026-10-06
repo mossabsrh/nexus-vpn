@@ -21,7 +21,7 @@ Commit `chore: initial commit of existing project state` : 358 fichiers (51 834 
 
 ### 2.2 Fonctionnalités déjà présentes
 
-À ce commit, l'application était **fonctionnellement complète** au sens de `10-features.md` : les fonctionnalités F-01 à F-22 existaient toutes, l'audit des jours suivants n'ayant modifié aucun code. En particulier :
+À ce commit, l'application était **fonctionnellement complète** au sens de `10-features.md` : les fonctionnalités F-01 à F-22 existaient toutes, l'audit documentaire qui a suivi n'ayant modifié aucun code. Une grande partie de ces fonctionnalités venait toutefois d'être construite dans les deux jours précédents, avant le versionnement (voir §2.5). En particulier :
 
 * frontend Next.js 16 (vitrine, tableau de bord, console d'administration, pages de retour) et protection `proxy.ts` ;
 * API Laravel 12 de 48 endpoints, paiement Chargily avec webhook HMAC et idempotence, provisionnement WireGuard, équipes, audit, planificateur ;
@@ -44,6 +44,25 @@ Commit `chore: initial commit of existing project state` : 358 fichiers (51 834 
 ### 2.4 Évolution architecturale visible dans le code
 
 Le backend a été créé à partir du **Laravel React Starter Kit** (Inertia + React), puis l'interface a été déplacée vers une application **Next.js séparée** (générée initialement avec v0) qui consomme l'API Laravel. Les restes de cette première architecture sont décrits dans `05-backend.md` §10 et `04-frontend.md` §12. Les URL de retour Chargily « historiques » (`/payment/success`, `/payment/failed`) redirigées vers le frontend témoignent de cette transition. ⚠️ À VÉRIFIER : date et raison de cette migration d'architecture.
+
+### 2.5 Phases juste avant le versionnement (2026-10-04 → 2026-10-05)
+
+> Reconstitué à partir des journaux des sessions de développement assisté (Claude Code), et non de git : ces changements sont tous **inclus dans le commit initial `067e68d`**, sans commit propre. Les résultats de tests cités ont été réellement exécutés pendant ces sessions.
+
+**Phase A — Mise en route locale (2026-10-04).** Création de `nexus-vpn/.env` à partir de `.env.example` (`APP_URL` et `FRONTEND_URL` locaux, l'exemple pointant vers Vercel bloquait le CORS), installation des dépendances Composer et pnpm, base SQLite, migrations et seeder des offres. Vérifié : `/up` → 200, page d'accueil → 200, `/backend-api/pricing` renvoie les offres.
+
+**Phase B — Passe de débogage (2026-10-04).** Corrections : montant de paiement fourni par le client (P-05), vérification d'un checkout d'un autre utilisateur, paiement appliqué deux fois (P-03), abonnement annuel créé avec une période mensuelle, table de réinitialisation de mot de passe mal nommée (P-14), formulaires e-mail / mot de passe appelant des fonctions inexistantes (P-15), `role: null` à l'inscription (P-16), lint et `tsc` analysant `nexus-vpn/vendor` (P-17). Résultat : `php artisan test` 36 réussis / 4 échecs → **43/43**, `pnpm build` réussi, `tsc` 0 erreur.
+
+**Phase C — Durcissement et compléments fonctionnels (2026-10-05).** Traitement d'une liste de contrôle complète (sécurité, facturation, administration, produit) :
+
+* sécurité : CSRF sur toutes les routes de session (fin des exemptions `api/admin/*`, `api/testimonials`, `skipCsrf`), limites de débit nommées, verrouillage après 5 échecs de connexion, erreurs d'inscription non divulguées (P-18), en-têtes de sécurité, suppression du CORS `*` sur `/api/pricing`, garde `proxy.ts` (P-07), arrêt en production si `APP_DEBUG=true`, compte de démonstration limité à `local`/`testing` ;
+* facturation : activation idempotente sous verrou (P-03), webhook Chargily (événements `paid/failed/canceled/expired`, 404 pour checkout inconnu, contrôle du montant), remboursements enregistrés par l'admin (Chargily v2 n'a pas d'API de remboursement), un seul abonnement courant par utilisateur garanti par index unique partiel (P-01), suppressions logiques ;
+* produit : tableau de bord utilisateur, page de résultat de paiement, réinitialisation de mot de passe et vérification d'e-mail en API + pages, équipes, provisionnement WireGuard, commandes planifiées `subscriptions:expire` / `subscriptions:remind`, e-mails transactionnels, formulaire de contact Team ;
+* administration : vraies statistiques (fin des chiffres fictifs, P-19), paiements/abonnements/remboursements, modération des témoignages, journal d'audit, pagination et recherche des comptes.
+
+Résultat : 5 nouvelles migrations, **90/90 tests backend** ; `pnpm lint` 0 problème, `tsc` 0 erreur, `pnpm build` réussi après suppression de `typescript.ignoreBuildErrors` ; parcours vérifiés en direct (419 sans jeton CSRF, 403/307 pour un non-admin, 429 après 5 échecs de connexion).
+
+**Phase D — Revue et corrections ponctuelles (2026-10-05).** Seeder des offres qui écrasait les modifications de l'admin à chaque démarrage du conteneur (P-09), jours payés perdus lors d'un réabonnement (P-10), bouton « Save name » de la console d'administration paraissant toujours désactivé (P-20). Résultat : 94/94 tests backend (référence de `12-testing.md`).
 
 ## 3. Phase de documentation (2026-10-05)
 

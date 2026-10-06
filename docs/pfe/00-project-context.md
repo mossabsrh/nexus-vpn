@@ -59,6 +59,7 @@
 
 * Code inchangé depuis le commit initial `067e68d` ; documentation de référence complète (commits `e246b4d` → `4e9c025` + synthèse finale).
 * Tests : backend 94/94 réussis ; frontend : lint, types et build réussis ; aucun test frontend.
-* Exigences : 31 FR, 14 NFR (`02`) ; 22 fonctionnalités (`10`) ; 13 problèmes résolus (`14`) ; 12 décisions (`15`).
+* Exigences : 31 FR, 14 NFR (`02`) ; 22 fonctionnalités (`10`) ; 20 problèmes résolus (`14`) ; 12 décisions (`15`).
+* Historique : l'essentiel du durcissement et des fonctionnalités a été réalisé les 2026-10-04/05 juste avant le versionnement (`11` §2.5, `17`).
 * Risques ouverts principaux (`08` §11) : R-01 révocation VPN non propagée à la passerelle, R-02 base Render Free expirant après 30 jours, R-03 routes héritées actives, R-04 planificateur en veille, R-05 `TRUSTED_PROXIES="*"`.
 * À produire : `03-architecture.md`, diagrammes (seul `assets/diagrams/erd.mmd` existe), captures (`assets/screenshots/TODO.md`), réponses aux questions de `README.md`.
