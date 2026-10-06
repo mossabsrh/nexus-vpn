@@ -64,13 +64,21 @@ class ChargilyGateway
     public function applyCheckoutStatus(Payment $payment, string $status, array $checkout): void
     {
         if ($status === 'paid') {
-            if (isset($checkout['amount']) && (int) $checkout['amount'] !== (int) $payment->amount) {
-                Log::critical('Chargily paid amount does not match the payment record; not activating.', [
+            // A missing amount or currency counts as a mismatch: never activate on unverifiable data.
+            $mismatch = match (true) {
+                ! is_numeric($checkout['amount'] ?? null) || (int) $checkout['amount'] !== (int) $payment->amount => 'amount_mismatch',
+                strtolower((string) ($checkout['currency'] ?? '')) !== strtolower((string) $payment->currency) => 'currency_mismatch',
+                default => null,
+            };
+
+            if ($mismatch !== null) {
+                Log::critical('Chargily paid checkout does not match the payment record; not activating.', [
                     'payment_id' => $payment->id,
-                    'expected' => $payment->amount,
-                    'received' => $checkout['amount'],
+                    'error_code' => $mismatch,
+                    'expected' => ['amount' => $payment->amount, 'currency' => $payment->currency],
+                    'received' => ['amount' => $checkout['amount'] ?? null, 'currency' => $checkout['currency'] ?? null],
                 ]);
-                $payment->update(['error_code' => 'amount_mismatch']);
+                $payment->update(['error_code' => $mismatch]);
 
                 return;
             }

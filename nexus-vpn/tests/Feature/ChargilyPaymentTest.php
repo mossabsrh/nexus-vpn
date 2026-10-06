@@ -195,6 +195,8 @@ class ChargilyPaymentTest extends TestCase
             'https://pay.chargily.net/test/api/v2/checkouts/chk_resubscribe' => Http::response([
                 'id' => 'chk_resubscribe',
                 'status' => 'paid',
+                'amount' => 18000,
+                'currency' => 'dzd',
             ]),
         ]);
 

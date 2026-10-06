@@ -94,11 +94,11 @@ class PaymentFlowTest extends TestCase
     {
         [$user, $plan, $payment] = $this->pendingPayment('chk_once');
 
-        $this->postWebhook('checkout.paid', ['id' => 'chk_once', 'status' => 'paid', 'amount' => 1500])->assertOk();
+        $this->postWebhook('checkout.paid', ['id' => 'chk_once', 'status' => 'paid', 'amount' => 1500, 'currency' => 'dzd'])->assertOk();
         $periodEnd = $user->subscriptions()->sole()->current_period_end;
 
-        $this->postWebhook('checkout.paid', ['id' => 'chk_once', 'status' => 'paid', 'amount' => 1500])->assertOk();
-        Http::fake(['*' => Http::response(['id' => 'chk_once', 'status' => 'paid', 'amount' => 1500])]);
+        $this->postWebhook('checkout.paid', ['id' => 'chk_once', 'status' => 'paid', 'amount' => 1500, 'currency' => 'dzd'])->assertOk();
+        Http::fake(['*' => Http::response(['id' => 'chk_once', 'status' => 'paid', 'amount' => 1500, 'currency' => 'dzd'])]);
         $this->actingAs($user)->getJson('/api/payments/'.$payment->id.'/verify')
             ->assertOk()
             ->assertJsonPath('status', 'succeeded');
@@ -225,10 +225,36 @@ class PaymentFlowTest extends TestCase
     {
         [$user, , $payment] = $this->pendingPayment('chk_amount');
 
-        $this->postWebhook('checkout.paid', ['id' => 'chk_amount', 'status' => 'paid', 'amount' => 1])->assertOk();
+        $this->postWebhook('checkout.paid', ['id' => 'chk_amount', 'status' => 'paid', 'amount' => 1, 'currency' => 'dzd'])->assertOk();
 
         $this->assertSame('pending', $payment->refresh()->status);
         $this->assertSame('amount_mismatch', $payment->error_code);
+        $this->assertSame(0, $user->subscriptions()->count());
+    }
+
+    public function test_webhook_without_an_amount_does_not_activate(): void
+    {
+        [$user, , $payment] = $this->pendingPayment('chk_no_amount');
+
+        $this->postWebhook('checkout.paid', ['id' => 'chk_no_amount', 'status' => 'paid', 'currency' => 'dzd'])->assertOk();
+
+        $this->assertSame('pending', $payment->refresh()->status);
+        $this->assertSame('amount_mismatch', $payment->error_code);
+        $this->assertSame(0, $user->subscriptions()->count());
+    }
+
+    public function test_paid_checkout_in_another_currency_does_not_activate(): void
+    {
+        [$user, , $payment] = $this->pendingPayment('chk_currency');
+
+        $this->postWebhook('checkout.paid', ['id' => 'chk_currency', 'status' => 'paid', 'amount' => 1500, 'currency' => 'eur'])->assertOk();
+        Http::fake(['*' => Http::response(['id' => 'chk_currency', 'status' => 'paid', 'amount' => 1500])]);
+        $this->actingAs($user)->getJson('/api/payments/'.$payment->id.'/verify')
+            ->assertOk()
+            ->assertJsonPath('status', 'pending');
+
+        $this->assertSame('pending', $payment->refresh()->status);
+        $this->assertSame('currency_mismatch', $payment->error_code);
         $this->assertSame(0, $user->subscriptions()->count());
     }
 
