@@ -15,7 +15,7 @@
 | Fichier | Nb | Ce qui est couvert |
 |---|---|---|
 | `tests/Feature/Api/AuthenticationTest.php` | 4 | Inscription + authentification, mise à jour e-mail/mot de passe, connexion et lecture de `me`, déconnexion avec invalidation de session |
-| `tests/Feature/Api/AccountSecurityTest.php` | 10 | Verrouillage après 5 échecs de connexion, réinitialisation du compteur, absence de fuite d'erreurs internes à l'inscription, refus des plans vente assistée, e-mails de vérification et bienvenue, changement d'e-mail avec revérification, lien de vérification signé, anti-énumération du mot de passe oublié, réinitialisation par jeton valide uniquement, en-têtes de sécurité et CORS sans joker sur `pricing` |
+| `tests/Feature/Api/AccountSecurityTest.php` | 12 | Verrouillage après 5 échecs de connexion, réinitialisation du compteur, absence de fuite d'erreurs internes à l'inscription, refus des plans vente assistée, e-mails de vérification et bienvenue, changement d'e-mail avec revérification, lien de vérification signé, **renvoi du lien de vérification (et aucun envoi si déjà vérifié)**, anti-énumération du mot de passe oublié, réinitialisation par jeton valide uniquement, en-têtes de sécurité et CORS sans joker sur `pricing` |
 | `tests/Feature/Api/PaymentFlowTest.php` | 23 | Checkout (paiement enregistré avant l'appel, retour vers la page résultat), e-mail vérifié requis, plans non achetables, erreurs fournisseur masquées, idempotence webhook + vérification, conversion d'essai, renouvellement, réabonnement après annulation (jours conservés / départ immédiat), changement de plan, refus d'un second abonnement courant par la base, webhook pour checkout inconnu (404), échec enregistré, montant différent refusé, **montant absent refusé et devise non concordante refusée (R-10)**, **paiement signalé lorsque Chargily paie un paiement déjà en échec (R-06)**, **envoi conditionnel du `webhook_endpoint`**, isolation entre utilisateurs, historique et reçus |
 | `tests/Feature/Api/SubscriptionLifecycleTest.php` | 11 | Annulation d'essai (fin immédiate + révocation VPN), annulation payée (accès jusqu'à fin de période), annulation sans abonnement, ancienne route d'annulation supprimée, essai unique et interdit aux plans vente assistée, commande d'expiration, fin d'accès sans attendre le planificateur, rappels envoyés une fois, configuration WireGuard valide, prérequis (e-mail vérifié, serveur configuré), adresses tunnel distinctes |
 | `tests/Feature/Api/AdminTest.php` | 2 | Refus de l'API admin aux utilisateurs normaux ; gestion des utilisateurs et des plans par un admin |
@@ -39,7 +39,7 @@
 | `tests/Feature/Settings/ProfileUpdateTest.php` | 5 | Profil et suppression de compte (pages web) |
 | `tests/Unit/ExampleTest.php` | 1 | Test d'exemple (`true is true`) |
 
-Total : 110 tests (84 sur l'API réelle et les commandes, 26 hérités).
+Total : 112 tests (86 sur l'API réelle et les commandes, 26 hérités).
 
 ### Zones non couvertes identifiées
 
@@ -95,6 +95,15 @@ Après l'ajout de `DELETE /api/account` (anonymisation + soft delete). Cinq test
 |---|---|
 | Commande | `php artisan test --compact` (dans `nexus-vpn/`) |
 | Résultat | **110 réussis, 0 échec** (432 assertions) |
+
+### 2026-10-06 — SMTP (Mailtrap) et vérification d'e-mail
+
+Configuration du mailer SMTP Mailtrap (sandbox) en local (`.env`, identifiants non versionnés) et deux tests ajoutés pour le renvoi du lien de vérification (110 → 112). Envoi réel vérifié via `php artisan tinker` : e-mail de vérification remis à Mailtrap (~4 s). La limite « 1 e-mail/seconde » du plan Mailtrap gratuit rejette deux envois consécutifs (code SMTP 550) — contrainte du fournisseur, pas de l'application ; `sendSafely()` intercepte d'ailleurs ces erreurs côté inscription/renvoi.
+
+| Élément | Valeur |
+|---|---|
+| Commande | `php artisan test --compact` (dans `nexus-vpn/`) ; envoi réel via `php artisan tinker` |
+| Résultat | **112 réussis, 0 échec** (438 assertions) ; e-mail livré à Mailtrap |
 
 ## 4. Frontend (application Next.js)
 

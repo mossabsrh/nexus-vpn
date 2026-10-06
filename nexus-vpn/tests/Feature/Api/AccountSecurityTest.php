@@ -128,6 +128,30 @@ class AccountSecurityTest extends TestCase
         $this->assertTrue($user->refresh()->hasVerifiedEmail());
     }
 
+    public function test_an_unverified_user_can_resend_the_verification_link(): void
+    {
+        Notification::fake();
+        $user = User::factory()->unverified()->create();
+
+        $this->actingAs($user)->postJson('/api/email/verification-notification')
+            ->assertOk()
+            ->assertJsonPath('message', 'Verification link sent.');
+
+        Notification::assertSentTo($user, VerifyEmail::class);
+    }
+
+    public function test_resending_does_nothing_once_the_email_is_verified(): void
+    {
+        Notification::fake();
+        $user = User::factory()->create();
+
+        $this->actingAs($user)->postJson('/api/email/verification-notification')
+            ->assertOk()
+            ->assertJsonPath('message', 'Your email is already verified.');
+
+        Notification::assertNothingSent();
+    }
+
     public function test_forgot_password_does_not_reveal_whether_an_account_exists(): void
     {
         Notification::fake();

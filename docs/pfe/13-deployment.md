@@ -11,7 +11,7 @@
 | Base de données | **Render PostgreSQL** | `nexus-vpn-db` (base `nexus_vpn`, utilisateur `nexus_vpn`) | Francfort, offre **Free** |
 | Paiement | Chargily Pay v2 | Service externe | Mode `test` dans `render.yaml` |
 | Passerelle VPN WireGuard | — | Serveur externe | ⚠️ À VÉRIFIER : aucun serveur WireGuard n'est décrit dans le dépôt (seules `VPN_SERVER_PUBLIC_KEY`/`VPN_SERVER_ENDPOINT` sont attendues) |
-| Envoi d'e-mails | Serveur SMTP | Service externe | ⚠️ À VÉRIFIER : fournisseur (paramètres saisis manuellement dans Render) |
+| Envoi d'e-mails | Serveur SMTP | Service externe | Local/dev : Mailtrap sandbox. ⚠️ À VÉRIFIER : fournisseur de production (paramètres saisis manuellement dans Render) |
 
 Flux en production : navigateur → Vercel (`/backend-api/*` réécrit) → Render (`/api/*`) → PostgreSQL. Chargily appelle directement le webhook sur le domaine Render. Détails du flux : `07-api.md` §1.
 
@@ -132,4 +132,4 @@ pnpm lint && pnpm exec tsc --noEmit && pnpm build
 
 Sans `NEXT_PUBLIC_API_URL`, la réécriture et `proxy.ts` visent le serveur Laravel local (`127.0.0.1:8000`). `FRONTEND_URL` vaut `http://localhost:3000` par défaut côté Laravel (`config/app.php`), ce qui permet aux liens e-mail et aux retours de paiement de revenir vers le frontend local. Scripts alternatifs : `pnpm dev:webpack`, `pnpm dev:fast` (Webpack, sans cartes de source).
 
-⚠️ À VÉRIFIER : en local, les e-mails ne sont réellement envoyés que si un mailer est configuré dans `.env` (non consulté) ; le paiement Chargily exige une clé de test et une URL publique pour recevoir le webhook (la vérification active via la page de résultat fonctionne sans webhook).
+En local (depuis le 2026-10-06), l'envoi d'e-mails est configuré via **Mailtrap (sandbox)** : `MAIL_MAILER=smtp`, `MAIL_HOST=sandbox.smtp.mailtrap.io`, `MAIL_PORT=2525`, avec identifiants dans `.env` (**non versionnés** ; `.env.example` ne contient que les clés vides). Envoi vérifié (e-mail de vérification remis à la boîte sandbox). Le plan gratuit Mailtrap limite à 1 e-mail/seconde. ⚠️ À VÉRIFIER : fournisseur SMTP de production (saisi dans les secrets Render). Le paiement Chargily exige une clé de test et une URL publique pour recevoir le webhook (la vérification active via la page de résultat fonctionne sans webhook).
