@@ -46,7 +46,7 @@ Aucun SDK Chargily n'est utilisé : l'intégration passe par le client HTTP de L
 |---|---|---|
 | Chargily Pay v2 | Paiement en ligne (DZD) : checkouts, webhooks signés HMAC-SHA256 | `CHARGILY_MODE`, `CHARGILY_SECRET_KEY` |
 | WireGuard | Protocole VPN ; configuration client générée par l'API, pairs exportés via `vpn:peers` | `VPN_*` |
-| Serveur SMTP / mailer | E-mails de vérification, réinitialisation, bienvenue, reçu, rappels | `MAIL_*` ⚠️ À VÉRIFIER : fournisseur utilisé en production |
+| Gmail SMTP | E-mails de vérification, réinitialisation, bienvenue, reçu, rappels (`smtp.gmail.com:587`, TLS, compte dédié + mot de passe d'application) | `MAIL_*` dans `.env` (identifiants non versionnés) ; production via secrets Render |
 | Render (hébergement) | Déploiement du conteneur Docker du backend et base PostgreSQL | `render.yaml` (racine du dépôt) |
 
 ### Paquets JavaScript dans `nexus-vpn/package.json`

@@ -11,7 +11,7 @@
 | Base de données | **Render PostgreSQL** | `nexus-vpn-db` (base `nexus_vpn`, utilisateur `nexus_vpn`) | Francfort, offre **Free** |
 | Paiement | Chargily Pay v2 | Service externe | Mode `test` dans `render.yaml` |
 | Passerelle VPN WireGuard | — | Serveur externe | ⚠️ À VÉRIFIER : aucun serveur WireGuard n'est décrit dans le dépôt (seules `VPN_SERVER_PUBLIC_KEY`/`VPN_SERVER_ENDPOINT` sont attendues) |
-| Envoi d'e-mails | Serveur SMTP | Service externe | Local/dev : Mailtrap sandbox. ⚠️ À VÉRIFIER : fournisseur de production (paramètres saisis manuellement dans Render) |
+| Envoi d'e-mails | Gmail SMTP (`smtp.gmail.com:587`, TLS) | Service externe | Compte Gmail dédié + mot de passe d'application. ⚠️ À VÉRIFIER : secrets de production à saisir dans Render |
 
 Flux en production : navigateur → Vercel (`/backend-api/*` réécrit) → Render (`/api/*`) → PostgreSQL. Chargily appelle directement le webhook sur le domaine Render. Détails du flux : `07-api.md` §1.
 
@@ -132,4 +132,16 @@ pnpm lint && pnpm exec tsc --noEmit && pnpm build
 
 Sans `NEXT_PUBLIC_API_URL`, la réécriture et `proxy.ts` visent le serveur Laravel local (`127.0.0.1:8000`). `FRONTEND_URL` vaut `http://localhost:3000` par défaut côté Laravel (`config/app.php`), ce qui permet aux liens e-mail et aux retours de paiement de revenir vers le frontend local. Scripts alternatifs : `pnpm dev:webpack`, `pnpm dev:fast` (Webpack, sans cartes de source).
 
-En local (depuis le 2026-10-06), l'envoi d'e-mails est configuré via **Mailtrap (sandbox)** : `MAIL_MAILER=smtp`, `MAIL_HOST=sandbox.smtp.mailtrap.io`, `MAIL_PORT=2525`, avec identifiants dans `.env` (**non versionnés** ; `.env.example` ne contient que les clés vides). Envoi vérifié (e-mail de vérification remis à la boîte sandbox). Le plan gratuit Mailtrap limite à 1 e-mail/seconde. ⚠️ À VÉRIFIER : fournisseur SMTP de production (saisi dans les secrets Render). Le paiement Chargily exige une clé de test et une URL publique pour recevoir le webhook (la vérification active via la page de résultat fonctionne sans webhook).
+### Envoi d'e-mails — Gmail SMTP
+
+Depuis le 2026-10-06, l'envoi d'e-mails passe par **Gmail SMTP** : `MAIL_MAILER=smtp`, `MAIL_HOST=smtp.gmail.com`, `MAIL_PORT=587`, `MAIL_ENCRYPTION=tls`.
+
+**Pourquoi ce changement.** Le projet utilisait d'abord Mailtrap comme bac à sable de test ; Mailtrap *capture* les e-mails dans une boîte de test sans jamais les livrer à de vraies adresses. Pour que les e-mails de vérification arrivent réellement dans la boîte des utilisateurs, on passe à Gmail SMTP (livraison réelle).
+
+**Mise en place (côté compte Google).** Un **compte Gmail dédié** au projet a été créé ; la **validation en deux étapes (2FA)** y a été activée ; un **mot de passe d'application** (App Password, 16 caractères) a été généré et sert de `MAIL_PASSWORD` — le mot de passe habituel du compte ne fonctionne pas en SMTP lorsque la 2FA est active.
+
+**Secrets.** L'adresse du compte, le mot de passe d'application et l'adresse d'expéditeur vivent **uniquement dans `.env`** (non versionné) ; `.env.example` ne contient que des gabarits (clés présentes, valeurs non secrètes seulement). Dans `render.yaml`, `MAIL_HOST`/`MAIL_PORT`/`MAIL_ENCRYPTION`/`MAIL_FROM_NAME` ont des valeurs ; `MAIL_USERNAME`/`MAIL_PASSWORD`/`MAIL_FROM_ADDRESS` restent `sync: false` (à saisir dans le tableau de bord Render).
+
+**Limite.** Un compte Gmail gratuit plafonne à **~500 e-mails/jour** — suffisant pour une démonstration, à surveiller si le volume augmente.
+
+Envoi réel vérifié le 2026-10-06 (e-mail de vérification livré via Gmail). Le paiement Chargily exige une clé de test et une URL publique pour recevoir le webhook (la vérification active via la page de résultat fonctionne sans webhook).

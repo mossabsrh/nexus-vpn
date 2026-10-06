@@ -96,14 +96,14 @@ Après l'ajout de `DELETE /api/account` (anonymisation + soft delete). Cinq test
 | Commande | `php artisan test --compact` (dans `nexus-vpn/`) |
 | Résultat | **110 réussis, 0 échec** (432 assertions) |
 
-### 2026-10-06 — SMTP (Mailtrap) et vérification d'e-mail
+### 2026-10-06 — SMTP (Gmail) et vérification d'e-mail
 
-Configuration du mailer SMTP Mailtrap (sandbox) en local (`.env`, identifiants non versionnés) et deux tests ajoutés pour le renvoi du lien de vérification (110 → 112). Envoi réel vérifié via `php artisan tinker` : e-mail de vérification remis à Mailtrap (~4 s). La limite « 1 e-mail/seconde » du plan Mailtrap gratuit rejette deux envois consécutifs (code SMTP 550) — contrainte du fournisseur, pas de l'application ; `sendSafely()` intercepte d'ailleurs ces erreurs côté inscription/renvoi.
+Passage à **Gmail SMTP** (`smtp.gmail.com:587`, TLS) pour une livraison réelle (le bac à sable de test initial ne livrait pas aux vraies adresses). Deux tests ajoutés pour le renvoi du lien de vérification (110 → 112). Envoi réel vérifié via `php artisan tinker` : e-mail de vérification livré à une adresse `+alias` du compte projet (~3,9 s), utilisateur de test supprimé ensuite. Les erreurs d'envoi sont interceptées par `sendSafely()` (l'inscription n'échoue jamais à cause d'un e-mail).
 
 | Élément | Valeur |
 |---|---|
 | Commande | `php artisan test --compact` (dans `nexus-vpn/`) ; envoi réel via `php artisan tinker` |
-| Résultat | **112 réussis, 0 échec** (438 assertions) ; e-mail livré à Mailtrap |
+| Résultat | **112 réussis, 0 échec** (438 assertions) ; e-mail livré via Gmail |
 
 ## 4. Frontend (application Next.js)
 
