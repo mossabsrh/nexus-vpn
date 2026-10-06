@@ -22,6 +22,8 @@ export function AccountsSection({ currentUserId }: { currentUserId?: number }) {
   const [notice, setNotice] = useState<string | null>(null)
   const [actionError, setActionError] = useState<string | null>(null)
   const [pendingRole, setPendingRole] = useState<{ user: AdminUser; role: AdminUser["role"] } | null>(null)
+  const [pendingDelete, setPendingDelete] = useState<AdminUser | null>(null)
+  const [deleting, setDeleting] = useState(false)
   const list = useAdminList<AdminUser>("/admin/users", "users", { q: query, role, subscription, page, per_page: 20 })
 
   // Debounce search so typing does not fire a request per keystroke.
@@ -44,6 +46,24 @@ export function AccountsSection({ currentUserId }: { currentUserId?: number }) {
     list.setItems((items) => items.map((item) => (item.id === user.id ? { ...item, ...changes } : item)))
     setNotice(`${user.email} updated.`)
     return true
+  }
+
+  const confirmDelete = async () => {
+    if (!pendingDelete) return
+    setNotice(null)
+    setActionError(null)
+    setDeleting(true)
+    const result = await adminRequest(`/admin/users/${pendingDelete.id}`, "DELETE")
+    setDeleting(false)
+    if (!result.ok) {
+      setActionError(result.error)
+      setPendingDelete(null)
+      return
+    }
+    const email = pendingDelete.email
+    setPendingDelete(null)
+    await list.reload()
+    setNotice(`${email} has been permanently deleted.`)
   }
 
   return (
@@ -80,6 +100,21 @@ export function AccountsSection({ currentUserId }: { currentUserId?: number }) {
         </div>
       )}
 
+      {pendingDelete && (
+        <div className="rounded-xl border border-destructive/30 bg-destructive/10 p-3 text-sm">
+          <p>
+            Permanently delete <strong>{pendingDelete.email}</strong>? Their personal data is erased and VPN access
+            stops. Payment history is kept (anonymised). This cannot be undone.
+          </p>
+          <div className="mt-2 flex gap-2">
+            <button type="button" className={primaryButton} disabled={deleting} onClick={confirmDelete}>
+              {deleting ? "Deleting..." : "Delete user"}
+            </button>
+            <button type="button" className={ghostButton} disabled={deleting} onClick={() => setPendingDelete(null)}>Cancel</button>
+          </div>
+        </div>
+      )}
+
       <div className="overflow-x-auto rounded-2xl border border-border bg-card">
         <table className="w-full min-w-[760px] text-left text-sm">
           <thead className="border-b border-border text-muted-foreground">
@@ -103,6 +138,7 @@ export function AccountsSection({ currentUserId }: { currentUserId?: number }) {
                 isSelf={account.id === currentUserId}
                 onRename={(name) => save(account, { name })}
                 onRoleChange={(nextRole) => setPendingRole({ user: account, role: nextRole })}
+                onDelete={() => { setPendingRole(null); setPendingDelete(account) }}
               />
             ))}
           </tbody>
@@ -113,11 +149,12 @@ export function AccountsSection({ currentUserId }: { currentUserId?: number }) {
   )
 }
 
-function AccountRow({ account, isSelf, onRename, onRoleChange }: {
+function AccountRow({ account, isSelf, onRename, onRoleChange, onDelete }: {
   account: AdminUser
   isSelf: boolean
   onRename: (name: string) => Promise<boolean>
   onRoleChange: (role: AdminUser["role"]) => void
+  onDelete: () => void
 }) {
   const [name, setName] = useState(account.name)
   const [saving, setSaving] = useState(false)
@@ -162,14 +199,25 @@ function AccountRow({ account, isSelf, onRename, onRoleChange }: {
         </select>
       </td>
       <td className="px-4 py-3 text-right">
-        <button
-          type="button"
-          disabled={!isDirty || saving}
-          onClick={rename}
-          className={isDirty ? primaryButton : `${ghostButton} disabled:cursor-not-allowed`}
-        >
-          {saving ? "Saving..." : "Save name"}
-        </button>
+        <div className="flex justify-end gap-2">
+          <button
+            type="button"
+            disabled={!isDirty || saving}
+            onClick={rename}
+            className={isDirty ? primaryButton : `${ghostButton} disabled:cursor-not-allowed`}
+          >
+            {saving ? "Saving..." : "Save name"}
+          </button>
+          <button
+            type="button"
+            disabled={isSelf}
+            onClick={onDelete}
+            title={isSelf ? "You cannot delete your own account here" : undefined}
+            className="rounded-md border border-destructive/40 px-3 py-1 text-sm font-medium text-destructive hover:bg-destructive/10 disabled:cursor-not-allowed disabled:opacity-50"
+          >
+            Delete
+          </button>
+        </div>
       </td>
     </tr>
   )

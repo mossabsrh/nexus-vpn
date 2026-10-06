@@ -138,6 +138,7 @@ Préfixe `/api`. « web » = session + CSRF. Toutes ont aussi `throttle:api`.
 | DELETE | `team/members/{member}` | `TeamController@removeMember` | web, auth (propriétaire) |
 | GET | `admin/users` | `AdminController@users` | web, auth, admin |
 | PATCH | `admin/users/{user}` | `AdminController@updateUser` | web, auth, admin |
+| DELETE | `admin/users/{user}` | `AdminController@destroyUser` | web, auth, admin |
 | GET / POST | `admin/plans` | `AdminController@plans` / `@storePlan` | web, auth, admin |
 | PATCH / DELETE | `admin/plans/{plan}` | `AdminController@updatePlan` / `@destroyPlan` | web, auth, admin |
 | GET | `admin/testimonials` | `AdminController@testimonials` | web, auth, admin |
@@ -206,13 +207,14 @@ Les plans sans prix mensuel (ex. `team`) ne sont ni achetables en ligne ni élig
 
 ### 7.6 Suppression de compte (anonymisation)
 
-`DELETE /api/account` (`AuthController@deleteAccount`) permet à l'utilisateur connecté de fermer définitivement son compte après confirmation de son **mot de passe actuel**. Le choix retenu est l'**anonymisation + soft delete** (et non la suppression physique), pour préserver l'historique de facturation (voir TD-14) :
+La logique de fermeture est portée par le modèle (`User::closeAccount(?User $actor)`) et réutilisée par deux points d'entrée : la suppression en **libre-service** (`DELETE /api/account`, `AuthController@deleteAccount`) et la suppression par un **administrateur** (`DELETE /api/admin/users/{user}`, `AdminController@destroyUser`). Le choix retenu est l'**anonymisation + soft delete** (et non la suppression physique), pour préserver l'historique de facturation (voir TD-14).
 
-1. **Garde-fous** : un **administrateur** (409 `admin_account`) ou un **propriétaire d'équipe** (409 `team_owner`) ne peut pas se supprimer ici — ces cas passent par le support (sinon on retirerait un accès privilégié ou on couperait les sièges de toute une équipe).
-2. Dans une transaction : annulation de l'abonnement courant (`cancel('account_deleted')`, qui révoque le VPN s'il ne reste aucun accès), révocation des identifiants VPN actifs, détachement des équipes (sièges libérés).
-3. **Anonymisation** : `name` → « Deleted account », `email` → `deleted+{id}@deleted.invalid` (unique par id, ce qui **libère l'e-mail d'origine** pour une future inscription), `password` réinitialisé aléatoirement, `email_verified_at` et `remember_token` effacés. Les lignes `payments` et `subscriptions` sont **conservées** (anonymisées via le compte).
-4. Audit `account.deleted` (métadonnées : `user_id`, domaine de l'e-mail précédent — jamais l'e-mail complet), puis **soft delete** de l'utilisateur (le compte ne peut plus s'authentifier).
-5. Hors transaction : suppression des jetons de réinitialisation (`password_resets`) et de **toutes les sessions** de l'utilisateur, puis déconnexion et régénération de la session courante.
+`User::closeAccount()`, dans une transaction : annulation de l'abonnement courant (`cancel('account_deleted')`, qui révoque le VPN s'il ne reste aucun accès), révocation des identifiants VPN actifs, détachement des équipes (sièges libérés), puis **anonymisation** (`name` → « Deleted account », `email` → `deleted+{id}@deleted.invalid` — unique par id, ce qui **libère l'e-mail d'origine** ; `password` réinitialisé aléatoirement ; `email_verified_at` et `remember_token` effacés ; lignes `payments`/`subscriptions` **conservées**), audit `account.deleted` (métadonnées : `user_id`, domaine de l'e-mail précédent — jamais l'e-mail complet, et `by` = `self`|`admin` avec l'acteur), **soft delete** de l'utilisateur. Hors transaction : suppression des jetons de réinitialisation (`password_resets`) et de **toutes les sessions** de l'utilisateur.
+
+Garde-fous propres à chaque point d'entrée :
+
+* **Libre-service** : exige le **mot de passe actuel** ; refuse un **administrateur** (409 `admin_account`) ou un **propriétaire d'équipe** (409 `team_owner`) ; après fermeture, déconnexion et régénération de la session courante.
+* **Admin** : refuse (422) de supprimer le **dernier administrateur**, **soi-même**, ou un **propriétaire d'équipe** (sa suppression annulerait l'abonnement d'équipe et couperait tous les membres). L'audit enregistre l'administrateur comme acteur.
 
 > La route web héritée `DELETE /settings/profile` (R-03) reste hors périmètre : elle fait seulement un *soft delete* sans annuler l'abonnement ni révoquer le VPN.
 

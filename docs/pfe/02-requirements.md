@@ -56,7 +56,7 @@ Les relations d'héritage (propriétaire et membre sont des utilisateurs, l'admi
 | ID | Exigence |
 |---|---|
 | FR-18 | L'administrateur consulte des statistiques : utilisateurs, abonnements par offre, conversion des essais, revenus par mois. |
-| FR-19 | L'administrateur recherche, filtre et modifie les utilisateurs (nom, e-mail, rôle). |
+| FR-19 | L'administrateur recherche, filtre, modifie (nom, e-mail, rôle) et supprime les utilisateurs. La suppression anonymise les données personnelles et conserve l'historique de facturation ; elle est refusée pour soi-même, le dernier administrateur et un propriétaire d'équipe, et tracée dans le journal d'audit. |
 | FR-20 | L'administrateur crée, modifie, active/désactive et supprime des offres (suppression refusée si l'offre a un historique). |
 | FR-21 | L'administrateur consulte les paiements et enregistre un remboursement (avec fin optionnelle de l'abonnement). |
 | FR-22 | L'administrateur consulte et annule les abonnements. |

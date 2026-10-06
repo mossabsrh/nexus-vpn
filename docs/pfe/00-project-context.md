@@ -33,7 +33,7 @@
     ├── app/Models/                 Logique métier (Payment, Subscription, VpnCredential, …)
     ├── app/Services/               ChargilyGateway (API Chargily, signature webhook, règles de statut)
     ├── app/Console/Commands/       subscriptions:expire, subscriptions:remind, payments:reconcile, vpn:peers
-    ├── routes/api.php              49 endpoints ; routes/console.php (planification, admin:grant)
+    ├── routes/api.php              50 endpoints ; routes/console.php (planification, admin:grant)
     ├── routes/web.php, auth.php, settings.php   Starter kit Inertia hérité (+ redirections Chargily)
     ├── database/                   migrations, seeders (PlansTableSeeder idempotent), factories
     ├── tests/Feature/              110 tests (84 API réelle, 26 hérités)

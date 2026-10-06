@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Models\AuditLog;
 use App\Models\Plan;
 use App\Models\User;
-use App\Models\VpnCredential;
 use App\Notifications\WelcomeNotification;
 use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Http\JsonResponse;
@@ -216,37 +215,7 @@ class AuthController extends Controller
             ], 409);
         }
 
-        $previousEmail = $user->email;
-
-        DB::transaction(function () use ($user, $previousEmail): void {
-            // Cancel the active subscription (revokes VPN when no access remains) and revoke any
-            // credential still active, then keep the rows for history.
-            $user->currentSubscription()?->cancel('account_deleted');
-            VpnCredential::revokeFor($user, 'account_deleted');
-
-            // Leave every team so freed seats are returned to the owners.
-            $user->teams()->detach();
-
-            // Scrub the personal data. The placeholder e-mail is unique per id and frees the real one.
-            $user->forceFill([
-                'name' => 'Deleted account',
-                'email' => 'deleted+'.$user->id.'@deleted.invalid',
-                'email_verified_at' => null,
-                'password' => Hash::make(Str::random(64)),
-                'remember_token' => null,
-            ])->save();
-
-            AuditLog::record('account.deleted', null, [
-                'user_id' => $user->id,
-                'previous_domain' => Str::after($previousEmail, '@'),
-            ]);
-
-            $user->delete();
-        });
-
-        // Any pending reset tokens were issued for the old e-mail; drop them and every session.
-        DB::table('password_resets')->where('email', $previousEmail)->delete();
-        DB::table('sessions')->where('user_id', $user->id)->delete();
+        $user->closeAccount($user);
 
         Auth::guard('web')->logout();
         $request->session()->invalidate();

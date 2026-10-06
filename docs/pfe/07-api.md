@@ -120,6 +120,7 @@ Erreurs réseau et délais dépassés (`AbortError`) : convertis en messages lis
 | `GET …/admin/stats` | `AdminBillingController@stats` | — | `{ users: {...signupsByDay}, subscriptions: {...byPlan, trialConversionRate}, revenue: {...byMonth}, payments: {status: count} }` | `components/admin/stats.tsx` (`useAdminStats` : `OverviewSection`, `AnalyticsSection`, `SubscriptionMetrics`) |
 | `GET …/admin/users` | `AdminController@users` | `q`, `role`, `subscription` (`active`\|`trialing`\|`none`), `per_page` (5–100) | `{ users: [{ id, name, email, role, emailVerified, created_at, subscription }], meta }` | `components/admin/accounts.tsx` (`AccountsSection`) |
 | `PATCH …/admin/users/{user}` | `AdminController@updateUser` | `name?`, `email?`, `role?` ; refuse de retirer son propre rôle admin (422) | `{ user }` (modèle brut, snake_case) | `accounts.tsx` (la réponse est ignorée ; la liste est mise à jour localement) |
+| `DELETE …/admin/users/{user}` | `AdminController@destroyUser` | — (admin only) ; réutilise la logique de `DELETE /api/account` (anonymisation + soft delete, abonnement annulé, VPN révoqué, historique conservé) ; refus (422) de supprimer le dernier administrateur, soi-même, ou un propriétaire d'équipe ; action tracée (`account.deleted`, acteur = admin) | `{ message }` | `accounts.tsx` (bouton Supprimer + confirmation, puis rechargement de la liste) |
 | `GET …/admin/plans` | `AdminController@plans` | `per_page` | `{ plans: [modèle Plan brut + active_subscriptions_count], meta }` (snake_case) | `components/admin/offers.tsx` (`OffersSection`) |
 | `POST …/admin/plans` / `PATCH …/admin/plans/{plan}` | `AdminController@storePlan` / `@updatePlan` | `slug` (unique, `[a-z0-9-]`), `name`, `description?`, `monthly_price?`, `yearly_price?`, `yearly_total?` (entiers ≥0), `currency` (`DZD`), `features[]`, `popular`, `cta?`, `is_active?` | 201 / 200 `{ plan }` ; invalide le cache `/pricing` | `offers.tsx` (création, modification, activation/désactivation) |
 | `DELETE …/admin/plans/{plan}` | `AdminController@destroyPlan` | — | 200 `{ message }` ; 409 si le plan a des abonnements | `offers.tsx` |
@@ -155,7 +156,7 @@ Détails de vérification et d'idempotence : `08-authentication-security.md` §7
 | `PATCH /api/team` | Renommage d'équipe : aucune interface ; aucun test backend identifié |
 | `POST /api/webhooks/chargily` | Normal : appelé par Chargily |
 
-Total : 49 endpoints sous `/api`, dont **3 non utilisés** par le frontend et 1 réservé à Chargily.
+Total : 50 endpoints sous `/api`, dont **3 non utilisés** par le frontend et 1 réservé à Chargily.
 
 ### 13.2 Incohérences entre types frontend et réponses backend
 

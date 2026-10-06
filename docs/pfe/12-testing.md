@@ -24,6 +24,7 @@
 | `tests/Feature/ChargilyPaymentTest.php` | 13 | Création de checkout Chargily, seeders idempotents (ne réécrivent ni ne restaurent les plans modifiés/supprimés par un admin), essai à l'inscription, redirection des anciennes URL de retour, annulation, nouvel abonnement au lieu de réactiver un ancien, essai de 7 jours unique, contenu de `userPayload`, rejet d'une signature de webhook invalide, montant client ignoré, isolation des checkouts |
 | `tests/Feature/ReconcilePaymentsTest.php` | 5 | Commande `payments:reconcile` : activation d'un paiement en attente payé chez Chargily, maintien en attente d'un checkout récent toujours ouvert, expiration d'un checkout abandonné au-delà du délai (`POST /checkouts/{id}/expire`), respect de la période de grâce, aucune action sans clé secrète |
 | `tests/Feature/Api/AccountDeletionTest.php` | 5 | `DELETE /api/account` : anonymisation + soft delete en conservant l'historique de facturation, impossibilité de se réauthentifier ensuite, exigence du mot de passe actuel (422), blocage des administrateurs (409 `admin_account`) et des propriétaires d'équipe (409 `team_owner`) |
+| `tests/Feature/Api/AdminUserDeletionTest.php` | 6 | `DELETE /api/admin/users/{user}` : anonymisation + conservation de l'historique, suppression d'un autre administrateur (s'il en reste un), refus de se supprimer soi-même et du dernier administrateur et d'un propriétaire d'équipe (422), refus pour un non-administrateur (403) |
 
 ### Tests hérités du starter kit (pages Inertia non utilisées)
 
@@ -39,7 +40,7 @@
 | `tests/Feature/Settings/ProfileUpdateTest.php` | 5 | Profil et suppression de compte (pages web) |
 | `tests/Unit/ExampleTest.php` | 1 | Test d'exemple (`true is true`) |
 
-Total : 112 tests (86 sur l'API réelle et les commandes, 26 hérités).
+Total : 118 tests (92 sur l'API réelle et les commandes, 26 hérités).
 
 ### Zones non couvertes identifiées
 
@@ -104,6 +105,15 @@ Passage à **Gmail SMTP** (`smtp.gmail.com:587`, TLS) pour une livraison réelle
 |---|---|
 | Commande | `php artisan test --compact` (dans `nexus-vpn/`) ; envoi réel via `php artisan tinker` |
 | Résultat | **112 réussis, 0 échec** (438 assertions) ; e-mail livré via Gmail |
+
+### 2026-10-06 — Suppression d'utilisateur par l'administrateur
+
+Ajout de `DELETE /api/admin/users/{user}` qui réutilise `User::closeAccount()` (logique partagée avec `DELETE /api/account`). Six tests ajoutés (112 → 118). Frontend : `pnpm lint`, `tsc --noEmit`, `pnpm build` réussis.
+
+| Élément | Valeur |
+|---|---|
+| Commande | `php artisan test --compact` (dans `nexus-vpn/`) |
+| Résultat | **118 réussis, 0 échec** (460 assertions) |
 
 ## 4. Frontend (application Next.js)
 

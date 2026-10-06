@@ -19,7 +19,7 @@
 | F-13 | Cycle de vie automatique | Expiration, révocation VPN, rappels e-mail planifiés, réconciliation des paiements `pending` (`payments:reconcile`) | Backend (planificateur) | FR-28, FR-29 | — (commandes, `05-backend.md` §8) | — |
 | F-14 | Équipes | Abonnement Team créé par l'admin, gestion des membres et des sièges par le propriétaire, accès VPN des membres | Frontend + Backend | FR-16, FR-17, FR-23 | §9 `team*`, §11 `admin/subscriptions/team` | `/dashboard` (carte Équipe), `admin/billing` (`TeamProvisioning`) |
 | F-15 | Statistiques admin | Indicateurs utilisateurs, abonnements, conversion, revenus | Frontend + Backend | FR-18 | §11 `admin/stats` | `admin/stats` (`OverviewSection`, `AnalyticsSection`) |
-| F-16 | Gestion des utilisateurs | Recherche, filtres, modification nom/e-mail/rôle | Frontend + Backend | FR-19 | §11 `admin/users` | `admin/accounts` |
+| F-16 | Gestion des utilisateurs | Recherche, filtres, modification nom/e-mail/rôle, suppression (anonymisation + soft delete, dernier admin / soi-même / propriétaire d'équipe protégés) | Frontend + Backend | FR-19 | §11 `admin/users` | `admin/accounts` |
 | F-17 | Gestion des offres | CRUD des offres, activation, suppression protégée, invalidation du cache des prix | Frontend + Backend | FR-20 | §11 `admin/plans` | `admin/offers` |
 | F-18 | Facturation admin | Listes des paiements et abonnements, remboursement enregistré, annulation | Frontend + Backend | FR-21, FR-22 | §11 `admin/payments`, `admin/subscriptions` | `admin/billing` |
 | F-19 | Journal d'audit | Traçage et consultation des actions sensibles | Frontend + Backend | FR-26 | §11 `admin/audit-logs` | `admin/moderation` (`AuditLogSection`) |

@@ -14,7 +14,7 @@ Dossier de travail regroupant les informations techniques et les preuves nécess
 | `04-frontend.md` | Application Next.js : routes, layouts, composants, état, `apiFetch`, `proxy.ts`, styles |
 | `05-backend.md` | API Laravel : middleware, authentification, contrôleurs, routes, workflows métier, code hérité |
 | `06-database.md` | Tables, contraintes, index, relations, migrations, seeders |
-| `07-api.md` | Contrat frontend ↔ backend : 49 endpoints, CSRF, conventions d'erreur, incohérences |
+| `07-api.md` | Contrat frontend ↔ backend : 50 endpoints, CSRF, conventions d'erreur, incohérences |
 | `08-authentication-security.md` | Mécanismes de sécurité et registre des risques R-01 à R-25 |
 | `09-technologies-and-packages.md` | Inventaire des technologies et paquets (backend et frontend) |
 | `10-features.md` | 22 fonctionnalités reliées aux exigences |

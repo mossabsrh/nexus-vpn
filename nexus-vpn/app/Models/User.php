@@ -10,6 +10,9 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 
 class User extends Authenticatable implements MustVerifyEmail
 {
@@ -116,5 +119,46 @@ class User extends Authenticatable implements MustVerifyEmail
     public function hasVpnAccess(): bool
     {
         return $this->accessSubscription() !== null;
+    }
+
+    /**
+     * Permanently close the account: cancel the active subscription, revoke VPN access, leave teams,
+     * scrub the personal data and soft-delete the row. Payment and subscription rows are kept
+     * (anonymised through the account) for billing history, and the original e-mail is freed.
+     *
+     * @param  User|null  $actor  Who performed the deletion (the user themselves, or an admin).
+     */
+    public function closeAccount(?User $actor = null): void
+    {
+        $previousEmail = $this->email;
+
+        DB::transaction(function () use ($actor, $previousEmail): void {
+            $this->currentSubscription()?->cancel('account_deleted');
+            VpnCredential::revokeFor($this, 'account_deleted');
+
+            // Leave every team so freed seats are returned to the owners.
+            $this->teams()->detach();
+
+            // The placeholder e-mail is unique per id and frees the real one for reuse.
+            $this->forceFill([
+                'name' => 'Deleted account',
+                'email' => 'deleted+'.$this->id.'@deleted.invalid',
+                'email_verified_at' => null,
+                'password' => Hash::make(Str::random(64)),
+                'remember_token' => null,
+            ])->save();
+
+            AuditLog::record('account.deleted', null, [
+                'user_id' => $this->id,
+                'previous_domain' => Str::after($previousEmail, '@'),
+                'by' => ($actor && ! $actor->is($this)) ? 'admin' : 'self',
+            ], $actor);
+
+            $this->delete();
+        });
+
+        // Pending reset tokens were issued for the old e-mail; drop them and every session.
+        DB::table('password_resets')->where('email', $previousEmail)->delete();
+        DB::table('sessions')->where('user_id', $this->id)->delete();
     }
 }

@@ -63,6 +63,7 @@ Route::middleware(['web', 'throttle:api'])->group(function () {
     Route::prefix('admin')->middleware(['auth', 'admin'])->group(function () {
         Route::get('users', [AdminController::class, 'users']);
         Route::patch('users/{user}', [AdminController::class, 'updateUser']);
+        Route::delete('users/{user}', [AdminController::class, 'destroyUser']);
         Route::get('plans', [AdminController::class, 'plans']);
         Route::post('plans', [AdminController::class, 'storePlan']);
         Route::patch('plans/{plan}', [AdminController::class, 'updatePlan']);

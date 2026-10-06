@@ -84,6 +84,27 @@ class AdminController extends Controller
         return response()->json(['user' => $user->fresh()]);
     }
 
+    public function destroyUser(Request $request, User $user): JsonResponse
+    {
+        if ($user->isAdmin() && User::query()->where('role', 'admin')->count() <= 1) {
+            return response()->json(['message' => 'You cannot delete the last administrator.'], 422);
+        }
+
+        if ($user->is($request->user())) {
+            return response()->json(['message' => 'You cannot delete your own account from the admin panel.'], 422);
+        }
+
+        // A team owner's deletion would cancel the team subscription and cut off every member;
+        // the team must be transferred or closed first.
+        if ($user->ownedTeams()->exists()) {
+            return response()->json(['message' => 'This user owns a team subscription. Transfer or close the team before deleting the account.'], 422);
+        }
+
+        $user->closeAccount($request->user());
+
+        return response()->json(['message' => 'User account deleted.']);
+    }
+
     public function plans(Request $request): JsonResponse
     {
         $plans = Plan::query()
