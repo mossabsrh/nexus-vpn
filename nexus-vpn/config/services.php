@@ -38,6 +38,8 @@ return [
     'chargily' => [
         'mode' => env('CHARGILY_MODE', 'test'),
         'secret_key' => env('CHARGILY_SECRET_KEY'),
+        // Optional: overrides the dashboard webhook endpoint per checkout (useful for a local tunnel).
+        'webhook_url' => env('CHARGILY_WEBHOOK_URL'),
     ],
 
     /*

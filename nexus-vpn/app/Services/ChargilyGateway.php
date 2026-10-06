@@ -31,6 +31,14 @@ class ChargilyGateway
      */
     public function createCheckout(array $payload): Response
     {
+        // Chargily's API reference names this field webhook_endpoint (the webhooks guide calls it
+        // webhook_url); we send webhook_endpoint. When unset, Chargily uses the dashboard endpoint.
+        $webhookUrl = (string) config('services.chargily.webhook_url');
+
+        if ($webhookUrl !== '' && ! isset($payload['webhook_endpoint'])) {
+            $payload['webhook_endpoint'] = $webhookUrl;
+        }
+
         return Http::withToken($this->secretKey())
             ->acceptJson()
             ->connectTimeout(5)->timeout(15)

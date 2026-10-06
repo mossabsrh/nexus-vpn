@@ -287,6 +287,30 @@ class PaymentFlowTest extends TestCase
         $this->assertSame(0, AuditLog::query()->where('action', 'payment.paid_after_failure')->count());
     }
 
+    public function test_checkout_sends_the_configured_webhook_endpoint(): void
+    {
+        config(['services.chargily.webhook_url' => 'https://tunnel.test/api/webhooks/chargily']);
+        $user = User::factory()->create(['email_verified_at' => now()]);
+        $plan = Plan::factory()->create(['monthly_price' => 1500]);
+        Http::fake(['*' => Http::response(['id' => 'chk_wh', 'status' => 'pending', 'checkout_url' => 'https://pay.test/chk_wh'])]);
+
+        $this->actingAs($user)->postJson('/api/checkout', ['plan_slug' => $plan->slug])->assertOk();
+
+        Http::assertSent(fn ($request) => $request['webhook_endpoint'] === 'https://tunnel.test/api/webhooks/chargily');
+    }
+
+    public function test_checkout_omits_the_webhook_endpoint_when_not_configured(): void
+    {
+        config(['services.chargily.webhook_url' => null]);
+        $user = User::factory()->create(['email_verified_at' => now()]);
+        $plan = Plan::factory()->create(['monthly_price' => 1500]);
+        Http::fake(['*' => Http::response(['id' => 'chk_nowh', 'status' => 'pending', 'checkout_url' => 'https://pay.test/chk_nowh'])]);
+
+        $this->actingAs($user)->postJson('/api/checkout', ['plan_slug' => $plan->slug])->assertOk();
+
+        Http::assertSent(fn ($request) => ! isset($request['webhook_endpoint']));
+    }
+
     public function test_users_cannot_verify_someone_elses_payment(): void
     {
         [, , $payment] = $this->pendingPayment('chk_owner');
