@@ -258,6 +258,35 @@ class PaymentFlowTest extends TestCase
         $this->assertSame(0, $user->subscriptions()->count());
     }
 
+    public function test_paid_webhook_for_a_failed_payment_is_flagged_for_the_admin(): void
+    {
+        [$user, , $payment] = $this->pendingPayment('chk_late');
+        $payment->markFailed('Checkout expired at Chargily.', 'checkout_expired');
+
+        $paid = ['id' => 'chk_late', 'status' => 'paid', 'amount' => 1500, 'currency' => 'dzd'];
+        $this->postWebhook('checkout.paid', $paid)->assertOk();
+        $this->postWebhook('checkout.paid', $paid)->assertOk();
+
+        $payment->refresh();
+        $this->assertSame('failed', $payment->status);
+        $this->assertSame('paid_after_failure', $payment->error_code);
+        $this->assertSame(0, $user->subscriptions()->count());
+        $this->assertSame(1, AuditLog::query()->where('action', 'payment.paid_after_failure')->count());
+    }
+
+    public function test_duplicate_paid_webhook_for_a_succeeded_payment_is_not_flagged(): void
+    {
+        [, , $payment] = $this->pendingPayment('chk_dup');
+
+        $paid = ['id' => 'chk_dup', 'status' => 'paid', 'amount' => 1500, 'currency' => 'dzd'];
+        $this->postWebhook('checkout.paid', $paid)->assertOk();
+        $this->postWebhook('checkout.paid', $paid)->assertOk();
+
+        $this->assertSame('succeeded', $payment->refresh()->status);
+        $this->assertNull($payment->error_code);
+        $this->assertSame(0, AuditLog::query()->where('action', 'payment.paid_after_failure')->count());
+    }
+
     public function test_users_cannot_verify_someone_elses_payment(): void
     {
         [, , $payment] = $this->pendingPayment('chk_owner');

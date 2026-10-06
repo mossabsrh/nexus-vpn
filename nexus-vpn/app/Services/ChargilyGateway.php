@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\AuditLog;
 use App\Models\Payment;
 use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Http\Client\Response;
@@ -83,7 +84,9 @@ class ChargilyGateway
                 return;
             }
 
-            $payment->markSucceeded($checkout);
+            if (! $payment->markSucceeded($checkout)) {
+                $this->flagPaidAfterFailure($payment->refresh());
+            }
 
             return;
         }
@@ -91,6 +94,29 @@ class ChargilyGateway
         if (in_array($status, self::UNPAID_FINAL_STATUSES, true)) {
             $payment->markFailed('Checkout '.$status.' at Chargily.', 'checkout_'.$status);
         }
+    }
+
+    /**
+     * Chargily took the money but our record was already closed as failed, so nothing was activated.
+     * A duplicate "paid" for a succeeded payment is normal and is not flagged.
+     */
+    private function flagPaidAfterFailure(Payment $payment): void
+    {
+        if ($payment->status !== 'failed' || $payment->error_code === 'paid_after_failure') {
+            return;
+        }
+
+        Log::critical('Chargily reports a paid checkout for a payment already marked failed; nothing was activated.', [
+            'payment_id' => $payment->id,
+            'checkout_id' => $payment->provider_reference,
+            'previous_error_code' => $payment->error_code,
+        ]);
+
+        $payment->update([
+            'error_code' => 'paid_after_failure',
+            'failure_reason' => 'Paid at Chargily after being marked failed. Activate or refund manually.',
+        ]);
+        AuditLog::record('payment.paid_after_failure', $payment, ['checkout_id' => $payment->provider_reference], $payment->user);
     }
 
     private function secretKey(): string
