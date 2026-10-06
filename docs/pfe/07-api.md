@@ -155,7 +155,7 @@ Détails de vérification et d'idempotence : `08-authentication-security.md` §7
 | `PATCH /api/team` | Renommage d'équipe : aucune interface ; aucun test backend identifié |
 | `POST /api/webhooks/chargily` | Normal : appelé par Chargily |
 
-Total : 48 endpoints sous `/api`, dont **3 non utilisés** par le frontend et 1 réservé à Chargily.
+Total : 49 endpoints sous `/api`, dont **3 non utilisés** par le frontend et 1 réservé à Chargily.
 
 ### 13.2 Incohérences entre types frontend et réponses backend
 

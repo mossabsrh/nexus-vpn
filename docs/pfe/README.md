@@ -14,7 +14,7 @@ Dossier de travail regroupant les informations techniques et les preuves nécess
 | `04-frontend.md` | Application Next.js : routes, layouts, composants, état, `apiFetch`, `proxy.ts`, styles |
 | `05-backend.md` | API Laravel : middleware, authentification, contrôleurs, routes, workflows métier, code hérité |
 | `06-database.md` | Tables, contraintes, index, relations, migrations, seeders |
-| `07-api.md` | Contrat frontend ↔ backend : 48 endpoints, CSRF, conventions d'erreur, incohérences |
+| `07-api.md` | Contrat frontend ↔ backend : 49 endpoints, CSRF, conventions d'erreur, incohérences |
 | `08-authentication-security.md` | Mécanismes de sécurité et registre des risques R-01 à R-25 |
 | `09-technologies-and-packages.md` | Inventaire des technologies et paquets (backend et frontend) |
 | `10-features.md` | 22 fonctionnalités reliées aux exigences |
@@ -34,7 +34,7 @@ Dossier de travail regroupant les informations techniques et les preuves nécess
 ## État actuel (2026-10-05)
 
 * Audit de référence terminé (4 étapes, aucun code modifié). Application fonctionnellement complète, en environnement de test (Chargily `test`, offres gratuites Render/Vercel).
-* Preuves : 94 tests backend réussis ; lint, contrôle de types et build frontend réussis (`12-testing.md`).
+* Preuves : 110 tests backend réussis ; lint, contrôle de types et build frontend réussis (`12-testing.md`).
 * Restent à produire : `03-architecture.md` et les diagrammes (cas d'utilisation, classes, séquences, activités, déploiement, architecture, MCD/MLD) ; captures d'écran ; réponses aux questions ci-dessous.
 
 ## Points à compléter par l'étudiant

@@ -61,7 +61,7 @@
 * **Alternatives** : couche `Services/`, FormRequests et Policies, Eloquent API Resources ; ou logique dans les modèles + `$request->validate()` + `toApiArray()` (retenu).
 * **Comparaison** : l'approche retenue garde le code compact et localisé (chaque modèle porte ses règles : `Payment::markSucceeded`, `Subscription::cancel`) ; elle rend les modèles volumineux et mélange formatage et domaine, et la casse des réponses n'est pas uniforme (`07-api.md` §13.2).
 * **Choix** : retenu tel quel. ⚠️ À VÉRIFIER : choix délibéré ou évolution organique ?
-* **Conséquences** : 94 tests de fonctionnalités couvrent ces méthodes via HTTP ; refactorisation possible (`19-limitations-and-future-work.md`).
+* **Conséquences** : 110 tests de fonctionnalités couvrent ces méthodes via HTTP ; refactorisation possible (`19-limitations-and-future-work.md`).
 
 ## TD-08 — Pas de file d'attente : notifications synchrones
 

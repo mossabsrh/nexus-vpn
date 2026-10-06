@@ -31,11 +31,12 @@
 └── nexus-vpn/        Backend Laravel
     ├── app/Http/Controllers/Api/   9 contrôleurs de l'API réelle
     ├── app/Models/                 Logique métier (Payment, Subscription, VpnCredential, …)
-    ├── app/Console/Commands/       subscriptions:expire, subscriptions:remind, vpn:peers
-    ├── routes/api.php              48 endpoints ; routes/console.php (planification, admin:grant)
+    ├── app/Services/               ChargilyGateway (API Chargily, signature webhook, règles de statut)
+    ├── app/Console/Commands/       subscriptions:expire, subscriptions:remind, payments:reconcile, vpn:peers
+    ├── routes/api.php              49 endpoints ; routes/console.php (planification, admin:grant)
     ├── routes/web.php, auth.php, settings.php   Starter kit Inertia hérité (+ redirections Chargily)
     ├── database/                   migrations, seeders (PlansTableSeeder idempotent), factories
-    ├── tests/Feature/              94 tests (68 API réelle, 26 hérités)
+    ├── tests/Feature/              110 tests (84 API réelle, 26 hérités)
     └── Dockerfile, docker/         Image Render (migrate --seed + schedule:work au démarrage)
 ```
 
@@ -44,7 +45,7 @@
 * **Contrat** : navigateur → `/backend-api/*` (même origine) → Laravel `/api/*` ; session cookie + CSRF (`XSRF-TOKEN` / `X-XSRF-TOKEN`, rejeu sur 419). Référence complète : `07-api.md`.
 * **Authentification** : sessions Laravel (pas de Sanctum/JWT), e-mail vérifié requis pour payer et pour le VPN, rôles `user`/`admin` (middleware `admin`), `proxy.ts` fail-closed pour `/admin`. `08-authentication-security.md`.
 * **Abonnements** : statuts `trialing`/`active`/`canceled`/`expired` ; un seul abonnement courant par utilisateur (index partiel) ; accès = période en cours (`grantingAccess`). `05` §7.1.
-* **Paiement** : montant serveur, paiement enregistré avant Chargily, webhook HMAC + vérification active, `markSucceeded` idempotent, pas de renouvellement automatique. `05` §7.2.
+* **Paiement** : montant serveur, paiement enregistré avant Chargily, webhook HMAC + vérification active, montant **et** devise contrôlés avant activation, `markSucceeded` idempotent, réconciliation planifiée des `pending` (`payments:reconcile`), pas de renouvellement automatique. `05` §7.2, §7.6 pour la suppression de compte (anonymisation + soft delete). Chargily en mode **test** uniquement (TD-13).
 * **VPN** : clés Curve25519 générées en PHP (`sodium`), clé privée chiffrée (`encrypted`), adresses du pool `10.66.0.0/16` jamais réutilisées ; synchronisation de la passerelle manuelle (`vpn:peers`). `05` §7.3.
 * **Admin** : statistiques, utilisateurs, offres, abonnements/Team, paiements/remboursements, contact, modération, audit (`AuditLog::record`). `10-features.md`.
 
@@ -58,7 +59,7 @@
 ## État actuel (2026-10-05)
 
 * Code inchangé depuis le commit initial `067e68d` ; documentation de référence complète (commits `e246b4d` → `4e9c025` + synthèse finale).
-* Tests : backend 94/94 réussis ; frontend : lint, types et build réussis ; aucun test frontend.
+* Tests : backend 110/110 réussis ; frontend : lint, types et build réussis ; aucun test frontend.
 * Exigences : 31 FR, 14 NFR (`02`) ; 22 fonctionnalités (`10`) ; 20 problèmes résolus (`14`) ; 12 décisions (`15`).
 * Historique : l'essentiel du durcissement et des fonctionnalités a été réalisé les 2026-10-04/05 juste avant le versionnement (`11` §2.5, `17`).
 * Risques ouverts principaux (`08` §11) : R-01 révocation VPN non propagée à la passerelle, R-02 base Render Free expirant après 30 jours, R-03 routes héritées actives, R-04 planificateur en veille, R-05 `TRUSTED_PROXIES="*"`.

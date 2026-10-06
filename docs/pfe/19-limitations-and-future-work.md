@@ -13,7 +13,7 @@
 | L-05 | Fonctionnalités annoncées non implémentées : OpenVPN, kill switch, split tunneling, protection DNS dédiée, SSO/SAML, IP dédiée, SLA | Contenu des offres et du site (`04-frontend.md` §13) |
 | L-06 | Pas de page de reçu/facture ni de facture PDF, alors que l'endpoint de reçu existe | `07-api.md` §13.1 |
 | L-07 | Renommage d'équipe sans interface ; les membres doivent déjà avoir un compte (pas d'invitation par e-mail) | `TeamController` |
-| L-08 | Pas de suppression de compte en libre-service dans l'application réelle (seulement via la route héritée) | `07-api.md` §14 |
+| L-08 | ✅ **Résolu (2026-10-06)** — Suppression de compte en libre-service ajoutée (`DELETE /api/account`, anonymisation + soft delete). Reste la route web héritée `DELETE /settings/profile` non modifiée (R-03). | `05-backend.md` §7.6, `07-api.md` §5 |
 | L-09 | Interface uniquement en anglais, sans internationalisation | `app/layout.tsx` (`lang="en"`) |
 | L-10 | Une seule devise (DZD) | Validation `currency in:DZD` |
 | L-11 | Paiement en mode test (`CHARGILY_MODE=test`) : aucun paiement réel validé | `render.yaml` |
@@ -37,11 +37,12 @@ Classées par priorité suggérée (⚠️ À VÉRIFIER : priorités de l'étudi
 2. **Hébergement de production** : base PostgreSQL payante avec sauvegardes, planificateur et worker séparés — corrige R-02, R-04, L-17.
 3. **Retirer le code hérité** (routes et pages Inertia, dépendances inutilisées) — corrige R-03, R-20, R-21.
 4. Restreindre `TRUSTED_PROXIES` et les origines CORS par environnement — R-05, R-11.
-5. Réconciliation planifiée des paiements `pending` — R-06.
-6. Authentification à deux facteurs pour les administrateurs — R-07.
-7. Tests frontend (unitaires et de bout en bout, ex. parcours inscription → paiement) et CI exécutant tests, lint et build — R-08, L-16.
-8. Aligner le contenu marketing sur les fonctionnalités réelles, ou implémenter la gestion multi-appareils (un pair par appareil) — R-09, L-04, L-05.
-9. Prorata lors d'un changement d'offre, factures PDF, page de reçu — L-02, L-06.
-10. Internationalisation (français/arabe/anglais) — L-09.
-11. File d'attente pour les e-mails — R-19.
-12. Documentation OpenAPI générée et uniformisation de la casse des réponses — L-15, R-22.
+5. Authentification à deux facteurs pour les administrateurs — R-07.
+6. Tests frontend (unitaires et de bout en bout, ex. parcours inscription → paiement) et CI exécutant tests, lint et build — R-08, L-16.
+7. Aligner le contenu marketing sur les fonctionnalités réelles, ou implémenter la gestion multi-appareils (un pair par appareil) — R-09, L-04, L-05.
+8. Prorata lors d'un changement d'offre, factures PDF, page de reçu — L-02, L-06.
+9. Internationalisation (français/arabe/anglais) — L-09.
+10. File d'attente pour les e-mails — R-19.
+11. Documentation OpenAPI générée et uniformisation de la casse des réponses — L-15, R-22.
+
+> Réalisé depuis l'audit de base : réconciliation planifiée des paiements `pending` (R-06, commande `payments:reconcile`) et contrôle montant/devise avant activation (R-10) — voir `14-problems-and-solutions.md` (P-21, P-22).

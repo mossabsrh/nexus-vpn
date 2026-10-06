@@ -27,12 +27,13 @@ Organisation du code (structure standard Laravel 12 « streamlined ») :
 | Fournisseur de services (rate limiting, liens e-mail, garde-fous production) | `app/Providers/AppServiceProvider.php` |
 | Contrôleurs de l'API réelle | `app/Http/Controllers/Api/` |
 | Modèles Eloquent (logique métier) | `app/Models/` |
+| Service Chargily (appels API, signature, règles de statut) | `app/Services/ChargilyGateway.php` |
 | Commandes Artisan | `app/Console/Commands/` |
 | Notifications e-mail | `app/Notifications/` |
 | Routes API | `routes/api.php` |
 | Planification | `routes/console.php` |
 
-**Choix de conception notable** : il n'existe pas de couche `app/Services/`. La logique métier est portée par les **modèles** (ex. `Payment::markSucceeded()`, `Subscription::cancel()`, `VpnCredential::issueFor()`). Les contrôleurs valident les entrées, appellent ces méthodes et formatent les réponses. La sérialisation JSON est faite par des méthodes `toApiArray()` sur les modèles (pas d'Eloquent API Resources). Les clés JSON sont en **camelCase** (`planId`, `currentPeriodEnd`…).
+**Choix de conception notable** : la logique métier est portée en majorité par les **modèles** (ex. `Payment::markSucceeded()`, `Subscription::cancel()`, `VpnCredential::issueFor()`). La seule couche `app/Services/` est `ChargilyGateway` (depuis le 2026-10-06), qui regroupe les appels à l'API Chargily, la vérification HMAC du webhook et les règles de statut, réutilisée par `PaymentController` et la commande `payments:reconcile`. Les contrôleurs valident les entrées, appellent ces méthodes et formatent les réponses. La sérialisation JSON est faite par des méthodes `toApiArray()` sur les modèles (pas d'Eloquent API Resources). Les clés JSON sont en **camelCase** (`planId`, `currentPeriodEnd`…).
 
 ## 2. Pipeline des requêtes (middleware)
 
