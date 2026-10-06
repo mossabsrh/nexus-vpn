@@ -46,6 +46,17 @@ class ChargilyGateway
             ->get($this->baseUrl().'/checkouts/'.$checkoutId);
     }
 
+    /**
+     * Only a pending checkout can be expired: Chargily answers 400 if it already expired, 403 if it is not pending.
+     *
+     * @throws ConnectionException
+     */
+    public function expireCheckout(string $checkoutId): Response
+    {
+        return Http::withToken($this->secretKey())->acceptJson()->connectTimeout(5)->timeout(15)
+            ->post($this->baseUrl().'/checkouts/'.$checkoutId.'/expire');
+    }
+
     public function verifySignature(string $rawBody, string $signature): bool
     {
         $secretKey = $this->secretKey();

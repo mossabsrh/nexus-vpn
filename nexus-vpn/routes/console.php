@@ -16,4 +16,5 @@ Artisan::command('admin:grant {email}', function (string $email) {
 })->purpose('Grant admin access to an existing user');
 
 Schedule::command('subscriptions:expire')->everyFifteenMinutes()->withoutOverlapping();
+Schedule::command('payments:reconcile')->everyFifteenMinutes()->withoutOverlapping();
 Schedule::command('subscriptions:remind')->dailyAt('09:00')->withoutOverlapping();
