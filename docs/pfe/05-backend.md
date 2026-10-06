@@ -85,7 +85,7 @@ Définie dans `AppServiceProvider::configureRateLimiting()` (clé = id utilisate
 
 | Contrôleur | Responsabilité |
 |---|---|
-| `AuthController` | Inscription (+ essai), connexion, déconnexion, `me`, mot de passe oublié/réinitialisation, vérification d'e-mail, changement d'e-mail/mot de passe. Expose `userPayload()` (profil + abonnement courant + accès VPN + équipe), réutilisé par d'autres contrôleurs. |
+| `AuthController` | Inscription (+ essai), connexion, déconnexion, `me`, mot de passe oublié/réinitialisation, vérification d'e-mail, changement d'e-mail/mot de passe, suppression de compte. Expose `userPayload()` (profil + abonnement courant + accès VPN + équipe), réutilisé par d'autres contrôleurs. |
 | `PaymentController` | Création du checkout Chargily, vérification post-paiement (par id de paiement ou id de checkout), webhook Chargily, démarrage d'essai, annulation par l'utilisateur. |
 | `AccountController` | Historique paginé des abonnements et paiements, reçu d'un paiement, état VPN (`vpn/credentials`), téléchargement du fichier WireGuard (`vpn/config`). |
 | `TeamController` | Consultation de l'équipe (la liste des membres n'est visible que par le propriétaire), renommage, ajout/retrait de membres dans la limite des sièges (verrou `lockForUpdate`). Le retrait révoque le VPN du membre s'il n'a plus d'accès. |
@@ -120,6 +120,7 @@ Préfixe `/api`. « web » = session + CSRF. Toutes ont aussi `throttle:api`.
 | POST | `email/verification-notification` | `AuthController@resendVerification` | web, auth, `throttle:verification` |
 | PUT | `account/email` | `AuthController@updateEmail` | web, auth, `throttle:account` |
 | PUT | `account/password` | `AuthController@updatePassword` | web, auth, `throttle:account` |
+| DELETE | `account` | `AuthController@deleteAccount` | web, auth, `throttle:account` |
 | GET | `account/subscriptions` | `AccountController@subscriptions` | web, auth |
 | GET | `account/payments` | `AccountController@payments` | web, auth |
 | GET | `account/payments/{payment}` | `AccountController@payment` | web, auth (propriétaire) |
@@ -200,7 +201,19 @@ Les plans sans prix mensuel (ex. `team`) ne sont ni achetables en ligne ni élig
 
 ### 7.5 Journal d'audit
 
-`AuditLog::record()` trace les événements de sécurité et de facturation (inscription, connexion admin, échec de connexion, changement d'e-mail/mot de passe, paiements, remboursements, abonnements, VPN, actions admin), avec acteur, sujet, métadonnées non sensibles et IP.
+`AuditLog::record()` trace les événements de sécurité et de facturation (inscription, connexion admin, échec de connexion, changement d'e-mail/mot de passe, suppression de compte, paiements, remboursements, abonnements, VPN, actions admin), avec acteur, sujet, métadonnées non sensibles et IP.
+
+### 7.6 Suppression de compte (anonymisation)
+
+`DELETE /api/account` (`AuthController@deleteAccount`) permet à l'utilisateur connecté de fermer définitivement son compte après confirmation de son **mot de passe actuel**. Le choix retenu est l'**anonymisation + soft delete** (et non la suppression physique), pour préserver l'historique de facturation (voir TD-14) :
+
+1. **Garde-fous** : un **administrateur** (409 `admin_account`) ou un **propriétaire d'équipe** (409 `team_owner`) ne peut pas se supprimer ici — ces cas passent par le support (sinon on retirerait un accès privilégié ou on couperait les sièges de toute une équipe).
+2. Dans une transaction : annulation de l'abonnement courant (`cancel('account_deleted')`, qui révoque le VPN s'il ne reste aucun accès), révocation des identifiants VPN actifs, détachement des équipes (sièges libérés).
+3. **Anonymisation** : `name` → « Deleted account », `email` → `deleted+{id}@deleted.invalid` (unique par id, ce qui **libère l'e-mail d'origine** pour une future inscription), `password` réinitialisé aléatoirement, `email_verified_at` et `remember_token` effacés. Les lignes `payments` et `subscriptions` sont **conservées** (anonymisées via le compte).
+4. Audit `account.deleted` (métadonnées : `user_id`, domaine de l'e-mail précédent — jamais l'e-mail complet), puis **soft delete** de l'utilisateur (le compte ne peut plus s'authentifier).
+5. Hors transaction : suppression des jetons de réinitialisation (`password_resets`) et de **toutes les sessions** de l'utilisateur, puis déconnexion et régénération de la session courante.
+
+> La route web héritée `DELETE /settings/profile` (R-03) reste hors périmètre : elle fait seulement un *soft delete* sans annuler l'abonnement ni révoquer le VPN.
 
 ## 8. Commandes Artisan et planification
 

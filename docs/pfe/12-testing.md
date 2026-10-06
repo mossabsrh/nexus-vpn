@@ -23,6 +23,7 @@
 | `tests/Feature/Api/ContactRequestTest.php` | 2 | Demande commerciale traitée par un admin ; validation et limitation de débit |
 | `tests/Feature/ChargilyPaymentTest.php` | 13 | Création de checkout Chargily, seeders idempotents (ne réécrivent ni ne restaurent les plans modifiés/supprimés par un admin), essai à l'inscription, redirection des anciennes URL de retour, annulation, nouvel abonnement au lieu de réactiver un ancien, essai de 7 jours unique, contenu de `userPayload`, rejet d'une signature de webhook invalide, montant client ignoré, isolation des checkouts |
 | `tests/Feature/ReconcilePaymentsTest.php` | 5 | Commande `payments:reconcile` : activation d'un paiement en attente payé chez Chargily, maintien en attente d'un checkout récent toujours ouvert, expiration d'un checkout abandonné au-delà du délai (`POST /checkouts/{id}/expire`), respect de la période de grâce, aucune action sans clé secrète |
+| `tests/Feature/Api/AccountDeletionTest.php` | 5 | `DELETE /api/account` : anonymisation + soft delete en conservant l'historique de facturation, impossibilité de se réauthentifier ensuite, exigence du mot de passe actuel (422), blocage des administrateurs (409 `admin_account`) et des propriétaires d'équipe (409 `team_owner`) |
 
 ### Tests hérités du starter kit (pages Inertia non utilisées)
 
@@ -38,7 +39,7 @@
 | `tests/Feature/Settings/ProfileUpdateTest.php` | 5 | Profil et suppression de compte (pages web) |
 | `tests/Unit/ExampleTest.php` | 1 | Test d'exemple (`true is true`) |
 
-Total : 105 tests (79 sur l'API réelle et les commandes, 26 hérités).
+Total : 110 tests (84 sur l'API réelle et les commandes, 26 hérités).
 
 ### Zones non couvertes identifiées
 
@@ -85,6 +86,15 @@ Après les cinq commits de l'intégration Chargily (extraction de `ChargilyGatew
 | Commande | `php artisan test --compact` (dans `nexus-vpn/`) |
 | Environnement | Windows 10, PHP 8.2.12, Laravel 12, PHPUnit 11, SQLite en mémoire |
 | Résultat | **105 réussis, 0 échec** (409 assertions) |
+
+### 2026-10-06 — Suppression de compte
+
+Après l'ajout de `DELETE /api/account` (anonymisation + soft delete). Cinq tests ajoutés (105 → 110).
+
+| Élément | Valeur |
+|---|---|
+| Commande | `php artisan test --compact` (dans `nexus-vpn/`) |
+| Résultat | **110 réussis, 0 échec** (432 assertions) |
 
 ## 4. Frontend (application Next.js)
 

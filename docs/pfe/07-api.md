@@ -64,6 +64,7 @@ Erreurs réseau et délais dépassés (`AbortError`) : convertis en messages lis
 |---|---|---|---|---|---|
 | `PUT …/account/email` | `AuthController@updateEmail` | `auth`, `account` | `current_password`, `email` (unique) | 200 `{ user }` (e-mail à revérifier) ; 422 | `auth-provider.tsx` (`updateEmail`, via `account-menu.tsx`) |
 | `PUT …/account/password` | `AuthController@updatePassword` | `auth`, `account` | `current_password`, `password` (`Password::defaults()`, **sans confirmation côté serveur**) | 200 `{ message }` ; 422 | `auth-provider.tsx` (`updatePassword`, via `account-menu.tsx`, qui vérifie la confirmation côté client) |
+| `DELETE …/account` | `AuthController@deleteAccount` | `auth`, `account` | `current_password` | 200 `{ success, message }` (données personnelles anonymisées, utilisateur en *soft delete*, session détruite) ; 422 (mot de passe) ; 409 `admin_account` / `team_owner` | `auth-provider.tsx` (`deleteAccount`, via `account-menu.tsx` — zone de danger, confirmation par mot de passe + saisie de l'e-mail) |
 | `GET …/account/subscriptions?page` | `AccountController@subscriptions` | `auth` | — | `{ subscriptions: [abonnement], meta }` | `app/dashboard/page.tsx` (`loadAll`) |
 | `GET …/account/payments?page` | `AccountController@payments` | `auth` | — | `{ payments: [paiement], meta }` | `app/dashboard/page.tsx` (`loadPayments`) |
 | `GET …/account/payments/{payment}` | `AccountController@payment` | `auth`, propriétaire (sinon 404) | — | `{ payment, customer: { name, email } }` | **Non appelé par le frontend** |

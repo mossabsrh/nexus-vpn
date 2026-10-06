@@ -95,4 +95,11 @@
 * **Comparaison** : le contrôle serveur évite de livrer l'interface d'administration aux non-administrateurs, au prix d'un appel `/api/me` par chargement de page protégée (délai 4 s).
 * **Choix** : retenu, avec politique fail-closed pour `/admin` et fail-open pour `/dashboard` (commentaire dans `proxy.ts`). Voir P-07.
 
-**Total : 13 décisions documentées.**
+## TD-14 — Suppression de compte par anonymisation (plutôt que suppression physique)
+
+* **Contexte** : fournir une suppression de compte en libre-service tout en conservant l'historique de facturation. Le schéma durci utilise `restrictOnDelete` sur `subscriptions.user_id`, `payments.user_id` et `vpn_credentials.user_id` (et `SoftDeletes` sur `User`, `Payment`, `Subscription`), précisément pour ne pas perdre cet historique.
+* **Alternatives** : suppression physique (hard delete) de l'utilisateur et de toutes ses données ; anonymisation + *soft delete* en conservant les lignes de facturation (retenu).
+* **Choix** : **anonymisation + soft delete**. Les données personnelles (nom, e-mail, mot de passe, jeton) sont effacées ; l'utilisateur est *soft-deleted* (ne peut plus s'authentifier) ; l'e-mail d'origine est libéré par un e-mail de remplacement unique ; les paiements et abonnements sont conservés. Évite aussi de se heurter aux contraintes `restrictOnDelete`.
+* **Conséquences** : l'historique de facturation reste exploitable (statistiques admin) ; un tiers ne peut plus relier ces lignes à une personne ; les administrateurs et propriétaires d'équipe sont exclus de cette voie (support). La synchronisation WireGuard restant manuelle (R-01), les pairs révoqués ne disparaissent de la passerelle qu'au prochain export `vpn:peers`.
+
+**Total : 14 décisions documentées.**

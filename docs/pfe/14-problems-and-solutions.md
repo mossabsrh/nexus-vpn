@@ -158,4 +158,12 @@
 * **Vérification** : `ReconcilePaymentsTest` (5 cas), `test_paid_webhook_for_a_failed_payment_is_flagged_for_the_admin`, `test_duplicate_paid_webhook_for_a_succeeded_payment_is_not_flagged`.
 * **Risque associé** : R-06 (`08-authentication-security.md`), marqué corrigé.
 
-**Total : 22 problèmes documentés.**
+## P-23 — Pas de suppression de compte en libre-service
+
+* **Problème** : l'utilisateur ne pouvait pas supprimer son compte depuis l'application (seule subsistait une route web héritée faisant un simple *soft delete* sans annuler l'abonnement ni révoquer le VPN, R-03).
+* **Solution** : endpoint `DELETE /api/account` (confirmation par mot de passe) qui **anonymise** les données personnelles et place l'utilisateur en *soft delete* tout en **conservant** les lignes `payments`/`subscriptions` pour l'historique (choix : anonymisation plutôt que suppression physique, TD-14). Annulation de l'abonnement, révocation VPN, détachement des équipes, purge des sessions et jetons de réinitialisation, audit `account.deleted`. Administrateurs et propriétaires d'équipe bloqués (409). Côté frontend : « zone de danger » dans la boîte de dialogue du compte, avec confirmation par mot de passe **et** saisie de l'e-mail.
+* **Fichiers** : `app/Http/Controllers/Api/AuthController.php` (`deleteAccount`), `routes/api.php`, `components/account-menu.tsx`, `components/auth-provider.tsx`.
+* **Vérification** : `tests/Feature/Api/AccountDeletionTest.php` (5 cas) ; `pnpm lint`, `tsc --noEmit`, `pnpm build` réussis.
+* **Hors périmètre** : la route web héritée `DELETE /settings/profile` (R-03) n'a pas été modifiée.
+
+**Total : 23 problèmes documentés.**
