@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\AuditLog;
 use App\Models\Plan;
 use App\Models\User;
+use App\Models\VpnCredential;
 use App\Notifications\WelcomeNotification;
 use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Http\JsonResponse;
@@ -181,6 +182,77 @@ class AuthController extends Controller
         AuditLog::record('account.password_changed', $user, [], $user);
 
         return response()->json(['message' => 'Password updated successfully']);
+    }
+
+    /**
+     * Permanently close the account: scrub the personal data, revoke access and sign out everywhere.
+     *
+     * Payment and subscription rows are kept (anonymised) for billing history; the user row is
+     * soft-deleted so it can no longer authenticate and the original e-mail is freed for reuse.
+     */
+    public function deleteAccount(Request $request): JsonResponse
+    {
+        $request->validate([
+            'current_password' => ['required', 'current_password'],
+        ]);
+
+        $user = $request->user();
+
+        // Admins and team owners cannot self-delete: it would remove privileged access or cut off
+        // a whole team's seats. These are handled by support instead.
+        if ($user->isAdmin()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Admin accounts cannot be deleted from here. Please contact support.',
+                'code' => 'admin_account',
+            ], 409);
+        }
+
+        if ($user->ownedTeams()->exists()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'You own a team subscription. Please contact us so we can transfer or close it first.',
+                'code' => 'team_owner',
+            ], 409);
+        }
+
+        $previousEmail = $user->email;
+
+        DB::transaction(function () use ($user, $previousEmail): void {
+            // Cancel the active subscription (revokes VPN when no access remains) and revoke any
+            // credential still active, then keep the rows for history.
+            $user->currentSubscription()?->cancel('account_deleted');
+            VpnCredential::revokeFor($user, 'account_deleted');
+
+            // Leave every team so freed seats are returned to the owners.
+            $user->teams()->detach();
+
+            // Scrub the personal data. The placeholder e-mail is unique per id and frees the real one.
+            $user->forceFill([
+                'name' => 'Deleted account',
+                'email' => 'deleted+'.$user->id.'@deleted.invalid',
+                'email_verified_at' => null,
+                'password' => Hash::make(Str::random(64)),
+                'remember_token' => null,
+            ])->save();
+
+            AuditLog::record('account.deleted', null, [
+                'user_id' => $user->id,
+                'previous_domain' => Str::after($previousEmail, '@'),
+            ]);
+
+            $user->delete();
+        });
+
+        // Any pending reset tokens were issued for the old e-mail; drop them and every session.
+        DB::table('password_resets')->where('email', $previousEmail)->delete();
+        DB::table('sessions')->where('user_id', $user->id)->delete();
+
+        Auth::guard('web')->logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
+        return response()->json(['success' => true, 'message' => 'Your account has been permanently deleted.']);
     }
 
     /**

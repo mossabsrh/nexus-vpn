@@ -38,6 +38,7 @@ Route::middleware(['web', 'throttle:api'])->group(function () {
         Route::post('email/verification-notification', [AuthController::class, 'resendVerification'])->middleware('throttle:verification');
         Route::put('account/email', [AuthController::class, 'updateEmail'])->middleware('throttle:account');
         Route::put('account/password', [AuthController::class, 'updatePassword'])->middleware('throttle:account');
+        Route::delete('account', [AuthController::class, 'deleteAccount'])->middleware('throttle:account');
 
         Route::get('account/subscriptions', [AccountController::class, 'subscriptions']);
         Route::get('account/payments', [AccountController::class, 'payments']);
