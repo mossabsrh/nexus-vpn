@@ -1,8 +1,10 @@
 # Captures d'écran — mode d'emploi
 
-Les captures sont générées par le script Playwright [`capture.mjs`](capture.mjs). Elles ne sont pas committées en binaire ; régénérez-les sur une machine disposant de Playwright (l'environnement de développement ici est contraint en RAM et ne peut pas faire tourner simultanément Playwright + les deux serveurs).
+**68 captures** (17 vues × 4 combinaisons : desktop 1440 px / mobile 390 px, thèmes clair / sombre) sont présentes dans ce dossier, générées avec Playwright (Chromium) sur les données de `DemoDataSeeder`. Pour les régénérer, suivez la procédure ci-dessous.
 
-## Procédure
+> Les états interactifs **confirmation de suppression** (`22-state-delete-confirm-*`) et **changement de rôle** (`23-state-role-change-*`) sont capturés automatiquement par le script. Les erreurs de validation et messages de succès restent à capturer à la main (voir la fin de ce fichier) — ils dépendent de saisies dans des formulaires.
+
+## Procédure (pour régénérer)
 
 ```bash
 # 1. Backend (dans nexus-vpn/)

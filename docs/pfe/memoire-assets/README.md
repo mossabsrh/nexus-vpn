@@ -13,14 +13,12 @@ memoire-assets/
 
 ## Rendu des diagrammes (Mermaid → PNG/SVG)
 
-Les diagrammes sont fournis en source **Mermaid** (`.mmd`), insérables tels quels dans le mémoire ou exportables :
+Chaque diagramme est fourni en **source Mermaid** (`.mmd`) **et exporté en PNG + SVG** (générés avec `@mermaid-js/mermaid-cli`). Pour régénérer après modification :
 
 ```bash
-npx -y @mermaid-js/mermaid-cli -i diagrams/01-architecture.mmd -o diagrams/01-architecture.png
-npx -y @mermaid-js/mermaid-cli -i diagrams/01-architecture.mmd -o diagrams/01-architecture.svg
+npx pnpm@10 dlx @mermaid-js/mermaid-cli -b white -i diagrams/01-architecture.mmd -o diagrams/01-architecture.png
+npx pnpm@10 dlx @mermaid-js/mermaid-cli -b white -i diagrams/01-architecture.mmd -o diagrams/01-architecture.svg
 ```
-
-> On peut aussi coller le contenu sur https://mermaid.live ou utiliser l'aperçu Mermaid de VS Code pour exporter en PNG/SVG. (L'export automatique n'a pas été lancé ici : il requiert un navigateur sans affichage, non disponible dans cet environnement contraint.)
 
 ---
 
@@ -47,22 +45,27 @@ npx -y @mermaid-js/mermaid-cli -i diagrams/01-architecture.mmd -o diagrams/01-ar
 
 ## Captures d'écran — chapitres « Présentation de l'application » / « Implémentation »
 
-Générées par `screenshots/capture.mjs` (desktop 1440 px + mobile 390 px, thèmes clair + sombre). Voir `screenshots/README.md` pour le détail.
+**68 fichiers** générés par `screenshots/capture.mjs` : 17 vues × { desktop 1440 px, mobile 390 px } × { clair, sombre }. Chaque préfixe ci-dessous existe en 4 variantes `-desktop-light`, `-desktop-dark`, `-mobile-light`, `-mobile-dark`. Détail et régénération : `screenshots/README.md`.
 
 | Figure | Fichier (préfixe) | Légende |
 |---|---|---|
-| Figure 11 | `screenshots/01-home-*` | Page d'accueil (offres, témoignages, contact). |
+| Figure 11 | `screenshots/01-home-*` | Page d'accueil (offres, témoignages, carte, contact). |
 | Figure 12 | `screenshots/02-auth-dialog-*` | Fenêtre de connexion / inscription. |
 | Figure 13 | `screenshots/08-reset-password-*` | Réinitialisation du mot de passe. |
 | Figure 14 | `screenshots/09-verify-email-*` | Vérification de l'e-mail. |
 | Figure 15 | `screenshots/10-payment-result-*` | Résultat de paiement (retour Chargily). |
-| Figure 16 | `screenshots/11-dashboard-*` | Tableau de bord utilisateur (abonnement, VPN, facturation, profil, suppression de compte). |
-| Figure 17 | `screenshots/12-admin-*` | Console d'administration (vue d'ensemble). |
-| Figure 18 | `screenshots/13-admin-accounts-*` | Admin — gestion des comptes (dont suppression). |
-| Figure 19 | `screenshots/14-admin-billing-*` | Admin — facturation (paiements, abonnements, remboursements). |
+| Figure 16 | `screenshots/11-dashboard-*` | Tableau de bord utilisateur (abonnement, VPN, historique de facturation). |
+| Figure 17 | `screenshots/12-admin-*` | Console d'administration (entrée). |
+| Figure 18 | `screenshots/13-admin-overview-*` | Admin — vue d'ensemble. |
+| Figure 19 | `screenshots/14-admin-accounts-*` | Admin — gestion des comptes (dont suppression). |
 | Figure 20 | `screenshots/15-admin-offers-*` | Admin — gestion des offres. |
-| Figure 21 | `screenshots/16-admin-moderation-*` | Admin — modération des témoignages + journal d'audit. |
-| Figure 22 | `screenshots/17-admin-stats-*` | Admin — statistiques. |
+| Figure 21 | `screenshots/16-admin-subscriptions-*` | Admin — abonnements. |
+| Figure 22 | `screenshots/17-admin-payments-*` | Admin — paiements et remboursements. |
+| Figure 23 | `screenshots/18-admin-analytics-*` | Admin — statistiques / analytique. |
+| Figure 24 | `screenshots/19-admin-comments-*` | Admin — modération des témoignages. |
+| Figure 25 | `screenshots/20-admin-audit-log-*` | Admin — journal d'audit. |
+| Figure 26 | `screenshots/22-state-delete-confirm-*` | État : confirmation de suppression d'un utilisateur. |
+| Figure 27 | `screenshots/23-state-role-change-*` | État : confirmation de changement de rôle. |
 
 ## Extraits de code — chapitre « Implémentation »
 

@@ -21,12 +21,18 @@ const BASE = process.env.BASE_URL ?? 'http://localhost:3000'
 const API = `${BASE}/backend-api`
 const ADMIN_EMAIL = process.env.ADMIN_EMAIL ?? 'mohamed.belkacemi2004@gmail.com'
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD ?? '12345678'
+// Utilisateur de démonstration avec abonnement actif + VPN (pour le tableau de bord).
+const DEMO_EMAIL = process.env.DEMO_EMAIL ?? 'yacine.benali@demo.nexusvpn.dz'
+const DEMO_PASSWORD = process.env.DEMO_PASSWORD ?? 'password'
 
-const VIEWPORTS = [
+const ALL_VIEWPORTS = [
   { name: 'desktop', width: 1440, height: 900 },
   { name: 'mobile', width: 390, height: 844 },
 ]
-const THEMES = ['light', 'dark']
+const ALL_THEMES = ['light', 'dark']
+// Batch control (low-memory): run one viewport + one theme per invocation.
+const VIEWPORTS = process.env.VIEWPORT ? ALL_VIEWPORTS.filter((v) => v.name === process.env.VIEWPORT) : ALL_VIEWPORTS
+const THEMES = process.env.THEME ? ALL_THEMES.filter((t) => t === process.env.THEME) : ALL_THEMES
 
 // Pages publiques / sans authentification (le numéro sert d'ordre de figure).
 const PUBLIC_PAGES = [
@@ -36,14 +42,8 @@ const PUBLIC_PAGES = [
   { id: '10-payment-result', path: '/payment/result?payment=1' },
 ]
 
-// Pages privées (nécessitent une session authentifiée admin).
-const PRIVATE_PAGES = [
-  { id: '11-dashboard', path: '/dashboard' },
-  { id: '12-admin', path: '/admin' },
-]
-
-// Onglets de l'admin (boutons cliquables par leur libellé).
-const ADMIN_TABS = ['Accounts', 'Billing', 'Offers', 'Moderation', 'Stats']
+// Onglets de l'admin (libellés réels de la barre latérale).
+const ADMIN_TABS = ['Overview', 'Accounts', 'Offers', 'Subscriptions', 'Payments', 'Analytics', 'Comments', 'Audit log']
 
 async function setTheme(context, theme) {
   await context.addInitScript((t) => {
@@ -51,7 +51,7 @@ async function setTheme(context, theme) {
   }, theme)
 }
 
-async function authenticate(context) {
+async function authenticate(context, email, password) {
   // Ouvre une session via l'API (le cookie est partagé avec le contexte du navigateur).
   const req = context.request
   await req.get(`${API}/csrf-cookie`)
@@ -59,59 +59,126 @@ async function authenticate(context) {
   const xsrf = decodeURIComponent(cookies.find((c) => c.name === 'XSRF-TOKEN')?.value ?? '')
   const res = await req.post(`${API}/auth/login`, {
     headers: { 'X-XSRF-TOKEN': xsrf, Accept: 'application/json' },
-    data: { email: ADMIN_EMAIL, password: ADMIN_PASSWORD },
+    data: { email, password },
   })
-  if (!res.ok()) throw new Error(`Login failed: HTTP ${res.status()}`)
+  if (!res.ok()) throw new Error(`Login failed (${email}): HTTP ${res.status()}`)
+}
+
+async function autoScroll(page) {
+  // Fait défiler la page pour déclencher les animations/chargements au scroll, puis revient en haut.
+  await page.evaluate(async () => {
+    await new Promise((resolve) => {
+      let y = 0
+      const step = () => {
+        window.scrollBy(0, Math.max(300, window.innerHeight * 0.8))
+        y += window.innerHeight * 0.8
+        if (y >= document.body.scrollHeight) { window.scrollTo(0, 0); resolve() }
+        else setTimeout(step, 120)
+      }
+      step()
+    })
+  }).catch(() => {})
+  await page.waitForTimeout(400)
 }
 
 async function shoot(page, file) {
+  await autoScroll(page)
   await page.waitForTimeout(600)
   await page.screenshot({ path: join(OUT, file), fullPage: true })
   console.log('✓', file)
+}
+
+async function openMenu(page) {
+  // Sur mobile, la barre latérale de l'admin est repliée derrière un bouton (SidebarTrigger).
+  const trig = page.getByRole('button', { name: /toggle sidebar|menu/i }).first()
+  if ((await trig.count()) && (await trig.isVisible().catch(() => false))) {
+    await trig.click().catch(() => {})
+    await page.waitForTimeout(350)
+  }
+}
+
+async function clickNav(page, label) {
+  for (const loc of [page.getByRole('button', { name: new RegExp(`^${label}`, 'i') }),
+                     page.getByRole('link', { name: new RegExp(`^${label}`, 'i') }),
+                     page.getByText(new RegExp(`^${label}$`, 'i'))]) {
+    const el = loc.first()
+    if (await el.count()) { await el.click().catch(() => {}); return true }
+  }
+  return false
 }
 
 async function run() {
   const browser = await chromium.launch()
   for (const vp of VIEWPORTS) {
     for (const theme of THEMES) {
-      const context = await browser.newContext({ viewport: { width: vp.width, height: vp.height }, colorScheme: theme })
-      await setTheme(context, theme)
-      const page = await context.newPage()
+      const suffix = `${vp.name}-${theme}`
+      const vpArg = { width: vp.width, height: vp.height }
 
-      // 1) Pages publiques
+      // --- Contexte 1 : public + tableau de bord d'un utilisateur de démo ---
+      const ctx = await browser.newContext({ viewport: vpArg, colorScheme: theme })
+      await setTheme(ctx, theme)
+      let page = await ctx.newPage()
+
       for (const p of PUBLIC_PAGES) {
         await page.goto(`${BASE}${p.path}`, { waitUntil: 'networkidle' }).catch(() => {})
-        await shoot(page, `${p.id}-${vp.name}-${theme}.png`)
+        await shoot(page, `${p.id}-${suffix}.png`)
       }
 
-      // 2) États du formulaire d'authentification (modale sur la page d'accueil) — best-effort
+      // Modale de connexion / inscription (best-effort)
       await page.goto(BASE, { waitUntil: 'networkidle' }).catch(() => {})
-      for (const label of ['Sign in', 'Log in', 'Get started', 'Se connecter']) {
-        const btn = page.getByRole('button', { name: new RegExp(label, 'i') }).first()
-        if (await btn.count()) { await btn.click().catch(() => {}); break }
+      for (const label of ['Sign in', 'Log in', 'Get started', 'Se connecter', 'Login']) {
+        if (await clickNav(page, label)) break
       }
-      await page.waitForTimeout(500)
-      await shoot(page, `02-auth-dialog-${vp.name}-${theme}.png`)
+      await page.waitForTimeout(600)
+      await shoot(page, `02-auth-dialog-${suffix}.png`)
 
-      // 3) Pages privées (admin connecté)
-      await authenticate(context).catch((e) => console.warn('auth:', e.message))
-      for (const p of PRIVATE_PAGES) {
-        await page.goto(`${BASE}${p.path}`, { waitUntil: 'networkidle' }).catch(() => {})
-        await shoot(page, `${p.id}-${vp.name}-${theme}.png`)
-      }
+      // Tableau de bord de l'utilisateur de démo (abonnement actif + VPN)
+      await authenticate(ctx, DEMO_EMAIL, DEMO_PASSWORD).catch((e) => console.warn('demo auth:', e.message))
+      await page.goto(`${BASE}/dashboard`, { waitUntil: 'networkidle' }).catch(() => {})
+      await shoot(page, `11-dashboard-${suffix}.png`)
+      await ctx.close()
 
-      // 4) Onglets de l'admin
+      // --- Contexte 2 : administrateur ---
+      const actx = await browser.newContext({ viewport: vpArg, colorScheme: theme })
+      await setTheme(actx, theme)
+      await authenticate(actx, ADMIN_EMAIL, ADMIN_PASSWORD).catch((e) => console.warn('admin auth:', e.message))
+      page = await actx.newPage()
       await page.goto(`${BASE}/admin`, { waitUntil: 'networkidle' }).catch(() => {})
+      await shoot(page, `12-admin-${suffix}.png`)
+
       let i = 13
       for (const tab of ADMIN_TABS) {
-        const t = page.getByRole('button', { name: new RegExp(`^${tab}`, 'i') }).first()
-        if (await t.count()) {
-          await t.click().catch(() => {})
-          await shoot(page, `${String(i++).padStart(2, '0')}-admin-${tab.toLowerCase()}-${vp.name}-${theme}.png`)
+        await page.keyboard.press('Escape').catch(() => {}) // ferme la feuille mobile éventuellement ouverte
+        await openMenu(page)
+        if (await clickNav(page, tab)) {
+          await page.keyboard.press('Escape').catch(() => {}) // referme la feuille avant la capture
+          await page.waitForTimeout(700)
+          const slug = tab.toLowerCase().replace(/\s+/g, '-')
+          await shoot(page, `${String(i++).padStart(2, '0')}-admin-${slug}-${suffix}.png`)
         }
       }
 
-      await context.close()
+      // --- États interactifs (sur l'onglet Accounts) ---
+      await page.keyboard.press('Escape').catch(() => {})
+      await openMenu(page)
+      await clickNav(page, 'Accounts')
+      await page.keyboard.press('Escape').catch(() => {})
+      await page.getByRole('button', { name: /^Delete$/ }).first().waitFor({ timeout: 8000 }).catch(() => {})
+      // a) dialogue de confirmation de suppression (sur la première ligne supprimable)
+      const delBtn = page.getByRole('button', { name: /^Delete$/, exact: true }).and(page.locator('button:enabled')).first()
+      if (await delBtn.count()) {
+        await delBtn.scrollIntoViewIfNeeded().catch(() => {})
+        await delBtn.click().catch(() => {}); await page.waitForTimeout(500)
+        await shoot(page, `22-state-delete-confirm-${suffix}.png`)
+        await clickNav(page, 'Cancel').catch(() => {})
+      }
+      // b) dialogue de changement de rôle (change le premier menu Rôle)
+      const roleSelect = page.locator('select').filter({ hasText: /User|Admin/ }).first()
+      if (await roleSelect.count()) {
+        await roleSelect.selectOption({ label: 'Admin' }).catch(() => {}); await page.waitForTimeout(400)
+        await shoot(page, `23-state-role-change-${suffix}.png`)
+      }
+      await actx.close()
     }
   }
   await browser.close()

@@ -7,7 +7,7 @@ sequenceDiagram
     participant C as Chargily Pay v2
     U->>F: Choisit une offre et clique « Payer »
     F->>A: POST /api/checkout (plan, période)
-    A->>A: Montant calculé côté serveur ; e-mail vérifié requis
+    A->>A: Montant calculé côté serveur, e-mail vérifié requis
     A->>DB: Crée un paiement « pending »
     A->>C: POST /checkouts (montant, success/failure_url, metadata)
     C-->>A: { id, checkout_url }
