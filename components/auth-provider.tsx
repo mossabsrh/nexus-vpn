@@ -51,6 +51,7 @@ type AuthContextType = {
   cancelSubscription: () => Promise<Result & { message?: string }>
   updateEmail: (currentPassword: string, email: string) => Promise<Result>
   updatePassword: (currentPassword: string, password: string) => Promise<Result>
+  deleteAccount: (currentPassword: string) => Promise<Result & { message?: string }>
   resendVerification: () => Promise<Result & { message?: string }>
   logout: () => Promise<void>
 }
@@ -224,6 +225,26 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   }
 
+  const deleteAccount = async (currentPassword: string) => {
+    try {
+      const response = await apiFetch("/account", {
+        method: "DELETE",
+        body: JSON.stringify({ current_password: currentPassword }),
+      })
+
+      if (!response.ok) {
+        return { success: false, error: await apiErrorMessage(response, "Failed to delete your account.") }
+      }
+
+      const data = await response.json()
+      // The account is gone server-side; clear the local session too.
+      applyUser(null)
+      return { success: true, message: data.message as string }
+    } catch (err) {
+      return { success: false, error: networkError(err, "Failed to delete your account.") }
+    }
+  }
+
   const resendVerification = async () => {
     try {
       const response = await apiFetch("/email/verification-notification", { method: "POST" })
@@ -258,6 +279,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     cancelSubscription,
     updateEmail,
     updatePassword,
+    deleteAccount,
     resendVerification,
     logout,
   }

@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import { useRouter } from "next/navigation"
 import { useAuth } from "./auth-provider"
 import { cn } from "@/lib/utils"
 import {
@@ -19,6 +20,7 @@ type SettingsTab = "general" | "email" | "password"
 
 export function AccountMenu({ mobile = false }: { mobile?: boolean }) {
   const auth = useAuth()
+  const router = useRouter()
   const [isOpen, setIsOpen] = useState(false)
   const [settingsOpen, setSettingsOpen] = useState(false)
   const [settingsTab, setSettingsTab] = useState<SettingsTab>("general")
@@ -30,6 +32,9 @@ export function AccountMenu({ mobile = false }: { mobile?: boolean }) {
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [confirmingCancel, setConfirmingCancel] = useState(false)
+  const [confirmingDelete, setConfirmingDelete] = useState(false)
+  const [deletePassword, setDeletePassword] = useState("")
+  const [deleteEmailConfirm, setDeleteEmailConfirm] = useState("")
 
   if (!auth.isAuthenticated) return null
 
@@ -37,6 +42,8 @@ export function AccountMenu({ mobile = false }: { mobile?: boolean }) {
   const isTrial = auth.user?.subscriptionStatus === "trialing"
   const isTeamPlan = Boolean(auth.user?.team)
   const canCancel = Boolean(auth.user?.planId) && !isTeamPlan
+  const isAdmin = auth.user?.role === "admin"
+  const deleteConfirmed = deletePassword.length > 0 && deleteEmailConfirm.trim().toLowerCase() === (auth.user?.email ?? "").toLowerCase()
   const periodEnd = subscription?.currentPeriodEnd ? new Date(subscription.currentPeriodEnd).toLocaleDateString() : null
 
   const openSettings = (tab: SettingsTab) => {
@@ -46,6 +53,9 @@ export function AccountMenu({ mobile = false }: { mobile?: boolean }) {
     setErrorMessage(null)
     setStatusMessage(null)
     setConfirmingCancel(false)
+    setConfirmingDelete(false)
+    setDeletePassword("")
+    setDeleteEmailConfirm("")
     setSettingsOpen(true)
     setIsOpen(false)
   }
@@ -131,6 +141,29 @@ export function AccountMenu({ mobile = false }: { mobile?: boolean }) {
 
     setStatusMessage(result.message ?? "Canceled.")
     setIsSubmitting(false)
+  }
+
+  const handleDeleteAccount = async () => {
+    setErrorMessage(null)
+    setStatusMessage(null)
+
+    if (!deleteConfirmed) {
+      setErrorMessage("Enter your password and type your email to confirm.")
+      return
+    }
+
+    setIsSubmitting(true)
+    const result = await auth.deleteAccount(deletePassword)
+    if (!result.success) {
+      setErrorMessage(result.error ?? "Failed to delete your account.")
+      setIsSubmitting(false)
+      return
+    }
+
+    // Account is gone; close the dialog and return home.
+    setSettingsOpen(false)
+    router.push("/")
+    router.refresh()
   }
 
   const getInitial = (email: string) => {
@@ -347,6 +380,75 @@ export function AccountMenu({ mobile = false }: { mobile?: boolean }) {
                         Keep it
                       </button>
                     </div>
+                  </div>
+                )}
+
+                {!isAdmin && (
+                  <div className="rounded-xl border border-destructive/30 bg-destructive/5 p-3">
+                    <p className="text-sm font-semibold text-destructive">Danger zone</p>
+                    <p className="mt-1 text-xs text-muted-foreground">
+                      Deleting your account is permanent. Your personal data is erased and VPN access stops. Payment
+                      history is kept anonymised for our records.
+                    </p>
+
+                    {!confirmingDelete ? (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setConfirmingDelete(true)
+                          setErrorMessage(null)
+                          setStatusMessage(null)
+                        }}
+                        className="mt-3 w-full rounded-md border border-destructive/40 px-4 py-2 text-sm font-medium text-destructive hover:bg-destructive/10"
+                      >
+                        Delete my account
+                      </button>
+                    ) : (
+                      <div className="mt-3 space-y-3">
+                        <div className="grid gap-2">
+                          <Label htmlFor="delete-password">Current password</Label>
+                          <Input
+                            id="delete-password"
+                            type="password"
+                            placeholder="••••••••"
+                            value={deletePassword}
+                            onChange={(event) => setDeletePassword(event.target.value)}
+                          />
+                        </div>
+                        <div className="grid gap-2">
+                          <Label htmlFor="delete-email">Type your email to confirm</Label>
+                          <Input
+                            id="delete-email"
+                            type="email"
+                            placeholder={auth.user?.email}
+                            value={deleteEmailConfirm}
+                            onChange={(event) => setDeleteEmailConfirm(event.target.value)}
+                          />
+                        </div>
+                        <div className="flex gap-2">
+                          <button
+                            type="button"
+                            onClick={handleDeleteAccount}
+                            disabled={isSubmitting || !deleteConfirmed}
+                            className="rounded-md bg-destructive px-3 py-1.5 text-sm font-medium text-destructive-foreground disabled:cursor-not-allowed disabled:opacity-60"
+                          >
+                            {isSubmitting ? "Deleting..." : "Permanently delete"}
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setConfirmingDelete(false)
+                              setDeletePassword("")
+                              setDeleteEmailConfirm("")
+                              setErrorMessage(null)
+                            }}
+                            className="rounded-md border border-border px-3 py-1.5 text-sm"
+                          >
+                            Keep my account
+                          </button>
+                        </div>
+                      </div>
+                    )}
                   </div>
                 )}
               </div>
