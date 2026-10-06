@@ -1,0 +1,26 @@
+flowchart LR
+    subgraph Client["Navigateur / Appareil"]
+        U["Utilisateur"]
+        WG["Client WireGuard"]
+    end
+    subgraph Vercel["Vercel — Frontend"]
+        NEXT["Next.js 16 (App Router)\nproxy.ts (garde /admin, /dashboard)\nrewrite /backend-api -> API"]
+    end
+    subgraph Render["Render — Backend (Docker)"]
+        API["Laravel 12 (API REST)\nSession + CSRF, rate limiting\nScheduler (schedule:work)"]
+        DB[("PostgreSQL\n(SQLite en local)")]
+    end
+    subgraph Externes["Services externes"]
+        CH["Chargily Pay v2\n(Edahabia / CIB)"]
+        SMTP["Gmail SMTP\n(e-mails)"]
+        GW["Passerelle WireGuard\n(sync manuelle: vpn:peers)"]
+    end
+
+    U -->|HTTPS| NEXT
+    NEXT -->|/backend-api -> /api| API
+    API --> DB
+    API -->|checkout + webhook HMAC| CH
+    API -->|vérification, reçus, rappels| SMTP
+    API -. "export des pairs" .-> GW
+    WG -->|tunnel chiffré| GW
+    CH -->|redirection + webhook| NEXT

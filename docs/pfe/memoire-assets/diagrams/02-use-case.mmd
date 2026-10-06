@@ -1,0 +1,30 @@
+flowchart TB
+    visitor(["Visiteur"])
+    user(["Utilisateur (client)"])
+    admin(["Administrateur"])
+
+    subgraph S["NexusVPN"]
+        UC1["Consulter les offres"]
+        UC2["Créer un compte + essai 7 jours"]
+        UC3["Se connecter / déconnecter"]
+        UC4["Vérifier son e-mail"]
+        UC5["Souscrire / payer (Chargily)"]
+        UC6["Annuler son abonnement"]
+        UC7["Télécharger la config WireGuard"]
+        UC8["Gérer son compte (e-mail, mot de passe)"]
+        UC9["Supprimer son compte"]
+        UC10["Envoyer une demande commerciale (Team)"]
+        UC11["Gérer les utilisateurs (dont suppression)"]
+        UC12["Gérer les offres"]
+        UC13["Facturation : paiements, remboursements"]
+        UC14["Modérer les témoignages"]
+        UC15["Consulter le journal d'audit"]
+        UC16["Traiter les demandes commerciales"]
+        UC17["Créer un abonnement d'équipe"]
+    end
+
+    visitor --> UC1 & UC2 & UC3 & UC10
+    user --> UC4 & UC5 & UC6 & UC7 & UC8 & UC9
+    user --> UC1 & UC3
+    admin --> UC11 & UC12 & UC13 & UC14 & UC15 & UC16 & UC17
+    admin --> UC3

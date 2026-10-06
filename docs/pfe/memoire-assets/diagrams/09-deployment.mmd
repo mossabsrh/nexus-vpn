@@ -1,0 +1,16 @@
+flowchart TB
+    subgraph Repo["Dépôt Git (monorepo)"]
+        direction TB
+        FR["/ (racine)\nFrontend Next.js\napp/, components/, hooks/, lib/, proxy.ts"]
+        BE["/nexus-vpn\nBackend Laravel\napp/, routes/, database/, tests/"]
+        DOC["/docs/pfe\nDocumentation du mémoire"]
+    end
+    subgraph Prod["Production"]
+        V["Vercel\n(build Next.js)"]
+        R["Render (Docker)\nmigrate --seed + schedule:work"]
+        PG[("PostgreSQL Render")]
+    end
+    FR -->|déploie| V
+    BE -->|image Docker| R
+    R --> PG
+    V -->|rewrite /backend-api| R

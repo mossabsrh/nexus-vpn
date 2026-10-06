@@ -1,0 +1,19 @@
+sequenceDiagram
+    autonumber
+    actor U as Utilisateur
+    participant F as Frontend (Next.js)
+    participant A as API Laravel
+    participant DB as Base de données
+    participant M as Gmail SMTP
+    U->>F: Remplit le formulaire d'inscription
+    F->>A: POST /api/auth/register (name, email, password, plan_slug)
+    A->>A: Normalise l'e-mail, valide, vérifie plan self-serve
+    A->>DB: Crée l'utilisateur + abonnement d'essai (transaction)
+    A->>M: Envoie l'e-mail de vérification (lien signé 60 min)
+    A-->>F: 201 Created (utilisateur + essai)
+    M-->>U: E-mail « Verify Email Address »
+    U->>F: Clique le lien -> /verify-email?id&hash&expires&signature
+    F->>A: GET /api/email/verify/{id}/{hash}?expires&signature
+    A->>A: Vérifie la signature (middleware signed) + hash e-mail
+    A->>DB: markEmailAsVerified() + audit account.email_verified
+    A-->>F: 200 { verified: true }
