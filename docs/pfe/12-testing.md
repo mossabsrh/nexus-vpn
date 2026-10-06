@@ -25,6 +25,7 @@
 | `tests/Feature/ReconcilePaymentsTest.php` | 5 | Commande `payments:reconcile` : activation d'un paiement en attente payé chez Chargily, maintien en attente d'un checkout récent toujours ouvert, expiration d'un checkout abandonné au-delà du délai (`POST /checkouts/{id}/expire`), respect de la période de grâce, aucune action sans clé secrète |
 | `tests/Feature/Api/AccountDeletionTest.php` | 5 | `DELETE /api/account` : anonymisation + soft delete en conservant l'historique de facturation, impossibilité de se réauthentifier ensuite, exigence du mot de passe actuel (422), blocage des administrateurs (409 `admin_account`) et des propriétaires d'équipe (409 `team_owner`) |
 | `tests/Feature/Api/AdminUserDeletionTest.php` | 6 | `DELETE /api/admin/users/{user}` : anonymisation + conservation de l'historique, suppression d'un autre administrateur (s'il en reste un), refus de se supprimer soi-même et du dernier administrateur et d'un propriétaire d'équipe (422), refus pour un non-administrateur (403) |
+| `tests/Feature/Api/LoginAfterDeletionTest.php` | 3 | Régression connexion/suppression : un compte actif se connecte avec le bon mot de passe (e-mail insensible à la casse), un compte fermé (anonymisé) ne peut plus se connecter (401), et l'e-mail libéré peut être réutilisé à l'inscription (le nouveau mot de passe fonctionne, l'ancien non) |
 
 ### Tests hérités du starter kit (pages Inertia non utilisées)
 
@@ -40,7 +41,7 @@
 | `tests/Feature/Settings/ProfileUpdateTest.php` | 5 | Profil et suppression de compte (pages web) |
 | `tests/Unit/ExampleTest.php` | 1 | Test d'exemple (`true is true`) |
 
-Total : 118 tests (92 sur l'API réelle et les commandes, 26 hérités).
+Total : 121 tests (95 sur l'API réelle et les commandes, 26 hérités).
 
 ### Zones non couvertes identifiées
 
@@ -114,6 +115,15 @@ Ajout de `DELETE /api/admin/users/{user}` qui réutilise `User::closeAccount()` 
 |---|---|
 | Commande | `php artisan test --compact` (dans `nexus-vpn/`) |
 | Résultat | **118 réussis, 0 échec** (460 assertions) |
+
+### 2026-10-06 — Enquête connexion (« mot de passe invalide »)
+
+Signalement de connexions en échec. Vérification (lecture seule) de la base de dev : aucun utilisateur en *soft delete* (`onlyTrashed` vide), aucune entrée d'audit `account.deleted` (la fonctionnalité de suppression n'a jamais touché ces comptes), et les 6 comptes actifs ont des empreintes bcrypt valides (`$2y$12$…`, 60 caractères). Les ids manquants (3, 4, 8, 9, 10) sont des `forceDelete` (utilisateurs jetables des tests e-mail), pas des comptes anonymisés. La logique `login`/`register` n'a pas changé lors de l'extraction de `User::closeAccount()`. Conclusion : pas de régression ; un échec « Invalid email or password » (401) correspond à un mot de passe ne correspondant pas à l'empreinte stockée pour cet e-mail (ou >5 essais ⇒ 429). Trois tests de régression ajoutés (118 → 121).
+
+| Élément | Valeur |
+|---|---|
+| Commande | `php artisan test --compact` (base de test `:memory:` uniquement) |
+| Résultat | **121 réussis, 0 échec** (470 assertions) |
 
 ## 4. Frontend (application Next.js)
 
