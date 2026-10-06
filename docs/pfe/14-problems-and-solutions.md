@@ -141,4 +141,21 @@
 * **Fichiers** : `components/admin/accounts.tsx`.
 * **Vérification** : `tsc` et ESLint réussis. ⚠️ À VÉRIFIER : test manuel dans le navigateur (aucun outil de test d'interface dans le projet).
 
-**Total : 20 problèmes documentés.**
+## P-21 — Vérification incomplète du montant et de la devise (R-10)
+
+* **Problème** : à la réception d'un checkout `paid`, le contrôle du montant était ignoré lorsque le champ `amount` était absent, et la devise n'était jamais comparée. Un paiement aurait pu être activé sur des données non vérifiables.
+* **Solution** : l'activation exige désormais un `amount` présent et égal au montant enregistré **et** une devise concordante (comparaison insensible à la casse). Sinon le paiement reste `pending` avec `error_code = amount_mismatch` ou `currency_mismatch`, et un `Log::critical` est écrit. Le corps du webhook étant signé par Chargily, le risque réel est faible, mais la cohérence est désormais garantie.
+* **Fichiers** : `app/Services/ChargilyGateway.php` (`applyCheckoutStatus()`).
+* **Vérification** : `test_webhook_without_an_amount_does_not_activate`, `test_paid_checkout_in_another_currency_does_not_activate` (+ `test_webhook_with_a_different_amount_does_not_activate` existant).
+* **Risque associé** : R-10 (`08-authentication-security.md`), marqué corrigé.
+
+## P-22 — Paiements restés `pending` jamais réconciliés automatiquement (R-06)
+
+* **Problème** : si le webhook échouait définitivement et que l'utilisateur ne revenait pas sur la page de résultat, un paiement pouvait rester `pending` indéfiniment — un client payé mais jamais activé, jusqu'à une intervention manuelle.
+* **Solution** : commande `payments:reconcile` planifiée toutes les 15 minutes. Elle relit le statut réel des checkouts en attente depuis plus de 30 minutes (`GET /checkouts/{id}`) et applique le résultat ; les checkouts toujours impayés après 24 h sont expirés (`POST /checkouts/{id}/expire`) puis marqués en échec. Elle ne fait rien si la clé secrète n'est pas configurée.
+* **Effet de bord traité** : si Chargily signale `paid` pour un paiement déjà marqué en échec (argent encaissé mais rien d'activé), un `Log::critical`, l'`error_code = paid_after_failure` (visible dans la facturation admin) et une entrée d'audit `payment.paid_after_failure` sont produits une seule fois.
+* **Fichiers** : `app/Console/Commands/ReconcilePayments.php`, `routes/console.php`, `app/Services/ChargilyGateway.php` (`expireCheckout()`, `applyCheckoutStatus()`).
+* **Vérification** : `ReconcilePaymentsTest` (5 cas), `test_paid_webhook_for_a_failed_payment_is_flagged_for_the_admin`, `test_duplicate_paid_webhook_for_a_succeeded_payment_is_not_flagged`.
+* **Risque associé** : R-06 (`08-authentication-security.md`), marqué corrigé.
+
+**Total : 22 problèmes documentés.**

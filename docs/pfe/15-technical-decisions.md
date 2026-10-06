@@ -24,7 +24,15 @@
 * **Alternatives** : Stripe/PayPal (non adaptés aux cartes locales EDAHABIA/CIB ⚠️ À VÉRIFIER), SDK PHP Chargily, appel direct de l'API REST Chargily (retenu).
 * **Comparaison** : l'appel REST direct (`Http::withToken()`) évite une dépendance supplémentaire et donne un contrôle total (délais, journalisation, gestion d'erreurs) ; il faut en revanche implémenter soi-même la vérification HMAC du webhook. Chargily Pay v2 n'offre pas d'API de remboursement (commentaire dans `Payment::recordRefund`).
 * **Choix** : API REST directe. ⚠️ À VÉRIFIER : raisons du choix de Chargily et de l'absence de SDK.
-* **Conséquences** : paiements ponctuels (TD-09), remboursements enregistrés manuellement (R-25), mode test actuellement configuré.
+* **Conséquences** : paiements ponctuels (TD-09), remboursements enregistrés manuellement (R-25), mode test uniquement (TD-13).
+* **Contradiction documentée (champ webhook)** : la documentation officielle Chargily diffère selon la page — le guide *Webhooks* nomme le paramètre `webhook_url`, tandis que la *API Reference* (page « Create a Checkout ») et l'objet *Checkout* nomment le champ `webhook_endpoint`. Décision : envoyer **`webhook_endpoint`** (conforme à la référence API et à l'objet renvoyé), tout en conservant le nom de variable d'environnement `CHARGILY_WEBHOOK_URL` côté projet. Sources dans `16-sources.md`.
+
+## TD-13 — Chargily Pay en mode test uniquement (sandbox)
+
+* **Contexte** : projet académique (PFE) ; aucune transaction réelle n'est souhaitée. Le mode live exige des documents légaux (registre de commerce ou carte d'auto-entrepreneur, NIF/NIS, compte bancaire ou CCP) que le projet n'a pas vocation à fournir.
+* **Choix** : `CHARGILY_MODE=test` ; appels dirigés vers `https://pay.chargily.net/test/api/v2` ; clés `test_sk_` / `test_pk_` ; cartes de test de la documentation Chargily pour simuler les paiements. La clé secrète n'est **jamais** versionnée (hors de git, de `docs/pfe/` et de la mémoire ; `.env.example` ne contient que les noms de variables).
+* **Conséquences** : aucun encaissement réel ; le garde-fou production (`AppServiceProvider::guardProductionConfiguration`) journalise volontairement « CHARGILY_MODE is not live » tant que le mode test est actif — avertissement attendu et correct dans ce contexte. Le passage en live nécessiterait l'activation légale du compte marchand.
+* ⚠️ À VÉRIFIER : toute autre raison que le caractère académique du projet (par ex. échéancier, absence de compte marchand validé).
 
 ## TD-04 — WireGuard, clés générées côté serveur
 
@@ -87,4 +95,4 @@
 * **Comparaison** : le contrôle serveur évite de livrer l'interface d'administration aux non-administrateurs, au prix d'un appel `/api/me` par chargement de page protégée (délai 4 s).
 * **Choix** : retenu, avec politique fail-closed pour `/admin` et fail-open pour `/dashboard` (commentaire dans `proxy.ts`). Voir P-07.
 
-**Total : 12 décisions documentées.**
+**Total : 13 décisions documentées.**

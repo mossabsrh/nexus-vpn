@@ -16,12 +16,13 @@
 |---|---|---|
 | `tests/Feature/Api/AuthenticationTest.php` | 4 | Inscription + authentification, mise à jour e-mail/mot de passe, connexion et lecture de `me`, déconnexion avec invalidation de session |
 | `tests/Feature/Api/AccountSecurityTest.php` | 10 | Verrouillage après 5 échecs de connexion, réinitialisation du compteur, absence de fuite d'erreurs internes à l'inscription, refus des plans vente assistée, e-mails de vérification et bienvenue, changement d'e-mail avec revérification, lien de vérification signé, anti-énumération du mot de passe oublié, réinitialisation par jeton valide uniquement, en-têtes de sécurité et CORS sans joker sur `pricing` |
-| `tests/Feature/Api/PaymentFlowTest.php` | 17 | Checkout (paiement enregistré avant l'appel, retour vers la page résultat), e-mail vérifié requis, plans non achetables, erreurs fournisseur masquées, idempotence webhook + vérification, conversion d'essai, renouvellement, réabonnement après annulation (jours conservés / départ immédiat), changement de plan, refus d'un second abonnement courant par la base, webhook pour checkout inconnu (404), échec enregistré, montant différent refusé, isolation entre utilisateurs, historique et reçus |
+| `tests/Feature/Api/PaymentFlowTest.php` | 23 | Checkout (paiement enregistré avant l'appel, retour vers la page résultat), e-mail vérifié requis, plans non achetables, erreurs fournisseur masquées, idempotence webhook + vérification, conversion d'essai, renouvellement, réabonnement après annulation (jours conservés / départ immédiat), changement de plan, refus d'un second abonnement courant par la base, webhook pour checkout inconnu (404), échec enregistré, montant différent refusé, **montant absent refusé et devise non concordante refusée (R-10)**, **paiement signalé lorsque Chargily paie un paiement déjà en échec (R-06)**, **envoi conditionnel du `webhook_endpoint`**, isolation entre utilisateurs, historique et reçus |
 | `tests/Feature/Api/SubscriptionLifecycleTest.php` | 11 | Annulation d'essai (fin immédiate + révocation VPN), annulation payée (accès jusqu'à fin de période), annulation sans abonnement, ancienne route d'annulation supprimée, essai unique et interdit aux plans vente assistée, commande d'expiration, fin d'accès sans attendre le planificateur, rappels envoyés une fois, configuration WireGuard valide, prérequis (e-mail vérifié, serveur configuré), adresses tunnel distinctes |
 | `tests/Feature/Api/AdminTest.php` | 2 | Refus de l'API admin aux utilisateurs normaux ; gestion des utilisateurs et des plans par un admin |
 | `tests/Feature/Api/AdminBillingTest.php` | 9 | Accès admin uniquement, statistiques calculées sur des données réelles, liste utilisateurs paginée/filtrée, remboursement (fin d'abonnement + révocation VPN), filtres paiements/abonnements, désactivation des plans ayant un historique et mise à jour immédiate des prix, modération des témoignages, journal d'audit, abonnement Team avec limite de sièges |
 | `tests/Feature/Api/ContactRequestTest.php` | 2 | Demande commerciale traitée par un admin ; validation et limitation de débit |
 | `tests/Feature/ChargilyPaymentTest.php` | 13 | Création de checkout Chargily, seeders idempotents (ne réécrivent ni ne restaurent les plans modifiés/supprimés par un admin), essai à l'inscription, redirection des anciennes URL de retour, annulation, nouvel abonnement au lieu de réactiver un ancien, essai de 7 jours unique, contenu de `userPayload`, rejet d'une signature de webhook invalide, montant client ignoré, isolation des checkouts |
+| `tests/Feature/ReconcilePaymentsTest.php` | 5 | Commande `payments:reconcile` : activation d'un paiement en attente payé chez Chargily, maintien en attente d'un checkout récent toujours ouvert, expiration d'un checkout abandonné au-delà du délai (`POST /checkouts/{id}/expire`), respect de la période de grâce, aucune action sans clé secrète |
 
 ### Tests hérités du starter kit (pages Inertia non utilisées)
 
@@ -37,7 +38,7 @@
 | `tests/Feature/Settings/ProfileUpdateTest.php` | 5 | Profil et suppression de compte (pages web) |
 | `tests/Unit/ExampleTest.php` | 1 | Test d'exemple (`true is true`) |
 
-Total : 94 tests (68 sur l'API réelle, 26 hérités).
+Total : 105 tests (79 sur l'API réelle et les commandes, 26 hérités).
 
 ### Zones non couvertes identifiées
 
@@ -74,6 +75,16 @@ Sortie (résumé) :
 Tests:    94 passed (370 assertions)
 Duration: 12.98s
 ```
+
+### 2026-10-06 — Intégration Chargily (mode test)
+
+Après les cinq commits de l'intégration Chargily (extraction de `ChargilyGateway`, R-10, alerte « payé après échec », commande `payments:reconcile`, `CHARGILY_WEBHOOK_URL`). Onze tests ajoutés (94 → 105). Les réglages Chargily sont forcés dans `phpunit.xml` (`CHARGILY_SECRET_KEY` vide) pour qu'aucun test ne puisse appeler l'API avec la vraie clé du `.env`.
+
+| Élément | Valeur |
+|---|---|
+| Commande | `php artisan test --compact` (dans `nexus-vpn/`) |
+| Environnement | Windows 10, PHP 8.2.12, Laravel 12, PHPUnit 11, SQLite en mémoire |
+| Résultat | **105 réussis, 0 échec** (409 assertions) |
 
 ## 4. Frontend (application Next.js)
 

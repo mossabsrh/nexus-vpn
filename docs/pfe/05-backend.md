@@ -173,15 +173,18 @@ Statuts (`subscriptions.status`, chaîne libre) : `trialing`, `active`, `cancele
 
 ### 7.2 Paiement Chargily
 
+> Depuis le 2026-10-06, les appels à Chargily, la vérification de signature et les règles de statut sont regroupés dans `app/Services/ChargilyGateway.php` ; `PaymentController` délègue à ce service.
+
 1. `POST /api/checkout` : le montant est calculé **côté serveur** à partir du plan (`monthly_price` ou `yearly_total`), jamais depuis le client. Un enregistrement `payments` `pending` est créé **avant** l'appel à Chargily (pour qu'un webhook rapide le retrouve), avec une référence `pay_<uuid>` dans `metadata`.
-2. Appel `POST {base}/checkouts` (Chargily Pay v2, mode `test` ou `live`) avec `success_url`/`failure_url` = page résultat du frontend. Erreurs fournisseur non renvoyées au client ; paiement marqué `failed`.
+2. Appel `POST {base}/checkouts` (Chargily Pay v2, mode `test` ou `live`) avec `success_url`/`failure_url` = page résultat du frontend. Si `CHARGILY_WEBHOOK_URL` est défini, il est transmis comme `webhook_endpoint` (utile pour un tunnel local). Erreurs fournisseur non renvoyées au client ; paiement marqué `failed`.
 3. Confirmation par **deux voies** :
    * **webhook** `POST /api/webhooks/chargily` : vérification `hash_hmac('sha256', corps brut, clé secrète)` comparée en temps constant à l'en-tête `signature` ; événements traités `checkout.paid|failed|canceled|expired` ; checkout inconnu → 404 pour que Chargily réessaie ;
    * **vérification active** `GET /api/payments/{id}/verify` depuis la page résultat : interroge `GET {base}/checkouts/{id}`.
-4. `Payment::markSucceeded()` est **idempotent** : transition `pending → succeeded` par mise à jour conditionnelle sur ligne verrouillée, dans une transaction ; un webhook rejoué ou une vérification concurrente ne peuvent l'appliquer qu'une fois. Si le montant renvoyé diffère du montant attendu, l'activation est refusée (`error_code = amount_mismatch`).
+4. `Payment::markSucceeded()` est **idempotent** : transition `pending → succeeded` par mise à jour conditionnelle sur ligne verrouillée, dans une transaction ; un webhook rejoué ou une vérification concurrente ne peuvent l'appliquer qu'une fois. Un statut `paid` n'active le paiement que si le **montant** renvoyé est présent et égal au montant attendu **et** si la **devise** concorde ; sinon l'activation est refusée (`error_code = amount_mismatch` ou `currency_mismatch`, R-10).
 5. Application à l'abonnement (`applyToSubscription`) : renouvellement (même plan actif → prolongation depuis la fin de période), conversion d'essai, changement de plan (l'ancien se termine), ou nouvel abonnement (en conservant les jours déjà payés d'un abonnement annulé au même plan).
 6. Après activation : émission des identifiants VPN si l'e-mail est vérifié, e-mail de reçu.
-7. **Remboursement** : Chargily Pay v2 n'offrant pas d'API de remboursement, l'admin effectue le remboursement dans le tableau de bord Chargily puis l'**enregistre** via `POST /api/admin/payments/{id}/refund` (option de terminer l'abonnement et révoquer le VPN).
+7. **Réconciliation (R-06)** : la commande `payments:reconcile` (toutes les 15 min) relit chez Chargily les paiements `pending` depuis plus de 30 min, applique le statut réel, et expire (`POST {base}/checkouts/{id}/expire`) ceux encore impayés après 24 h. Si Chargily signale `paid` pour un paiement déjà en échec, l'incident est journalisé (`Log::critical`), marqué (`error_code = paid_after_failure`, visible côté admin) et audité (`payment.paid_after_failure`), une seule fois.
+8. **Remboursement** : Chargily Pay v2 n'offrant pas d'API de remboursement, l'admin effectue le remboursement dans le tableau de bord Chargily puis l'**enregistre** via `POST /api/admin/payments/{id}/refund` (option de terminer l'abonnement et révoquer le VPN).
 
 ### 7.3 Provisionnement VPN WireGuard
 
@@ -204,6 +207,7 @@ Les plans sans prix mensuel (ex. `team`) ne sont ni achetables en ligne ni élig
 | Commande | Rôle | Planification |
 |---|---|---|
 | `subscriptions:expire` | Expire les périodes terminées, révoque le VPN | toutes les 15 min, `withoutOverlapping` |
+| `payments:reconcile {--older-than=30} {--expire-after=24}` | Synchronise les paiements Chargily `pending` périmés et expire les checkouts abandonnés | toutes les 15 min, `withoutOverlapping` |
 | `subscriptions:remind {--days=3}` | E-mails de rappel de fin d'essai/période | quotidienne 09:00 |
 | `vpn:peers` | Export des pairs WireGuard actifs | manuelle |
 | `admin:grant {email}` | Donne le rôle admin | manuelle |
@@ -231,7 +235,7 @@ Le projet backend a été initialisé à partir du **Laravel React Starter Kit**
 | Clé de config | Variable d'environnement | Rôle |
 |---|---|---|
 | `app.frontend_url` | `FRONTEND_URL` | URL du frontend Next.js (liens e-mail, redirections Chargily) |
-| `services.chargily.mode` / `secret_key` | `CHARGILY_MODE`, `CHARGILY_SECRET_KEY` | Mode test/live et clé API + clé HMAC du webhook |
+| `services.chargily.mode` / `secret_key` / `webhook_url` | `CHARGILY_MODE`, `CHARGILY_SECRET_KEY`, `CHARGILY_WEBHOOK_URL` | Mode test/live, clé API + clé HMAC du webhook, et endpoint webhook optionnel par checkout |
 | `services.vpn.*` | `VPN_SERVER_PUBLIC_KEY`, `VPN_SERVER_ENDPOINT`, `VPN_DNS`, `VPN_ALLOWED_IPS`, `VPN_ADDRESS_POOL`, `VPN_CLIENT_PREFIX` | Paramètres WireGuard |
 | `cors.*` | `FRONTEND_URL` | CORS avec `supports_credentials=true` sur `api/*` |
 | — | `TRUSTED_PROXIES` | Proxys de confiance |
