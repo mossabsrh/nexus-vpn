@@ -26,6 +26,7 @@ Dossier de travail regroupant les informations techniques et les preuves nécess
 | `16-sources.md` | Sources consultées (aucune externe pour l'instant) |
 | `17-changelog.md` | Journal daté des changements |
 | `18-glossary.md` | Abréviations et termes techniques |
+| `18-audit-final.md` | Audit final de qualité/débogage avant soutenance (2026-10-07) |
 | `19-limitations-and-future-work.md` | Limites fonctionnelles/techniques et perspectives |
 | `20-memoire-mapping.md` | Correspondance fichiers ↔ chapitres du mémoire |
 | `assets/diagrams/erd.mmd` | Diagramme entité-association (Mermaid) |

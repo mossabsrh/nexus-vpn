@@ -155,3 +155,28 @@ Route (app)
 
 ƒ Proxy (Middleware)
 ```
+
+## 5. Audit final de bout en bout (2026-10-07)
+
+Audit complet avant soutenance (rapport : `18-audit-final.md`). Base de développement sauvegardée au préalable ; aucune modification du code (l'état audité est l'état final). Tests exécutés sur la base `:memory:` ; parcours E2E sur le **build de production** (`php artisan serve` + `pnpm start`), pilotés par Playwright (Chromium headless), un contexte à la fois (RAM limitée).
+
+**Base de référence re-vérifiée :** `php artisan test` → 121 réussis (470 assertions) ; `pnpm lint`, `tsc --noEmit`, `next build` → réussis.
+
+**Parcours E2E vérifiés en direct (21/22) :**
+
+| Parcours | Résultat |
+|---|---|
+| Accueil : rendu, offres (après défilement), bascule de thème, formulaire contact | ✅ |
+| Mauvais mot de passe → `401` | ✅ |
+| Verrouillage après 5 échecs → `429` | ✅ (`401×5` puis `429`) |
+| Connexion utilisateur de démo + tableau de bord | ✅ |
+| Utilisateur normal bloqué sur `/admin` (page) et API admin (`403`) | ✅ |
+| Checkout Chargily (mode test) → URL `pay.chargily.dz` | ✅ |
+| Admin : connexion + 8 onglets sans erreur de console | ✅ |
+| Admin ne peut pas se supprimer lui-même → `422` | ✅ |
+| Visiteur non connecté → `/admin` et `/dashboard` redirigés (`307`) | ✅ |
+| Envoi e-mail de vérification via **Gmail SMTP** (en direct) | ✅ (≈ 6 s, synchrone — R-19) |
+
+Le seul contrôle non concluant (« offres présentes immédiatement ») est une **limite du scénario de test** (offres chargées paresseusement + animées à l'apparition), pas un bug : les offres s'affichent bien après défilement.
+
+**Bugs trouvés : 0.** Deux observations mineures ajoutées au registre des risques : **R-26** (`401` attendu sur `/me` journalisé dans la console pour les visiteurs), **R-27** (N+1 borné et négligeable à la sérialisation des paiements). Aucune ne requiert de correction.
