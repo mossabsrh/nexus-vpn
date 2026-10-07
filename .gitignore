@@ -38,3 +38,7 @@ Thumbs.db
 # Personal Claude Code settings
 .claude/settings.local.json
 nexus-vpn/.claude/settings.local.json
+
+# Mémoire: never push another student's work or raw EADN material (D-14 / P-05)
+docs/memoire-ref/
+docs/memoire/eadn/

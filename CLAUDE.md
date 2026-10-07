@@ -1,5 +1,7 @@
 # PFE Documentation Workflow (project owner rules)
 
+For the mémoire, always read docs/memoire/decisions.md first.
+
 @docs/pfe/AGENT-WORKFLOW.md
 
 ## Project structure
