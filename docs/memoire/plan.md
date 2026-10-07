@@ -101,21 +101,57 @@ Output folders (created when needed):
 | ☐ | 3.12 | Short, commented code excerpts in English | Claude | — | snippets |
 | ☐ | 3.13 | Deployment diagram with the real hosts (English) | Claude | 1.13 | `figures/` |
 
-## Phase 4 — Mobile app part (Lane C)
+## Phase 4 — Mobile app: Flutter client (Lane C) — decision D-15
 
-> ⚠️ **Finding (2026-10-07):** the "android app" source (`E:\PFE\nexus-vpn-feature-android-app`) is a **Next.js web project, not a native Android app** — no Android/Gradle/APK, no PWA. See [`mobile-facts.md`](mobile-facts.md). Tasks 4.4–4.8 depend on the student's decision **Q-23** (web client / real native app / drop). Until Q-23 is decided, 4.4–4.8 are on hold.
+> ✅ **Decided (Q-23 → D-15):** build a **real Flutter client app** based on our own project, not Mossab's web prototype (its `/api/checkout` is fake). Scope = **client only** (admin stays on the website). The backend gets **Sanctum token auth for mobile, added without changing the website's session+CSRF login**. Flutter 3.35.6 confirmed. Mossab's prototype is kept only as a "what not to do" reference ([`mobile-facts.md`](mobile-facts.md)).
+>
+> App screens (client): Login · Register (with plan choice) · Forgot password · Plans/Pricing · Dashboard (subscription, status, trial, payment history) · Subscribe & pay (real Chargily in the browser → return → result) · VPN (download/share the WireGuard `.conf`) · Profile/Settings (change email/password, light/dark theme) · Logout. Same look as the website (dark navy + cyan primary + purple accent, Geist font, logo), in English.
+>
+> **Build only after the student approves the Step-1 proposal.** Commit after each part (student asked). The Flutter app lives in the repo at `mobile/` (build artifacts git-ignored).
+
+**Done — analysis (informs what to avoid):**
 
 | ✓ | # | Task | Who | Needs | Produces |
 |---|---|---|---|---|---|
-| ☑ | 4.1 | Deliver the source: received at `E:\PFE\nexus-vpn-feature-android-app` (branch zip) | Mossab | 0.10 | source files |
-| ☑ | 4.2 | Study the source; write the facts down | Claude | 4.1 | [`mobile-facts.md`](mobile-facts.md) |
-| ☑ | 4.3 | Integration check: it calls `/backend-api` with session-cookie+CSRF style, expects routes `/api/me,/auth/*,/pricing,/admin/*`; checkout is a **mock** (no Chargily). **Not confirmed with our backend** — needs `php artisan route:list` + CSRF/route alignment if we ever wire it live. Any backend change = new decision | Claude | 4.2 | decisions.md §6 |
-| ☐ | 4.3b | 🔴 Decide Q-23 (what the "mobile app" is) — blocks 4.4–4.8 | Student (+ Mossab) | 4.2 | decisions.md |
-| ☐ | 4.4 | 🔴 Screenshots. **If Q-23=web:** run the app at phone width in Chrome (no emulator), capture every screen + key states → `screenshots/mobile/`. **If Q-23=native:** Mossab screenshots the real app on a device/emulator. **If Q-23=drop:** skip | Claude or Mossab | 4.3b | `screenshots/mobile/` |
-| ☐ | 4.5 | Mobile use case diagram + tables (only if Q-23 ≠ drop; "mobile-only" use cases only if a native app really adds any) | Claude | 3.2, 4.3b | `figures/` + tables |
-| ☐ | 4.6 | Mobile/web-client sequence diagram(s) (at least one) if Q-23 ≠ drop | Claude | 4.3b | `figures/` |
-| ☐ | 4.7 | Architecture figure: web (+ mobile/web-client) + backend, drawn to match Q-23 | Claude | 3.1, 4.3b | `figures/` |
-| ☐ | 4.8 | Install/build info: **web** → `pnpm build`/host; **native** → APK from Mossab. Mobile tests if any | Claude / Mossab | 4.3b | facts |
+| ☑ | 4.1 | Receive + study Mossab's source; write the facts | Claude | 0.10 | [`mobile-facts.md`](mobile-facts.md) |
+| ☑ | 4.2 | Confirm Flutter works (`flutter doctor`): 3.35.6, Android SDK 35, 1 emulator; only Visual Studio missing (not needed for Android) | Claude | — | this plan |
+| ☑ | 4.3 | Step-1 proposal: architecture, backend changes, run method, estimate | Claude | 4.1, 4.2 | proposal + D-15 |
+
+**4A — Backend: token auth (Lane B/A) — ✅ DONE 2026-10-07 (committed):**
+
+| ✓ | # | Task | Who | Needs | Produces |
+|---|---|---|---|---|---|
+| ☑ | 4.4 | `composer require laravel/sanctum` (v4.3.3); publish config + `personal_access_tokens` migration; migrate dev DB | Claude | 1.2 | sanctum installed |
+| ☑ | 4.5 | `HasApiTokens` on `User`; token lifetime 30 days (`SANCTUM_TOKEN_EXPIRATION`) | Claude | 4.4 | token model |
+| ☑ | 4.6 | Token-only `mobile/` route group in `routes/api.php`, outside the `web`/CSRF group, `auth:sanctum`; reuses existing controllers (me, subscriptions, payments, vpn status/config, checkout, verify, account email/password, forgot/reset). Website routes untouched | Claude | 4.5 | mobile API (19 routes) |
+| ☑ | 4.7 | `MobileAuthController`: login (per-account lockout → token), register (trial + verification email → token), logout (revoke current token). `updatePassword`/`deleteAccount` made token-safe (`hasSession()` + token revocation) | Claude | 4.6 | token auth |
+| ☑ | 4.8 | Tests (test DB only): login/register/logout, 401 without token, 401 wrong password, 429 lockout, logout revokes token, guard isolation, password change revokes other tokens. **Full suite 130/130 green (web login unchanged)** | Claude | 4.7 | 9 tests pass |
+| ☑ | 4.9 | Docs: `07-api.md` §4bis, `08-authentication-security.md` §1bis, `05-backend.md`, `12-testing.md`, `17-changelog.md` | Claude | 4.8 | docs updated |
+
+**4B — Flutter app (Lane C):**
+
+| ✓ | # | Task | Who | Needs | Produces |
+|---|---|---|---|---|---|
+| ☐ | 4.10 | Scaffold `mobile/` Flutter app; packages (flutter_riverpod, dio, flutter_secure_storage, url_launcher, share_plus, path_provider, google_fonts); git-ignore `mobile/build/`, `.dart_tool/` | Claude | 4.5 | app skeleton |
+| ☐ | 4.11 | Theme = website look (colors, Geist font, radius, logo); light/dark | Claude | 4.10 | theme |
+| ☐ | 4.12 | Core: env config (API base URL), Dio client with Bearer interceptor + 401 handling, secure token storage, models (User/Plan/Subscription/Payment) | Claude | 4.10, 4.6 | core layer |
+| ☐ | 4.13 | Auth screens: login, register (plan choice), forgot password, logout + auth state | Claude | 4.12, 4.7 | screens |
+| ☐ | 4.14 | Plans/pricing screen | Claude | 4.12 | screen |
+| ☐ | 4.15 | Dashboard: subscription, status, trial, payment history | Claude | 4.12 | screen |
+| ☐ | 4.16 | Subscribe & pay: start checkout → open **real Chargily** in the browser → return → poll verify → result | Claude | 4.12, 4.14 | screen |
+| ☐ | 4.17 | VPN: status + download/share the WireGuard `.conf` | Claude | 4.12 | screen |
+| ☐ | 4.18 | Profile/Settings: change email, change password, theme toggle | Claude | 4.12, 4.7 | screen |
+| ☐ | 4.19 | Run on device: real phone over USB (primary) or `Medium_Phone_API_35` AVD (fallback); backend via LAN IP or deployed URL | Student + Claude | 4.13 | app running |
+| ☐ | 4.20 | Build an APK for the mémoire (install info + size) | Claude + Student | 4.13–4.18 | APK |
+
+**4C — Mémoire material for the app:**
+
+| ✓ | # | Task | Who | Needs | Produces |
+|---|---|---|---|---|---|
+| ☐ | 4.21 | 🔴 Screenshot every screen + key states (login error, empty, success, payment result) on demo data → `docs/pfe/memoire-assets/screenshots/mobile/`; English captions in the assets README | Claude + Student (device) | 4.19 | `screenshots/mobile/` |
+| ☐ | 4.22 | Mobile use case diagram + tables (client app) | Claude | 3.2 | `figures/` + tables |
+| ☐ | 4.23 | Mobile sequence diagram(s): token login, checkout | Claude | 4.16 | `figures/` |
+| ☐ | 4.24 | Architecture figure: web (session) + Flutter (token) + backend | Claude | 3.1, 4.6 | `figures/` |
 
 ## Phase 5 — Chapter II: VPN services and e-commerce (Lane A) → `chapters/ch2.md`
 
@@ -283,7 +319,7 @@ Output folders (created when needed):
 0.1 + 0.2 (decisions)
   → Ch II, III, IV written (5 → 6 → 7)
       ↑ needs deployment: 0.14 → 1.3 → 1.4 → 1.6–1.12 → 2.x
-      ↑ needs the mobile decision: 0.10 → 4.1/4.2/4.3 (done) → 4.3b (Q-23) → 4.4
+      ↑ needs the Flutter app: backend tokens 4.4→4.8 → app 4.10→4.19 → screenshots 4.21
   → 8.1 → 8.2 (Ch II–IV sent to supervisor)
   → 9.3 EADN visit → 9.4
   → Ch I (10.1 → 10.8)
@@ -294,7 +330,7 @@ Output folders (created when needed):
 
 Four things can stop the whole chain:
 1. **Deployment** — especially the e-mail problem on Render (0.14).
-2. **The mobile decision** (Q-23 / 4.3b) — the source is in, but it is a web app, not a native app.
+2. **The Flutter app** (D-15): backend token auth (4.4–4.8), then the app (4.10–4.19), then screenshots (4.21).
 3. **The EADN visit** (9.3) — EADN is closed Fri–Sat; book early (0.11).
 4. **The supervisor's final review time** (14.3).
 
@@ -332,7 +368,7 @@ Four things can stop the whole chain:
 
 **Fallbacks:**
 - **If deployment is blocked:** describe the prepared deployment (`render.yaml`, Docker, Vercel) with the deployment diagram, run the tests locally, and state clearly that the live deployment is pending. Last resort only.
-- **Mobile (Q-23):** the source is a web app, not native. Simplest honest route = present it as the responsive **web client** (phone-width screenshots, no emulator), or list mobile as future work. Only promise a native-app chapter if Mossab really has an APK. Never present the fake `/api/checkout` as a real payment.
+- **Flutter app (D-15):** if time runs short, ship the backend token auth + the core screens (login, plans, dashboard, VPN config) and screenshot those; move Profile/Settings and polish to future work. Keep the scope client-only (admin stays on the web). Never present Mossab's prototype's fake `/api/checkout` as a real payment — the Flutter app uses the real Chargily flow.
 - **If the supervisor's first review (8.3) is late:** don't wait. Continue with Phases 9–10 and add the comments in 8.4.
 
 ## Log of this plan
@@ -341,3 +377,5 @@ Four things can stop the whole chain:
 |---|---|
 | 2026-10-07 | Created (draft for approval): 15 phases, task-based; replaces the day-by-day plan. Added 0.14 / 1.3 because Render Free blocks SMTP. |
 | 2026-10-07 | Phase 4 updated after analysing Mossab's source (it is a Next.js web app, not native): ticked 4.1–4.3, added 4.3b (decide Q-23), rewrote 4.4–4.8 to branch on Q-23. Updated critical path, risks, fallback. See [`mobile-facts.md`](mobile-facts.md). |
+| 2026-10-07 | Phase 4 rewritten for **D-15 (build a real Flutter client app)**: 4A backend Sanctum token auth (4.4–4.9, website login untouched), 4B Flutter app (4.10–4.20), 4C mémoire material (4.21–4.24). Updated critical path, risks, fallback. Build waits for approval of the Step-1 proposal. |
+| 2026-10-07 | **Phase 4A done**: Sanctum token auth built + tested (130/130, web login unchanged), docs updated. Committed. Next: 4B Flutter app, starting with auth screens. |

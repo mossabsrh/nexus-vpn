@@ -58,6 +58,39 @@ Erreurs réseau et délais dépassés (`AbortError`) : convertis en messages lis
 
 **Objet `user`** (`AuthController::userPayload`), renvoyé par `register`, `login`, `me` et plusieurs endpoints d'abonnement/paiement : `id`, `name`, `email`, `role` (`user`|`admin`), `emailVerified`, `planId` (slug du plan courant), `subscriptionStatus`, `lastPlanId`, `subscription` (objet abonnement, voir §6), `hasVpnAccess`, `team` (`{ id, name, isOwner }` ou `null`). Typé côté frontend par `AuthUser` (`auth-provider.tsx`).
 
+## 4bis. API mobile (application Flutter — jetons Sanctum)
+
+> Ajoutée le 2026-10-07 pour l'application mobile (décision D-15 du mémoire). **Le flux web décrit ci-dessus est inchangé.**
+
+L'application mobile n'utilise ni cookie de session ni CSRF. Elle s'authentifie avec un **jeton personnel Laravel Sanctum** envoyé dans l'en-tête `Authorization: Bearer <token>`. Les routes sont préfixées `/api/mobile/` et vivent **hors du groupe `web`** (donc sans session ni CSRF). L'administration n'est **pas** exposée ici : elle reste sur le site web.
+
+- **Jeton** : émis par `login` et `register`, renvoyé dans le champ `token`. Durée de vie : `SANCTUM_TOKEN_EXPIRATION` minutes (défaut 30 jours, `config/sanctum.php`). L'application le conserve dans le stockage sécurisé de l'appareil et l'attache à chaque requête.
+- **Révocation** : la déconnexion révoque le jeton courant ; le changement de mot de passe révoque les autres jetons du compte ; la suppression de compte révoque tous les jetons.
+- Le verrou par compte (5 échecs → 429) et les limiteurs nommés (`login`, `register`, `account`, `checkout`, `vpn`, `trial`, `verification`, `password-reset`) sont **partagés avec le web**.
+- Les offres publiques `GET /api/pricing` et `GET /api/testimonials` (déjà hors groupe `web`) sont réutilisées telles quelles par l'application.
+
+| Endpoint | Contrôleur | Accès / limiteur | Requête | Réponse |
+|---|---|---|---|---|
+| `POST /api/mobile/auth/register` | `MobileAuthController@register` | public, `register` | `name`, `email`, `password`+`password_confirmation`, `plan_slug` (self-serve), `device_name?` | 201 `{ success, token, user, message }` ; 422 ; 500 |
+| `POST /api/mobile/auth/login` | `MobileAuthController@login` | public, `login` + verrou 5 échecs | `email`, `password`, `device_name?` | 200 `{ success, token, user }` ; 401/429 `{ success:false, error }` |
+| `POST /api/mobile/auth/logout` | `MobileAuthController@logout` | `auth:sanctum` | — | 200 `{ message }` (jeton courant révoqué) |
+| `POST /api/mobile/auth/forgot-password` | `AuthController@forgotPassword` | public, `password-reset` | `email` | 200 `{ message }` (identique que le compte existe ou non) |
+| `POST /api/mobile/auth/reset-password` | `AuthController@resetPassword` | public, `password-reset` | `token`, `email`, `password`+`password_confirmation` | 200 ; 422 |
+| `GET /api/mobile/me` | `AuthController@me` | `auth:sanctum` | — | 200 `{ user }` (même objet qu'au §4) |
+| `POST /api/mobile/email/verification-notification` | `AuthController@resendVerification` | `auth:sanctum`, `verification` | — | 200 `{ message }` |
+| `PUT /api/mobile/account/email` | `AuthController@updateEmail` | `auth:sanctum`, `account` | `current_password`, `email` | 200 `{ user }` ; 422 |
+| `PUT /api/mobile/account/password` | `AuthController@updatePassword` | `auth:sanctum`, `account` | `current_password`, `password` | 200 `{ message }` (autres jetons révoqués) ; 422 |
+| `DELETE /api/mobile/account` | `AuthController@deleteAccount` | `auth:sanctum`, `account` | `current_password` | 200 (tous jetons révoqués) ; 409 ; 422 |
+| `GET /api/mobile/account/subscriptions` | `AccountController@subscriptions` | `auth:sanctum` | — | `{ subscriptions, meta }` |
+| `GET /api/mobile/account/payments` | `AccountController@payments` | `auth:sanctum` | — | `{ payments, meta }` |
+| `GET /api/mobile/account/payments/{payment}` | `AccountController@payment` | `auth:sanctum`, propriétaire (sinon 404) | — | `{ payment, customer }` |
+| `GET /api/mobile/vpn/credentials` | `AccountController@vpnStatus` | `auth:sanctum` | — | `{ hasAccess, emailVerified, serverConfigured, credential }` |
+| `GET /api/mobile/vpn/config` | `AccountController@vpnConfig` | `auth:sanctum`, `vpn` | — | fichier `.conf` (texte) ; 403 (accès/e-mail) ; 503 (serveur non configuré) |
+| `POST /api/mobile/checkout` | `PaymentController@createCheckout` | `auth:sanctum`, `checkout` | `plan_id`\|`plan_slug`, `billing_period?` | 200 `{ checkout_url, payment_id, … }` (**Chargily réel**) ; 403 e-mail non vérifié ; 502/503 |
+| `GET /api/mobile/payments/{payment}/verify` | `PaymentController@verifyPayment` | `auth:sanctum`, propriétaire | — | `{ status, payment, user }` |
+| `POST /api/mobile/subscriptions/trial` | `PaymentController@startTrial` | `auth:sanctum`, `trial` | `plan_slug` | 200 ; 409 |
+| `POST /api/mobile/subscriptions/cancel` | `PaymentController@cancelSubscription` | `auth:sanctum` | — | 200 ; 409 |
+
 ## 5. Compte
 
 | Endpoint | Contrôleur | Accès / limiteur | Requête | Réponse | Appelant frontend |

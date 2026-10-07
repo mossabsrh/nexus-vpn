@@ -15,6 +15,7 @@
 | Fichier | Nb | Ce qui est couvert |
 |---|---|---|
 | `tests/Feature/Api/AuthenticationTest.php` | 4 | Inscription + authentification, mise à jour e-mail/mot de passe, connexion et lecture de `me`, déconnexion avec invalidation de session |
+| `tests/Feature/Api/MobileAuthTest.php` | 9 | **API mobile (jetons Sanctum)** : inscription renvoyant un jeton + essai de 7 jours, connexion renvoyant un jeton, refus du mauvais mot de passe (401), verrouillage après 5 échecs (429), jeton requis sur les routes protégées (401), accès autorisé avec jeton (`me`, abonnements), déconnexion révoquant le jeton, **un jeton mobile n'authentifie pas les routes web à session**, changement de mot de passe révoquant les autres jetons |
 | `tests/Feature/Api/AccountSecurityTest.php` | 12 | Verrouillage après 5 échecs de connexion, réinitialisation du compteur, absence de fuite d'erreurs internes à l'inscription, refus des plans vente assistée, e-mails de vérification et bienvenue, changement d'e-mail avec revérification, lien de vérification signé, **renvoi du lien de vérification (et aucun envoi si déjà vérifié)**, anti-énumération du mot de passe oublié, réinitialisation par jeton valide uniquement, en-têtes de sécurité et CORS sans joker sur `pricing` |
 | `tests/Feature/Api/PaymentFlowTest.php` | 23 | Checkout (paiement enregistré avant l'appel, retour vers la page résultat), e-mail vérifié requis, plans non achetables, erreurs fournisseur masquées, idempotence webhook + vérification, conversion d'essai, renouvellement, réabonnement après annulation (jours conservés / départ immédiat), changement de plan, refus d'un second abonnement courant par la base, webhook pour checkout inconnu (404), échec enregistré, montant différent refusé, **montant absent refusé et devise non concordante refusée (R-10)**, **paiement signalé lorsque Chargily paie un paiement déjà en échec (R-06)**, **envoi conditionnel du `webhook_endpoint`**, isolation entre utilisateurs, historique et reçus |
 | `tests/Feature/Api/SubscriptionLifecycleTest.php` | 11 | Annulation d'essai (fin immédiate + révocation VPN), annulation payée (accès jusqu'à fin de période), annulation sans abonnement, ancienne route d'annulation supprimée, essai unique et interdit aux plans vente assistée, commande d'expiration, fin d'accès sans attendre le planificateur, rappels envoyés une fois, configuration WireGuard valide, prérequis (e-mail vérifié, serveur configuré), adresses tunnel distinctes |
@@ -41,7 +42,7 @@
 | `tests/Feature/Settings/ProfileUpdateTest.php` | 5 | Profil et suppression de compte (pages web) |
 | `tests/Unit/ExampleTest.php` | 1 | Test d'exemple (`true is true`) |
 
-Total : 121 tests (95 sur l'API réelle et les commandes, 26 hérités).
+Total : 130 tests (104 sur l'API réelle et les commandes, 26 hérités).
 
 ### Zones non couvertes identifiées
 

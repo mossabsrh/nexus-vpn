@@ -13,7 +13,7 @@
 | Deadline | **Submit the mémoire on 15/10/2026.** Defense date: unknown. |
 | Website | Finished and audited (0 functional bugs; 121 backend tests pass; lint/tsc/build pass) — `docs/pfe/18-audit-final.md`. |
 | Deployment | **NOT deployed yet.** Still to do (plan §7). |
-| Mobile app | Source received (`E:\PFE\nexus-vpn-feature-android-app`). ⚠️ **It is a Next.js *web* project, not a native Android app** (no Android/Gradle/APK, no PWA). Full analysis in [`mobile-facts.md`](mobile-facts.md). Student must decide what the "mobile app" really is → **Q-23**. |
+| Mobile app | **Decided (D-15): build a real Flutter client app** based on our own project. Mossab's web prototype (`E:\PFE\nexus-vpn-feature-android-app`, [`mobile-facts.md`](nexus-vpn/docs/memoire/mobile-facts.md)) is **not** used (fake payment). Backend gets Sanctum token auth for mobile without touching the web login. Step-1 proposal done; build waits for approval. |
 | Host organization | EADN (Entreprise d'Appui au Développement du Numérique). Chapter I information still to collect (§9). |
 | Language | English. |
 | Final structure | Supervisor's structure, adapted to the real app (supervisor agreed). Gap handling proposed in §5, waiting for the student's choice. |
@@ -110,9 +110,7 @@ Status: **PROPOSED, waiting for the student's choice.** "Adapt" = keep the secti
 - ⚠️ **Fake payment:** the payment dialog collects raw card number/expiry/CVC and posts to a **mock** `/api/checkout` that returns a random fake receipt — it never uses Chargily. For a thesis on *secure* e-commerce payment this must be flagged, not presented as the real flow.
 - **Git/secrets:** the folder is a sibling of the repo, has no `.git`, is not tracked by the main repo, and contains no secrets (only `.env.example`). It cannot be pushed by mistake via the main repo.
 
-**Open decision (Q-23):** what is the "mobile app" in the mémoire? (a) present this as a responsive **web** client at phone width (honest, no emulator); (b) a real native app exists elsewhere / Mossab makes an APK → do a true mobile chapter; (c) drop mobile, list it as future work. See P-09.
-
-Still needed from Mossab regardless: confirm whether a real Android app exists; the intended install method; and (if route b) framework/IDE/screens/APK.
+**Decided (Q-23 → D-15):** we build a **real Flutter client app** based on our own project (`E:\PFE\nexus-vpn`), not Mossab's prototype. The prototype stays only as a reference / lesson (its fake `/api/checkout` is exactly what we avoid). The real app uses the real Chargily checkout. See the Flutter scope and backend-token plan in `plan.md` Phase 4.
 
 ## 7. Day-by-day plan until 15/10/2026 — PROPOSED
 
@@ -173,13 +171,14 @@ Ask for **permission** to use each item; hide personal data (names, phone number
 | D-05 | 2026-10-07 | Diploma: BTS at an INSFP; the methodology guide is the official rule. |
 | D-06 | 2026-10-07 | Host organization: EADN (Entreprise d'Appui au Développement du Numérique). |
 | D-07 | 2026-10-07 | Language of the mémoire: English. |
-| D-08 | 2026-10-07 | Co-author (binôme): SERRAH Mossab — both names on the cover; he made the mobile app. |
+| D-08 | 2026-10-07 | Co-authors (binôme): SERRAH Mossab and the student (both names on the cover). **They built both the website and the mobile app together, as a team** (updated 2026-10-07; replaces the earlier "Mossab made the mobile app"). |
 | D-09 | 2026-10-07 | The supervisor accepts adapting the structure to the real app. |
 | D-10 | 2026-10-07 | Submission deadline: 15/10/2026. Defense date unknown. |
 | D-11 | 2026-10-07 | Reference files live in `docs/memoire-ref/` (guide copied there by Claude from `E:\Le mémoire.pdf`). |
 | D-12 | 2026-10-07 | The work plan is **task-based, not date-based**, and lives in [`plan.md`](plan.md) (follow in order whatever the pace; deadline 15/10/2026 still holds). The old day-by-day plan in §7 is superseded. |
 | D-13 | 2026-10-07 | Project folder renamed `E:\PFE\nexus-vpn-upgraded-main` → `E:\PFE\nexus-vpn`. Git still works (branch `main`, no remote). Paths updated in memory. |
 | D-14 | 2026-10-07 | Applied P-05: `docs/memoire-ref/` and `docs/memoire/eadn/` added to the main `.gitignore` so the other student's mémoire is never pushed. |
+| D-15 | 2026-10-07 | **Q-23 answered: build a real Flutter client app** based on our own project (`E:\PFE\nexus-vpn`), **not** Mossab's web prototype (which has a fake payment). Scope = client only (admin stays on the web). Backend gets **token auth (Laravel Sanctum)** for mobile, added **without changing the website's session+CSRF login**. Flutter SDK 3.35.6 confirmed working. Plan in `plan.md` Phase 4; build waits for the student's approval of the Step-1 proposal. |
 
 ## 11. Proposals waiting for a decision
 
@@ -193,7 +192,7 @@ Ask for **permission** to use each item; hide personal data (names, phone number
 | P-06 | Deploy from a **new private** GitHub repo created from the local git (history starts 2026-10-05, no `.env` committed) rather than the old `mossabsrh/nexus-vpn-upgraded`. |
 | P-07 | Parts order exactly as the guide (§2): dedications before acknowledgements; short contents at the start + detailed table of contents at the end. |
 | P-08 | Citations as footnotes (guide) + grouped bibliography at the end. |
-| P-09 | Mobile app handling (Q-23). **Recommended:** if a real native app does **not** exist, present Mossab's build honestly as the **responsive web client** (screenshots at phone width, no "native app" claim, no emulator) **or** list mobile as future work — and never present the fake `/api/checkout` as a real payment. If Mossab really has a native app/APK elsewhere, switch to a true mobile chapter. |
+| P-09 | ✅ Resolved by D-15: build a real Flutter client app (not Mossab's prototype). |
 
 ## 12. Open questions
 
@@ -221,7 +220,7 @@ Ask for **permission** to use each item; hide personal data (names, phone number
 | Q-20 | When can the supervisor review drafts? | Open |
 | Q-21 | Which GitHub repo to deploy from? | Open → P-06 |
 | Q-22 | How does the live site send e-mails? Render Free blocks SMTP (plan 0.14): paid Render, or an HTTP e-mail API (Brevo/Mailgun/Postmark/Resend), or another host | Open (Claude explains; student decides) |
-| Q-23 | What is the "mobile app" in the mémoire? (a) responsive web client at phone width; (b) a real native app/APK from Mossab → true mobile chapter; (c) drop mobile → future work | Open → P-09 (blocks the mobile screenshots and Phase 4) |
+| Q-23 | What is the "mobile app" in the mémoire? | ✅ Resolved (D-15): a **real Flutter client app** based on our own project, with Sanctum token auth added to the backend. |
 
 ## 13. Next steps
 
@@ -236,3 +235,4 @@ Ask for **permission** to use each item; hide personal data (names, phone number
 | 2026-10-07 | Created: references read, comparison done, gaps and questions listed. |
 | 2026-10-07 | Part 2: student's answers recorded (D-04…D-11); guide copied into `docs/memoire-ref/`; English implications (§3); gap proposals (§5); day-by-day plan (§7); EADN checklist (§9); proposals P-01…P-08; questions Q-14…Q-21. |
 | 2026-10-07 | Part 3: created task-based [`plan.md`](plan.md) (D-12). Folder renamed to `E:\PFE\nexus-vpn` (D-13). Analysed Mossab's "android app" → it is a Next.js web app, not native (§6, [`mobile-facts.md`](mobile-facts.md), Q-04 resolved, Q-23/P-09 raised). Added Q-22 (e-mail). Git-ignored `docs/memoire-ref/` + `docs/memoire/eadn/` (D-14). |
+| 2026-10-07 | Part 4: student decided to **build a real Flutter client app** (D-15, answers Q-23/P-09). Updated D-08 to say both authors built the website and mobile app as a team. Confirmed Flutter 3.35.6 ready. Rewrote `plan.md` Phase 4 with the backend-token + Flutter build tasks. Step-1 proposal presented; waiting for approval before coding. |

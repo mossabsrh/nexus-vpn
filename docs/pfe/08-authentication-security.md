@@ -9,6 +9,16 @@
 * **Pourquoi pas de jetons (Sanctum / JWT)** : le seul client est l'application web servie depuis la même origine. Une session cookie `HttpOnly` n'est pas lisible par JavaScript (contrairement à un jeton stocké dans `localStorage`), elle peut être révoquée côté serveur (suppression des lignes `sessions`) et réutilise le CSRF natif de Laravel. Sanctum n'est d'ailleurs pas installé (`composer.json`). Le frontend ne stocke aucune donnée d'authentification (`localStorage`/`sessionStorage` inutilisés).
 * **Fixation de session** : `session()->regenerate()` après connexion et inscription ; `invalidate()` + `regenerateToken()` à la déconnexion.
 
+## 1bis. Authentification par jeton (application mobile)
+
+Depuis le 2026-10-07 (D-15), l'application mobile Flutter s'authentifie par **jeton personnel Laravel Sanctum** (en-tête `Authorization: Bearer`), sur des routes préfixées `/api/mobile/` **hors du groupe `web`** : ni cookie de session ni CSRF. Le flux web par cookie (§1) est **inchangé** et l'administration n'est **pas** exposée au mobile.
+
+- **Émission** : `login` et `register` renvoient le jeton (champ `token`). Durée de vie : 30 jours par défaut (`SANCTUM_TOKEN_EXPIRATION`, `config/sanctum.php`), appliquée par Sanctum.
+- **Révocation** : déconnexion (jeton courant), changement de mot de passe (autres jetons du compte), suppression de compte (tous les jetons). Un jeton révoqué ou expiré ⇒ 401.
+- Le jeton n'est stocké que **haché** en base (`personal_access_tokens`) ; l'application le conserve dans le stockage sécurisé de l'appareil (Keystore Android).
+- **Cloisonnement des guards** : un jeton mobile n'ouvre pas les routes web à session, et une session web n'est pas acceptée sur `/api/mobile/*` — couvert par un test (`MobileAuthTest`).
+- Le verrou par compte (5 échecs → 429) et les limiteurs nommés (`login`, `register`, `account`, `checkout`, `vpn`…) s'appliquent comme au web.
+
 ## 2. Cycle de vie du compte
 
 | Mécanisme | Implémentation |

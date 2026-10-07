@@ -176,8 +176,17 @@ class AuthController extends Controller
         $user = $request->user();
         $user->update(['password' => Hash::make($validated['password'])]);
 
-        // Sign out every other session of this account.
-        DB::table('sessions')->where('user_id', $user->id)->where('id', '!=', $request->session()->getId())->delete();
+        // Sign out every other session of this account (web).
+        if ($request->hasSession()) {
+            DB::table('sessions')->where('user_id', $user->id)->where('id', '!=', $request->session()->getId())->delete();
+        }
+
+        // Revoke this account's other access tokens (mobile), keeping the current one.
+        $currentToken = $user->currentAccessToken();
+        if ($currentToken) {
+            $user->tokens()->whereKeyNot($currentToken->getKey())->delete();
+        }
+
         AuditLog::record('account.password_changed', $user, [], $user);
 
         return response()->json(['message' => 'Password updated successfully']);
@@ -217,9 +226,15 @@ class AuthController extends Controller
 
         $user->closeAccount($user);
 
-        Auth::guard('web')->logout();
-        $request->session()->invalidate();
-        $request->session()->regenerateToken();
+        // End the web session (if any)...
+        if ($request->hasSession()) {
+            Auth::guard('web')->logout();
+            $request->session()->invalidate();
+            $request->session()->regenerateToken();
+        }
+
+        // ...and revoke every access token (mobile sign-out on all devices).
+        $user->tokens()->delete();
 
         return response()->json(['success' => true, 'message' => 'Your account has been permanently deleted.']);
     }

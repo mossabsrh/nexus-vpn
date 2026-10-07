@@ -86,7 +86,8 @@ Définie dans `AppServiceProvider::configureRateLimiting()` (clé = id utilisate
 
 | Contrôleur | Responsabilité |
 |---|---|
-| `AuthController` | Inscription (+ essai), connexion, déconnexion, `me`, mot de passe oublié/réinitialisation, vérification d'e-mail, changement d'e-mail/mot de passe, suppression de compte. Expose `userPayload()` (profil + abonnement courant + accès VPN + équipe), réutilisé par d'autres contrôleurs. |
+| `AuthController` | Inscription (+ essai), connexion, déconnexion, `me`, mot de passe oublié/réinitialisation, vérification d'e-mail, changement d'e-mail/mot de passe, suppression de compte. Expose `userPayload()` (profil + abonnement courant + accès VPN + équipe), réutilisé par d'autres contrôleurs. `updatePassword`/`deleteAccount` gèrent à la fois la session web et les jetons mobiles (gardes `hasSession()` + révocation de jetons). |
+| `MobileAuthController` | Variante **mobile** de l'authentification : connexion, inscription (+ essai) et déconnexion émettant/révoquant un **jeton Sanctum** (sans session ni CSRF). Réutilise le verrou par compte et `AuthController::userPayload()`. Ajouté le 2026-10-07 (D-15). |
 | `PaymentController` | Création du checkout Chargily, vérification post-paiement (par id de paiement ou id de checkout), webhook Chargily, démarrage d'essai, annulation par l'utilisateur. |
 | `AccountController` | Historique paginé des abonnements et paiements, reçu d'un paiement, état VPN (`vpn/credentials`), téléchargement du fichier WireGuard (`vpn/config`). |
 | `TeamController` | Consultation de l'équipe (la liste des membres n'est visible que par le propriétaire), renommage, ajout/retrait de membres dans la limite des sièges (verrou `lockForUpdate`). Le retrait révoque le VPN du membre s'il n'a plus d'accès. |
@@ -152,6 +153,10 @@ Préfixe `/api`. « web » = session + CSRF. Toutes ont aussi `throttle:api`.
 | GET | `admin/subscriptions` | `AdminBillingController@subscriptions` | web, auth, admin |
 | POST | `admin/subscriptions/team` | `AdminBillingController@createTeamSubscription` | web, auth, admin |
 | POST | `admin/subscriptions/{subscription}/cancel` | `AdminBillingController@cancelSubscription` | web, auth, admin |
+
+### 6.1bis Routes mobiles — jetons Sanctum (`routes/api.php`, préfixe `/api/mobile`)
+
+Routes **hors du groupe `web`** (jeton `Authorization: Bearer`, sans session ni CSRF), ajoutées le 2026-10-07 pour l'application Flutter (D-15). Détail complet dans `07-api.md` §4bis. En résumé : `auth/{login,register,logout,forgot-password,reset-password}`, `me`, `email/verification-notification`, `account/{email,password}`, `DELETE account`, `account/{subscriptions,payments,payments/{payment}}`, `vpn/{credentials,config}`, `checkout`, `payments/{payment}/verify`, `subscriptions/{trial,cancel}`. L'administration n'est pas exposée. Le login web reste inchangé.
 
 ### 6.2 Routes web (`routes/web.php`, `routes/auth.php`, `routes/settings.php`)
 

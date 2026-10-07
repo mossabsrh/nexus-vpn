@@ -5,6 +5,7 @@ use App\Http\Controllers\Api\AdminBillingController;
 use App\Http\Controllers\Api\AdminController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\ContactController;
+use App\Http\Controllers\Api\MobileAuthController;
 use App\Http\Controllers\Api\PaymentController;
 use App\Http\Controllers\Api\PricingController;
 use App\Http\Controllers\Api\TeamController;
@@ -81,5 +82,39 @@ Route::middleware(['web', 'throttle:api'])->group(function () {
         Route::get('subscriptions', [AdminBillingController::class, 'subscriptions']);
         Route::post('subscriptions/team', [AdminBillingController::class, 'createTeamSubscription']);
         Route::post('subscriptions/{subscription}/cancel', [AdminBillingController::class, 'cancelSubscription']);
+    });
+});
+
+/*
+| Token (Sanctum) authenticated routes for the mobile (Flutter) client. These are OUTSIDE the
+| "web" group: no session and no CSRF. The client sends "Authorization: Bearer <token>".
+| The website's session+cookie routes above are unchanged. Admin stays web-only (not exposed here).
+| Public GETs (pricing, testimonials) are already served above and are reused by the app as-is.
+*/
+Route::prefix('mobile')->middleware('throttle:api')->group(function () {
+    Route::post('auth/register', [MobileAuthController::class, 'register'])->middleware('throttle:register');
+    Route::post('auth/login', [MobileAuthController::class, 'login'])->middleware('throttle:login');
+    Route::post('auth/forgot-password', [AuthController::class, 'forgotPassword'])->middleware('throttle:password-reset');
+    Route::post('auth/reset-password', [AuthController::class, 'resetPassword'])->middleware('throttle:password-reset');
+
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::post('auth/logout', [MobileAuthController::class, 'logout']);
+        Route::get('me', [AuthController::class, 'me']);
+        Route::post('email/verification-notification', [AuthController::class, 'resendVerification'])->middleware('throttle:verification');
+
+        Route::put('account/email', [AuthController::class, 'updateEmail'])->middleware('throttle:account');
+        Route::put('account/password', [AuthController::class, 'updatePassword'])->middleware('throttle:account');
+        Route::delete('account', [AuthController::class, 'deleteAccount'])->middleware('throttle:account');
+
+        Route::get('account/subscriptions', [AccountController::class, 'subscriptions']);
+        Route::get('account/payments', [AccountController::class, 'payments']);
+        Route::get('account/payments/{payment}', [AccountController::class, 'payment']);
+        Route::get('vpn/credentials', [AccountController::class, 'vpnStatus']);
+        Route::get('vpn/config', [AccountController::class, 'vpnConfig'])->middleware('throttle:vpn');
+
+        Route::post('checkout', [PaymentController::class, 'createCheckout'])->middleware('throttle:checkout');
+        Route::get('payments/{payment}/verify', [PaymentController::class, 'verifyPayment']);
+        Route::post('subscriptions/trial', [PaymentController::class, 'startTrial'])->middleware('throttle:trial');
+        Route::post('subscriptions/cancel', [PaymentController::class, 'cancelSubscription']);
     });
 });
