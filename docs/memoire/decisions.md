@@ -13,7 +13,7 @@
 | Deadline | **Submit the mémoire on 15/10/2026.** Defense date: unknown. |
 | Website | Finished and audited (0 functional bugs; 121 backend tests pass; lint/tsc/build pass) — `docs/pfe/18-audit-final.md`. |
 | Deployment | **NOT deployed yet.** Still to do (plan §7). |
-| Mobile app | **Decided (D-15): build a real Flutter client app** based on our own project. Mossab's web prototype (`E:\PFE\nexus-vpn-feature-android-app`, [`mobile-facts.md`](nexus-vpn/docs/memoire/mobile-facts.md)) is **not** used (fake payment). Backend gets Sanctum token auth for mobile without touching the web login. Step-1 proposal done; build waits for approval. |
+| Mobile app | ⏸️ **POSTPONED (D-16, 2026-10-09)** — we build the Flutter app from our own project **later** (Q-23 re-opened). Not dropped. Backend Sanctum token auth is **done, tested, committed** and stays; the Flutter **auth** code is written and committed in `mobile/`. Chapters are written web-first with marked mobile placeholders. |
 | Host organization | EADN (Entreprise d'Appui au Développement du Numérique). Chapter I information still to collect (§9). |
 | Language | English. |
 | Final structure | Supervisor's structure, adapted to the real app (supervisor agreed). Gap handling proposed in §5, waiting for the student's choice. |
@@ -110,7 +110,7 @@ Status: **PROPOSED, waiting for the student's choice.** "Adapt" = keep the secti
 - ⚠️ **Fake payment:** the payment dialog collects raw card number/expiry/CVC and posts to a **mock** `/api/checkout` that returns a random fake receipt — it never uses Chargily. For a thesis on *secure* e-commerce payment this must be flagged, not presented as the real flow.
 - **Git/secrets:** the folder is a sibling of the repo, has no `.git`, is not tracked by the main repo, and contains no secrets (only `.env.example`). It cannot be pushed by mistake via the main repo.
 
-**Decided (Q-23 → D-15):** we build a **real Flutter client app** based on our own project (`E:\PFE\nexus-vpn`), not Mossab's prototype. The prototype stays only as a reference / lesson (its fake `/api/checkout` is exactly what we avoid). The real app uses the real Chargily checkout. See the Flutter scope and backend-token plan in `plan.md` Phase 4.
+**Decided (Q-23 → D-15), then ⏸️ POSTPONED (D-16, 2026-10-09):** the plan is a **real Flutter client app** from our own project (`E:\PFE\nexus-vpn`), not Mossab's prototype, using the **real** Chargily checkout. **Build is postponed to after the web mémoire** (deadline focus). Already done and kept: backend Sanctum token auth (committed) + the Flutter auth code in `mobile/`. Chapters get marked mobile placeholders until we resume. See `plan.md` Phase 4 (⏸️).
 
 ## 7. Day-by-day plan until 15/10/2026 — PROPOSED
 
@@ -178,7 +178,8 @@ Ask for **permission** to use each item; hide personal data (names, phone number
 | D-12 | 2026-10-07 | The work plan is **task-based, not date-based**, and lives in [`plan.md`](plan.md) (follow in order whatever the pace; deadline 15/10/2026 still holds). The old day-by-day plan in §7 is superseded. |
 | D-13 | 2026-10-07 | Project folder renamed `E:\PFE\nexus-vpn-upgraded-main` → `E:\PFE\nexus-vpn`. Git still works (branch `main`, no remote). Paths updated in memory. |
 | D-14 | 2026-10-07 | Applied P-05: `docs/memoire-ref/` and `docs/memoire/eadn/` added to the main `.gitignore` so the other student's mémoire is never pushed. |
-| D-15 | 2026-10-07 | **Q-23 answered: build a real Flutter client app** based on our own project (`E:\PFE\nexus-vpn`), **not** Mossab's web prototype (which has a fake payment). Scope = client only (admin stays on the web). Backend gets **token auth (Laravel Sanctum)** for mobile, added **without changing the website's session+CSRF login**. Flutter SDK 3.35.6 confirmed working. Plan in `plan.md` Phase 4; build waits for the student's approval of the Step-1 proposal. |
+| D-15 | 2026-10-07 | **Q-23 answered: build a real Flutter client app** based on our own project (`E:\PFE\nexus-vpn`), **not** Mossab's web prototype (which has a fake payment). Scope = client only (admin stays on the web). Backend gets **token auth (Laravel Sanctum)** for mobile, added **without changing the website's session+CSRF login**. Flutter SDK 3.35.6 confirmed working. Plan in `plan.md` Phase 4; build waits for the student's approval of the Step-1 proposal. *(Superseded by D-16: postponed.)* |
+| D-16 | 2026-10-09 | **Mobile app POSTPONED — we come back later (not dropped).** Reason: focus the remaining days (deadline 15/10) on the web mémoire + deployment + EADN. **Kept:** backend Sanctum token auth (done, tested 130/130, committed) stays in the code; the Flutter auth code already written stays committed in `mobile/`. **Q-23 re-opened** (we will build the Flutter app from our own project later). **No other task depends on the mobile app**: Phase 4 is marked ⏸️ in `plan.md`; chapters are written web-first with clearly-marked placeholders for the mobile parts (use-case diagram, sequence diagram, technologies, screenshots). D-08 stands: both authors built the website and the mobile app together. |
 
 ## 11. Proposals waiting for a decision
 
@@ -220,7 +221,7 @@ Ask for **permission** to use each item; hide personal data (names, phone number
 | Q-20 | When can the supervisor review drafts? | Open |
 | Q-21 | Which GitHub repo to deploy from? | Open → P-06 |
 | Q-22 | How does the live site send e-mails? Render Free blocks SMTP (plan 0.14): paid Render, or an HTTP e-mail API (Brevo/Mailgun/Postmark/Resend), or another host | Open (Claude explains; student decides) |
-| Q-23 | What is the "mobile app" in the mémoire? | ✅ Resolved (D-15): a **real Flutter client app** based on our own project, with Sanctum token auth added to the backend. |
+| Q-23 | What is the "mobile app" in the mémoire? | 🟡 **Re-opened (D-16): deferred.** Plan = a real Flutter client app from our own project, built **later** (postponed 2026-10-09). Backend token auth already done; Flutter auth code already written in `mobile/`. |
 
 ## 13. Next steps
 
@@ -236,3 +237,5 @@ Ask for **permission** to use each item; hide personal data (names, phone number
 | 2026-10-07 | Part 2: student's answers recorded (D-04…D-11); guide copied into `docs/memoire-ref/`; English implications (§3); gap proposals (§5); day-by-day plan (§7); EADN checklist (§9); proposals P-01…P-08; questions Q-14…Q-21. |
 | 2026-10-07 | Part 3: created task-based [`plan.md`](plan.md) (D-12). Folder renamed to `E:\PFE\nexus-vpn` (D-13). Analysed Mossab's "android app" → it is a Next.js web app, not native (§6, [`mobile-facts.md`](mobile-facts.md), Q-04 resolved, Q-23/P-09 raised). Added Q-22 (e-mail). Git-ignored `docs/memoire-ref/` + `docs/memoire/eadn/` (D-14). |
 | 2026-10-07 | Part 4: student decided to **build a real Flutter client app** (D-15, answers Q-23/P-09). Updated D-08 to say both authors built the website and mobile app as a team. Confirmed Flutter 3.35.6 ready. Rewrote `plan.md` Phase 4 with the backend-token + Flutter build tasks. Step-1 proposal presented; waiting for approval before coding. |
+| 2026-10-07 | Built Phase 4A: Sanctum token auth for mobile (committed `3567090`; 130/130 tests; web login unchanged). Then wrote the Flutter auth app in `mobile/` (analyze clean; Android build unconfirmed). |
+| 2026-10-09 | **Mobile app POSTPONED (D-16).** Q-23 re-opened (deferred). Backend tokens + Flutter auth code kept/committed. `plan.md` Phase 4 marked ⏸️ and removed from everything's dependencies; chapters go web-first with mobile placeholders. Focus shifts to deployment + web chapters + EADN visit prep (visit 11–12/10, deadline 15/10). |

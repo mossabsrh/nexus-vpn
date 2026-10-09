@@ -5,9 +5,12 @@
 > Decisions and open questions live in [`decisions.md`](decisions.md). Read both at the start of every mémoire session.
 > Assumes proposals **P-01** (gap handling), **P-03** (Markdown drafts → Word at the end) and **P-04** (diagram tools) are accepted. If not, the tasks that use them change.
 
+> ---
+> ⏸️ **MOBILE APP POSTPONED (decided 2026-10-09).** We will build the Flutter app from the main project **later** — it is **not dropped, not deleted**. All of **Phase 4** is on hold **except** the backend token auth (4.4–4.9), which is already **done, tested and committed** and stays in the code. The Flutter app code already written lives in `mobile/` (committed). **No other phase depends on the mobile app**: chapters are written **web-first**, with clearly-marked placeholders for the mobile parts (use-case diagram, sequence diagram, technologies, screenshots) to fill when we resume. See `decisions.md` D-16 / Q-23.
+
 ## How to use this plan
 
-- **Checkbox:** ☐ to do · ☑ done · ➖ dropped (say why in decisions.md). Claude ticks tasks when done and adds new tasks at the end of the right phase with the next number.
+- **Checkbox:** ☐ to do · ☑ done · ⏸️ postponed (come back later) · ➖ dropped (say why in decisions.md). Claude ticks tasks when done and adds new tasks at the end of the right phase with the next number.
 - **Who:** Student (you) · Mossab · Claude · Supervisor · EADN · Institute.
 - **Needs:** tasks that must be done first. "—" = can start any time.
 - 🔴 = **critical path**: a delay here delays the submission.
@@ -100,14 +103,16 @@ Output folders (created when needed):
 | ☐ | 3.11 | Tool logos (frameworks, DBMS, Docker, Git/GitHub, IDE, Vercel, Render, Chargily, WireGuard, modelling tools) | Claude (Student if download blocked) | — | `figures/logos/` |
 | ☐ | 3.12 | Short, commented code excerpts in English | Claude | — | snippets |
 | ☐ | 3.13 | Deployment diagram with the real hosts (English) | Claude | 1.13 | `figures/` |
+| ☐ | 3.14 | Architecture figure: web frontend + Laravel backend (English; **mark where the mobile client will be added later**) | Claude | 3.1 | `figures/` |
 
-## Phase 4 — Mobile app: Flutter client (Lane C) — decision D-15
+## Phase 4 — Mobile app: Flutter client (Lane C) — ⏸️ POSTPONED (2026-10-09)
 
-> ✅ **Decided (Q-23 → D-15):** build a **real Flutter client app** based on our own project, not Mossab's web prototype (its `/api/checkout` is fake). Scope = **client only** (admin stays on the website). The backend gets **Sanctum token auth for mobile, added without changing the website's session+CSRF login**. Flutter 3.35.6 confirmed. Mossab's prototype is kept only as a "what not to do" reference ([`mobile-facts.md`](mobile-facts.md)).
->
-> App screens (client): Login · Register (with plan choice) · Forgot password · Plans/Pricing · Dashboard (subscription, status, trial, payment history) · Subscribe & pay (real Chargily in the browser → return → result) · VPN (download/share the WireGuard `.conf`) · Profile/Settings (change email/password, light/dark theme) · Logout. Same look as the website (dark navy + cyan primary + purple accent, Geist font, logo), in English.
->
-> **Build only after the student approves the Step-1 proposal.** Commit after each part (student asked). The Flutter app lives in the repo at `mobile/` (build artifacts git-ignored).
+> ⏸️ **POSTPONED — we come back later (not dropped).** The plan and all this work stay in place.
+> **Already done and kept (do NOT redo when we resume):** 4.1–4.3 analysis; **4.4–4.9 backend Sanctum token auth — done, tested (130/130), committed**; and the Flutter **auth** code (scaffold + theme + core + login/register/forgot/logout) is written and committed under `mobile/` (its Android build was not yet confirmed).
+> **On hold (4.10–4.24):** finishing/confirming the app build, the remaining screens (plans, dashboard, Chargily payment, VPN config, profile/theme), running on device, the APK, and the mobile mémoire material (screenshots, use-case/sequence diagrams, architecture figure).
+> **When we resume:** build the real Flutter client app from our own project (client only; admin stays on the web); real Chargily checkout (never Mossab's fake one); same look as the website. Scope/screens were specified in the Step-1 proposal; see [`mobile-facts.md`](mobile-facts.md), D-16, Q-23.
+
+> App screens (client), for when we resume: Login · Register (with plan choice) · Forgot password · Plans/Pricing · Dashboard (subscription, status, trial, payment history) · Subscribe & pay (real Chargily in the browser → return → result) · VPN (download/share the WireGuard `.conf`) · Profile/Settings (change email/password, light/dark theme) · Logout. Same look as the website (dark navy + cyan primary + purple accent, Geist font, logo), in English.
 
 **Done — analysis (informs what to avoid):**
 
@@ -128,30 +133,30 @@ Output folders (created when needed):
 | ☑ | 4.8 | Tests (test DB only): login/register/logout, 401 without token, 401 wrong password, 429 lockout, logout revokes token, guard isolation, password change revokes other tokens. **Full suite 130/130 green (web login unchanged)** | Claude | 4.7 | 9 tests pass |
 | ☑ | 4.9 | Docs: `07-api.md` §4bis, `08-authentication-security.md` §1bis, `05-backend.md`, `12-testing.md`, `17-changelog.md` | Claude | 4.8 | docs updated |
 
-**4B — Flutter app (Lane C):**
+**4B — Flutter app (Lane C) — ⏸️ POSTPONED:**
 
 | ✓ | # | Task | Who | Needs | Produces |
 |---|---|---|---|---|---|
-| ☐ | 4.10 | Scaffold `mobile/` Flutter app; packages (flutter_riverpod, dio, flutter_secure_storage, url_launcher, share_plus, path_provider, google_fonts); git-ignore `mobile/build/`, `.dart_tool/` | Claude | 4.5 | app skeleton |
-| ☐ | 4.11 | Theme = website look (colors, Geist font, radius, logo); light/dark | Claude | 4.10 | theme |
-| ☐ | 4.12 | Core: env config (API base URL), Dio client with Bearer interceptor + 401 handling, secure token storage, models (User/Plan/Subscription/Payment) | Claude | 4.10, 4.6 | core layer |
-| ☐ | 4.13 | Auth screens: login, register (plan choice), forgot password, logout + auth state | Claude | 4.12, 4.7 | screens |
-| ☐ | 4.14 | Plans/pricing screen | Claude | 4.12 | screen |
-| ☐ | 4.15 | Dashboard: subscription, status, trial, payment history | Claude | 4.12 | screen |
-| ☐ | 4.16 | Subscribe & pay: start checkout → open **real Chargily** in the browser → return → poll verify → result | Claude | 4.12, 4.14 | screen |
-| ☐ | 4.17 | VPN: status + download/share the WireGuard `.conf` | Claude | 4.12 | screen |
-| ☐ | 4.18 | Profile/Settings: change email, change password, theme toggle | Claude | 4.12, 4.7 | screen |
-| ☐ | 4.19 | Run on device: real phone over USB (primary) or `Medium_Phone_API_35` AVD (fallback); backend via LAN IP or deployed URL | Student + Claude | 4.13 | app running |
-| ☐ | 4.20 | Build an APK for the mémoire (install info + size) | Claude + Student | 4.13–4.18 | APK |
+| ⏸️ | 4.10 | Scaffold `mobile/` Flutter app; packages; git-ignore build artifacts — **code written & committed** | Claude | 4.5 | app skeleton |
+| ⏸️ | 4.11 | Theme = website look (colors, Geist font, radius, logo); light/dark — **written & committed** | Claude | 4.10 | theme |
+| ⏸️ | 4.12 | Core: env config, Dio client (Bearer + 401), secure token storage, models — **written & committed** | Claude | 4.10, 4.6 | core layer |
+| ⏸️ | 4.13 | Auth screens: login, register (plan choice), forgot password, logout + auth state — **written & committed** | Claude | 4.12, 4.7 | screens |
+| ⏸️ | 4.14 | Plans/pricing screen | Claude | 4.12 | screen |
+| ⏸️ | 4.15 | Dashboard: subscription, status, trial, payment history | Claude | 4.12 | screen |
+| ⏸️ | 4.16 | Subscribe & pay: start checkout → open **real Chargily** → return → poll verify → result | Claude | 4.12, 4.14 | screen |
+| ⏸️ | 4.17 | VPN: status + download/share the WireGuard `.conf` | Claude | 4.12 | screen |
+| ⏸️ | 4.18 | Profile/Settings: change email, change password, theme toggle | Claude | 4.12, 4.7 | screen |
+| ⏸️ | 4.19 | Run on device: **confirm the Android build first**, then real phone over USB or `Medium_Phone_API_35` AVD | Student + Claude | 4.13 | app running |
+| ⏸️ | 4.20 | Build an APK for the mémoire (install info + size) | Claude + Student | 4.13–4.18 | APK |
 
-**4C — Mémoire material for the app:**
+**4C — Mémoire material for the app (Lane A) — ⏸️ POSTPONED (chapters hold a marked placeholder until then):**
 
 | ✓ | # | Task | Who | Needs | Produces |
 |---|---|---|---|---|---|
-| ☐ | 4.21 | 🔴 Screenshot every screen + key states (login error, empty, success, payment result) on demo data → `docs/pfe/memoire-assets/screenshots/mobile/`; English captions in the assets README | Claude + Student (device) | 4.19 | `screenshots/mobile/` |
-| ☐ | 4.22 | Mobile use case diagram + tables (client app) | Claude | 3.2 | `figures/` + tables |
-| ☐ | 4.23 | Mobile sequence diagram(s): token login, checkout | Claude | 4.16 | `figures/` |
-| ☐ | 4.24 | Architecture figure: web (session) + Flutter (token) + backend | Claude | 3.1, 4.6 | `figures/` |
+| ⏸️ | 4.21 | Screenshot every screen + key states → `docs/pfe/memoire-assets/screenshots/mobile/`; English captions | Claude + Student (device) | 4.19 | `screenshots/mobile/` |
+| ⏸️ | 4.22 | Mobile use case diagram + tables (client app) | Claude | 3.2 | `figures/` + tables |
+| ⏸️ | 4.23 | Mobile sequence diagram(s): token login, checkout | Claude | 4.16 | `figures/` |
+| ⏸️ | 4.24 | Architecture figure variant: web (session) + Flutter (token) + backend | Claude | 3.1 | `figures/` |
 
 ## Phase 5 — Chapter II: VPN services and e-commerce (Lane A) → `chapters/ch2.md`
 
@@ -170,26 +175,26 @@ Output folders (created when needed):
 
 | ✓ | # | Task | Who | Needs | Produces |
 |---|---|---|---|---|---|
-| ☐ | 6.1 | Intro + III.1 Project overview (+ architecture figure) | Claude | 0.1, 4.7 | ch3 |
+| ☐ | 6.1 | Intro + III.1 Project overview (+ web architecture figure; mobile marked as a future addition) | Claude | 0.1, 3.14 | ch3 |
 | ☐ | 6.2 | III.2 Stakeholders (adapted per G-01) | Claude | 0.1 | ch3 |
 | ☐ | 6.3 | III.3 Role and permission mapping | Claude | 3.6 | ch3 |
 | ☐ | 6.4 | III.4.1–III.4.10 use case tables: Authenticate · Browse VPN offers · Choose a plan and get the VPN configuration · Subscribe and checkout · Process payment · Manage VPN accounts · View billing history · View payment receipts · Manage subscriptions · Contact the company | Claude | 0.1 | ch3 |
-| ☐ | 6.5 | Mobile use case tables | Claude | 4.5 | ch3 |
-| ☐ | 6.6 | III.5 Use case diagrams with text: III.5.1 global, III.5.2 client, III.5.3 admin (+ support side), III.5.4 mobile | Claude | 3.2, 4.5 | ch3 |
-| ☐ | 6.7 | III.6 Sequence diagrams, one paragraph each (web + mobile) | Claude | 3.3, 4.6 | ch3 |
+| ⏸️ | 6.5 | Mobile use case tables — **POSTPONED**; leave a marked placeholder in ch3 | Claude | — | ch3 placeholder |
+| ☐ | 6.6 | III.5 Use case diagrams with text: III.5.1 global, III.5.2 client, III.5.3 admin (+ support side); **III.5.4 mobile → marked placeholder (postponed)** | Claude | 3.2 | ch3 |
+| ☐ | 6.7 | III.6 Sequence diagrams, one paragraph each (**web**; mobile sequence → marked placeholder, postponed) | Claude | 3.3 | ch3 |
 | ☐ | 6.8 | III.7 Class diagram + explanation | Claude | 3.4 | ch3 |
 | ☐ | 6.9 | III.8 Relational database model | Claude | 3.5 | ch3 |
 | ☐ | 6.10 | III.9 Data dictionary | Claude | 3.5 | ch3 |
 | ☐ | 6.11 | III.10 Business logic and rules | Claude | 3.7 | ch3 |
 | ☐ | 6.12 | III.11 Relationships and cardinalities | Claude | 3.7 | ch3 |
 | ☐ | 6.13 | III.12 Gantt chart + conclusion | Claude | 3.8 | ch3 |
-| ☐ | 6.14 | 🔴 Review Ch III → fixes | Student (+ Mossab for mobile) | 6.1–6.13 | ch3 approved |
+| ☐ | 6.14 | 🔴 Review Ch III → fixes | Student | 6.1–6.13 | ch3 approved |
 
 ## Phase 7 — Chapter IV: implementation and deployment (Lane A) → `chapters/ch4.md`
 
 | ✓ | # | Task | Who | Needs | Produces |
 |---|---|---|---|---|---|
-| ☐ | 7.1 | Intro + IV.1.1 Frameworks (backend, frontend, mobile) | Claude | 3.11, 4.2 | ch4 |
+| ☐ | 7.1 | Intro + IV.1.1 Frameworks (backend, frontend; **mobile → marked placeholder, postponed**) | Claude | 3.11 | ch4 |
 | ☐ | 7.2 | IV.1.2 DBMS (PostgreSQL, SQLite) | Claude | 3.11 | ch4 |
 | ☐ | 7.3 | IV.1.3 Security and payment technologies (hashing, sessions, CSRF, HMAC, Chargily, WireGuard crypto; MFA → future work) | Claude | 0.1 | ch4 |
 | ☐ | 7.4 | IV.1.4 Dev tools (IDE, Git/GitHub, Docker, pnpm/Composer, CI) | Claude | 0.13, 1.5 | ch4 |
@@ -202,7 +207,7 @@ Output folders (created when needed):
 | ☐ | 7.11 | IV.4.1 Client interface walkthrough (screenshots + captions) | Claude | 3.10 | ch4 |
 | ☐ | 7.12 | IV.4.2 Administrator interface | Claude | 3.10 | ch4 |
 | ☐ | 7.13 | IV.4.3 Support side (contact requests, moderation) | Claude | 0.1, 3.10 | ch4 |
-| ☐ | 7.14 | IV.4.4 Mobile interface | Claude | 4.4 | ch4 |
+| ⏸️ | 7.14 | IV.4.4 Mobile interface — **POSTPONED**; leave a marked placeholder in ch4 | Claude | — | ch4 placeholder |
 | ☐ | 7.15 | IV.5.1 Security hardening (SQLi/XSS, CSRF, rate limits, headers) + code excerpt | Claude | 3.12 | ch4 |
 | ☐ | 7.16 | IV.5.2 Payment gateway integration (flow, HMAC webhook, idempotency) + code excerpt | Claude | 3.12 | ch4 |
 | ☐ | 7.17 | IV.5.3 Notification system (e-mails + scheduled tasks) | Claude | 0.1, 0.14 | ch4 |
@@ -213,7 +218,7 @@ Output folders (created when needed):
 | ☐ | 7.22 | 🔴 IV.7.1 Production environment | Claude | 1.13, 3.13 | ch4 |
 | ☐ | 7.23 | IV.7.2 CI/CD pipeline | Claude | 1.5, 2.1 | ch4 |
 | ☐ | 7.24 | IV.7.3 Monitoring and logging + conclusion | Claude | 2.1 | ch4 |
-| ☐ | 7.25 | 🔴 Review Ch IV → fixes | Student + Mossab (mobile parts) | 7.1–7.24 | ch4 approved |
+| ☐ | 7.25 | 🔴 Review Ch IV → fixes | Student | 7.1–7.24 | ch4 approved |
 
 ## Phase 8 — Supervisor review of Chapters II–IV
 
@@ -311,15 +316,14 @@ Output folders (created when needed):
 - ☐ No secrets, keys or passwords, and no personal data of EADN staff or clients, in the text, screenshots or annexes.
 - ☐ Names (students, supervisor, EADN) are spelled the same everywhere; English is consistent; every abbreviation is listed.
 - ☐ Gaps are handled as decided: adapted titles used, future-work items listed in the conclusion.
-- ☐ Web and mobile parts are both present; screenshots are readable.
+- ☐ The web part is complete and screenshots are readable; the mobile app is **postponed** and appears only as marked placeholders + a "future work" note (unless resumed before submission).
 
 ## Critical path (what blocks everything)
 
 ```
 0.1 + 0.2 (decisions)
-  → Ch II, III, IV written (5 → 6 → 7)
+  → Ch II, III, IV written (5 → 6 → 7)   [web-first; mobile parts are marked placeholders — Phase 4 POSTPONED]
       ↑ needs deployment: 0.14 → 1.3 → 1.4 → 1.6–1.12 → 2.x
-      ↑ needs the Flutter app: backend tokens 4.4→4.8 → app 4.10→4.19 → screenshots 4.21
   → 8.1 → 8.2 (Ch II–IV sent to supervisor)
   → 9.3 EADN visit → 9.4
   → Ch I (10.1 → 10.8)
@@ -328,18 +332,17 @@ Output folders (created when needed):
   → 15.1 → 15.2
 ```
 
-Four things can stop the whole chain:
+Three things can stop the whole chain (the mobile app is POSTPONED, so it no longer blocks anything):
 1. **Deployment** — especially the e-mail problem on Render (0.14).
-2. **The Flutter app** (D-15): backend token auth (4.4–4.8), then the app (4.10–4.19), then screenshots (4.21).
-3. **The EADN visit** (9.3) — EADN is closed Fri–Sat; book early (0.11).
-4. **The supervisor's final review time** (14.3).
+2. **The EADN visit** (9.3) — EADN is closed Fri–Sat; book early (0.11).
+3. **The supervisor's final review time** (14.3).
 
 ## What can run in parallel
 
 - **From the start, at the same time:**
   - Lane A: 3.x, then 5.x → 6.x.
   - Lane B: 1.x → 2.x.
-  - Lane C: 4.x.
+  - Lane C: ⏸️ postponed (mobile app — Phase 4).
   - Lane D: Phase 0, plus 11.7 / 11.8 (dedications, acknowledgements).
   - Claude can also do 9.1 (interview sheet) and 13.1 (Word template) at any time.
 - Chapter II doesn't need deployment or mobile, so it can be written first while Lanes B and C progress.
@@ -379,3 +382,4 @@ Four things can stop the whole chain:
 | 2026-10-07 | Phase 4 updated after analysing Mossab's source (it is a Next.js web app, not native): ticked 4.1–4.3, added 4.3b (decide Q-23), rewrote 4.4–4.8 to branch on Q-23. Updated critical path, risks, fallback. See [`mobile-facts.md`](mobile-facts.md). |
 | 2026-10-07 | Phase 4 rewritten for **D-15 (build a real Flutter client app)**: 4A backend Sanctum token auth (4.4–4.9, website login untouched), 4B Flutter app (4.10–4.20), 4C mémoire material (4.21–4.24). Updated critical path, risks, fallback. Build waits for approval of the Step-1 proposal. |
 | 2026-10-07 | **Phase 4A done**: Sanctum token auth built + tested (130/130, web login unchanged), docs updated. Committed. Next: 4B Flutter app, starting with auth screens. |
+| 2026-10-09 | **Mobile app POSTPONED** (D-16). Phase 4 marked ⏸️ (backend 4.4–4.9 stays done/committed; Flutter auth code written & committed in `mobile/`; 4.10–4.24 on hold). Removed mobile from the critical path and from the dependencies of 6.1/6.5/6.6/6.7/7.1/7.14 (now web-first with marked placeholders); added web architecture figure 3.14. Reviews no longer wait on Mossab. |
