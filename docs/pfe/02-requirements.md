@@ -95,7 +95,7 @@ Seules les propriétés réellement implémentées sont listées ; aucune mesure
 | NFR-10 | Performance | Cache des offres (10 min, invalidé à chaque modification), index sur les colonnes filtrées, pagination, pages pré-rendues statiques, chargement différé des sections de l'accueil | `05` §5, `06` §2, `04` §2 |
 | NFR-11 | Robustesse / disponibilité | Délais d'attente sur les appels réseau, messages d'erreur distincts (session invalide vs serveur injoignable), échecs d'e-mail non bloquants, contrôle de santé `/up` | `04` §5–6, `05` §9, `13-deployment.md` |
 | NFR-12 | Utilisabilité | Interface responsive (barre latérale mobile), thème sombre/clair, messages d'erreur lisibles issus de la validation | `04` §10 |
-| NFR-13 | Maintenabilité | TypeScript strict, ESLint, conventions Laravel 12, 110 tests backend automatisés | `12-testing.md` |
+| NFR-13 | Maintenabilité | TypeScript strict, ESLint, conventions Laravel 12, 130 tests backend automatisés | `12-testing.md` |
 | NFR-14 | Portabilité / déploiement | Configuration par variables d'environnement, image Docker, SQLite en local et PostgreSQL en production | `13-deployment.md` |
 
 **Total : 14 exigences non fonctionnelles.**

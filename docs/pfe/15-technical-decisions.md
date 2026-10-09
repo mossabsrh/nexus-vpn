@@ -61,7 +61,7 @@
 * **Alternatives** : couche `Services/`, FormRequests et Policies, Eloquent API Resources ; ou logique dans les modèles + `$request->validate()` + `toApiArray()` (retenu).
 * **Comparaison** : l'approche retenue garde le code compact et localisé (chaque modèle porte ses règles : `Payment::markSucceeded`, `Subscription::cancel`) ; elle rend les modèles volumineux et mélange formatage et domaine, et la casse des réponses n'est pas uniforme (`07-api.md` §13.2).
 * **Choix** : retenu tel quel. ⚠️ À VÉRIFIER : choix délibéré ou évolution organique ?
-* **Conséquences** : 110 tests de fonctionnalités couvrent ces méthodes via HTTP ; refactorisation possible (`19-limitations-and-future-work.md`).
+* **Conséquences** : 130 tests de fonctionnalités couvrent ces méthodes via HTTP ; refactorisation possible (`19-limitations-and-future-work.md`).
 
 ## TD-08 — Pas de file d'attente : notifications synchrones
 
@@ -102,4 +102,18 @@
 * **Choix** : **anonymisation + soft delete**. Les données personnelles (nom, e-mail, mot de passe, jeton) sont effacées ; l'utilisateur est *soft-deleted* (ne peut plus s'authentifier) ; l'e-mail d'origine est libéré par un e-mail de remplacement unique ; les paiements et abonnements sont conservés. Évite aussi de se heurter aux contraintes `restrictOnDelete`.
 * **Conséquences** : l'historique de facturation reste exploitable (statistiques admin) ; un tiers ne peut plus relier ces lignes à une personne ; les administrateurs et propriétaires d'équipe sont exclus de cette voie (support). La synchronisation WireGuard restant manuelle (R-01), les pairs révoqués ne disparaissent de la passerelle qu'au prochain export `vpn:peers`.
 
-**Total : 14 décisions documentées.**
+## TD-15 — API mobile : jetons Sanctum (sans toucher au login web ; app reportée)
+
+* **Contexte** : prévoir une application mobile cliente consommant la même API. L'authentification web (session + CSRF) convient au navigateur mais pas à une application native.
+* **Alternatives** : JWT (révocation plus complexe, jeton exposé au stockage client) ; Sanctum SPA par cookies (inadapté au natif) ; **Sanctum « API tokens » (Bearer)** (retenu).
+* **Choix** : ajouter **Laravel Sanctum** sur un groupe de routes `/api/mobile/*` placé **hors du groupe `web`** (donc sans session ni CSRF), en **réutilisant les contrôleurs existants** et **sans modifier le login web**. Durée de vie du jeton 30 jours ; révocation à la déconnexion, au changement de mot de passe et à la suppression de compte.
+* **Conséquences** : table `personal_access_tokens` ; 9 tests ajoutés (130 au total ; login web vérifié inchangé). **L'application mobile (Flutter) est reportée** (D-16 du mémoire) ; le back-end à jetons est conservé pour la reprise.
+
+## TD-16 — E-mail en production via Brevo (API HTTP), car Render Free bloque le SMTP
+
+* **Contexte** : depuis 2025-09, **Render Free bloque les ports SMTP sortants (25/465/587)** ; la configuration Gmail SMTP ne pourra donc pas livrer d'e-mails en production.
+* **Alternatives** : instance Render payante (garde le SMTP) ; Resend/Mailgun/Postmark (API HTTP mais exigent souvent un domaine vérifié) ; **Brevo** via API HTTP (retenu).
+* **Choix** : **Brevo**, qui fonctionne avec un **expéditeur unique vérifié, sans domaine**. En local, Gmail SMTP est conservé.
+* **Conséquences** : petit changement de configuration mailer + une clé API (créée par l'étudiant), **appliqué au moment du déploiement** (D-17 du mémoire). `config/services.php` câble déjà des mailers HTTP (`resend`, `postmark`) ; Brevo s'ajoute de la même façon.
+
+**Total : 16 décisions documentées.**

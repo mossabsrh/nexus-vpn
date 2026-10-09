@@ -1,6 +1,8 @@
 # 20 — Correspondance avec les chapitres du mémoire
 
-> Plan type utilisé : Introduction générale ; Chapitre 1 (contexte et état de l'art) ; Chapitre 2 (analyse et conception) ; Chapitre 3 (réalisation) ; Chapitre 4 (tests et déploiement, s'il est séparé du chapitre 3) ; Conclusion et perspectives ; Annexes. ⚠️ À VÉRIFIER : plan imposé par l'établissement.
+> ⚠️ **La structure réelle de NOTRE mémoire est celle de l'encadrant** (voir `docs/memoire/decisions.md` §4 et `docs/memoire/content-spec.md`) : **Ch I — Présentation de l'organisme d'accueil (EADN)** · **Ch II — VPN et e-commerce (état de l'art)** · **Ch III — Analyse et conception** · **Ch IV — Implémentation et déploiement**. Le tableau ci-dessous suit un plan *générique* (Ch1 contexte, Ch2 conception, Ch3 réalisation, Ch4 tests) ; pour le mappage section par section de notre structure, utiliser `content-spec.md`.
+>
+> Plan générique (ancienne version) : Introduction générale ; Chapitre 1 (contexte et état de l'art) ; Chapitre 2 (analyse et conception) ; Chapitre 3 (réalisation) ; Chapitre 4 (tests et déploiement) ; Conclusion ; Annexes.
 
 | Fichier `docs/pfe/` | Introduction | Ch. 1 Contexte / état de l'art | Ch. 2 Analyse et conception | Ch. 3 Réalisation | Ch. 4 Tests et déploiement | Conclusion / perspectives | Annexes |
 |---|---|---|---|---|---|---|---|
@@ -26,6 +28,6 @@
 | `19-limitations-and-future-work.md` | | | | | | ✔ limites et perspectives | |
 | `assets/diagrams/erd.mmd` | | | ✔ diagramme entité-association (base du MCD/MLD) | | | | |
 | Diagrammes à produire (cas d'utilisation, classes, séquences, activités, déploiement, architecture, MCD/MLD) | | | ✔ | ✔ séquences | ✔ déploiement | | |
-| `assets/screenshots/` (`TODO.md`) | | | | ✔ interfaces | ✔ tests, déploiement | | ✔ |
+| `memoire-assets/screenshots/` (68 captures) | | | | ✔ interfaces | ✔ tests, déploiement | | ✔ |
 
 `03-architecture.md` n'a pas encore été créé (non demandé dans l'audit de référence) ; l'architecture est actuellement décrite dans `04`, `05`, `07` et `13`.

@@ -1,6 +1,6 @@
 # 06 — Base de données
 
-> Audit de référence du 2026-10-05. Schéma relevé sur la base locale SQLite avec `php artisan db:show` et `php artisan db:table <table>` (l'outil Boost `database-schema` n'était pas disponible dans la session ; ces commandes Artisan lisent le même schéma). Migrations listées avec `php artisan migrate:status` (17 migrations, toutes exécutées).
+> Audit de référence du 2026-10-05. Schéma relevé sur la base locale SQLite avec `php artisan db:show` et `php artisan db:table <table>` (l'outil Boost `database-schema` n'était pas disponible dans la session ; ces commandes Artisan lisent le même schéma). Migrations listées avec `php artisan migrate:status` (**18 migrations** depuis l'ajout de Sanctum le 2026-10-07, toutes exécutées).
 
 ## 1. SGBD
 
@@ -158,6 +158,7 @@ Index composé `(status, created_at)`.
 | `cache`, `cache_locks` | Cache (ex. `pricing.plans`) et verrous. |
 | `jobs`, `job_batches`, `failed_jobs` | Files d'attente. ⚠️ À VÉRIFIER : aucun job ni notification en file (`ShouldQueue`) n'a été trouvé dans `app/` ; ces tables semblent inutilisées. |
 | `migrations` | Suivi des migrations. |
+| `personal_access_tokens` | Jetons **Sanctum** de l'API mobile (`tokenable`, `token` haché unique, `abilities`, `expires_at`). Ajoutée le 2026-10-07. **App mobile reportée** ; back-end conservé. 0 ligne en dev. |
 
 ## 4. Relations (modèles Eloquent)
 
@@ -205,6 +206,7 @@ Diagramme : `assets/diagrams/erd.mmd`.
 | `2026_10_05_000013_create_product_tables` | `teams.subscription_id`, `vpn_credentials`, `audit_logs` |
 | `2026_10_05_000014_add_moderation_to_testimonials_table` | modération des témoignages |
 | `2026_10_05_000015_create_contact_requests_table` | `contact_requests` |
+| `2026_10_07_195743_create_personal_access_tokens_table` | `personal_access_tokens` (Sanctum, API mobile — app reportée) |
 
 ## 7. Données initiales (seeders)
 

@@ -20,6 +20,7 @@
 |---|---|---|---|
 | `laravel/framework` | v12.60.2 | Routage, Eloquent ORM, validation, sessions, CSRF, rate limiting, notifications e-mail, planificateur, client HTTP (appels Chargily), chiffrement (`encrypted` cast de la clé privée VPN) | utilisé |
 | `laravel/tinker` | v2.11.1 | Console REPL pour le débogage | outil |
+| `laravel/sanctum` | v4.3.3 | Authentification par **jeton** (Bearer) pour l'API mobile `/api/mobile/*`, ajoutée le 2026-10-07 sans toucher au login web par session. **App mobile reportée** (le back-end est conservé) | utilisé (mobile) |
 | `inertiajs/inertia-laravel` | v2.0.24 | Adaptateur Inertia du starter kit (`HandleInertiaRequests`, pages `/`, `dashboard`, `settings/*`) | **hérité, non utilisé par le frontend réel** |
 | `tightenco/ziggy` | v2.6.2 | Exposition des routes nommées au JavaScript (`@routes` dans `app.blade.php`) | **hérité, non utilisé par le frontend réel** |
 
@@ -46,7 +47,8 @@ Aucun SDK Chargily n'est utilisé : l'intégration passe par le client HTTP de L
 |---|---|---|
 | Chargily Pay v2 | Paiement en ligne (DZD) : checkouts, webhooks signés HMAC-SHA256 | `CHARGILY_MODE`, `CHARGILY_SECRET_KEY` |
 | WireGuard | Protocole VPN ; configuration client générée par l'API, pairs exportés via `vpn:peers` | `VPN_*` |
-| Gmail SMTP | E-mails de vérification, réinitialisation, bienvenue, reçu, rappels (`smtp.gmail.com:587`, TLS, compte dédié + mot de passe d'application) | `MAIL_*` dans `.env` (identifiants non versionnés) ; production via secrets Render |
+| E-mail — Gmail SMTP (dev) | E-mails de vérification, réinitialisation, bienvenue, reçu, rappels (`smtp.gmail.com:587`, TLS, compte dédié + mot de passe d'application) | `MAIL_*` dans `.env` (identifiants non versionnés) |
+| E-mail — **Brevo (production)** | **Render Free bloque le SMTP sortant** → en production, envoi via l'**API HTTP Brevo** (expéditeur unique vérifié, sans domaine). À câbler au déploiement (D-16/D-17 du mémoire) | clé API Brevo (secret Render) |
 | Render (hébergement) | Déploiement du conteneur Docker du backend et base PostgreSQL | `render.yaml` (racine du dépôt) |
 
 ### Paquets JavaScript dans `nexus-vpn/package.json`

@@ -11,7 +11,7 @@
 | Base de données | **Render PostgreSQL** | `nexus-vpn-db` (base `nexus_vpn`, utilisateur `nexus_vpn`) | Francfort, offre **Free** |
 | Paiement | Chargily Pay v2 | Service externe | Mode `test` dans `render.yaml` |
 | Passerelle VPN WireGuard | — | Serveur externe | ⚠️ À VÉRIFIER : aucun serveur WireGuard n'est décrit dans le dépôt (seules `VPN_SERVER_PUBLIC_KEY`/`VPN_SERVER_ENDPOINT` sont attendues) |
-| Envoi d'e-mails | Gmail SMTP (`smtp.gmail.com:587`, TLS) | Service externe | Compte Gmail dédié + mot de passe d'application. ⚠️ À VÉRIFIER : secrets de production à saisir dans Render |
+| Envoi d'e-mails | **Dev : Gmail SMTP** ; **Production : Brevo (API HTTP)** | Service externe | ⚠️ **Render Free bloque le SMTP sortant (25/465/587)** → la production utilise l'API HTTP **Brevo** (expéditeur unique vérifié, sans domaine ; D-16/D-17 du mémoire, `15` TD-16). Secrets à saisir dans Render au déploiement |
 
 Flux en production : navigateur → Vercel (`/backend-api/*` réécrit) → Render (`/api/*`) → PostgreSQL. Chargily appelle directement le webhook sur le domaine Render. Détails du flux : `07-api.md` §1.
 
@@ -54,6 +54,7 @@ Aucune étape `npm` : les ressources Vite du starter kit hérité ne sont pas co
 | Tâche | Fréquence (`routes/console.php`) |
 |---|---|
 | `subscriptions:expire` | toutes les 15 minutes, `withoutOverlapping` |
+| `payments:reconcile` | toutes les 15 minutes, `withoutOverlapping` (synchronise les paiements `pending` périmés, expire les checkouts abandonnés) |
 | `subscriptions:remind` | tous les jours à 09:00 (fuseau `APP_TIMEZONE`, défaut UTC) |
 
 Elles sont exécutées par `schedule:work` dans le conteneur web (pas de cron Render ni de service « worker » séparé). ⚠️ À VÉRIFIER : sur l'offre Free, Render met le service en veille après 15 minutes sans trafic (`DEPLOYMENT.md`) ; le planificateur ne tourne donc pas pendant la veille (risque R-04). Le contrôle d'accès de l'API reste correct (fondé sur `current_period_end`), mais e-mails et révocations sont retardés.
@@ -145,3 +146,5 @@ Depuis le 2026-10-06, l'envoi d'e-mails passe par **Gmail SMTP** : `MAIL_MAILER=
 **Limite.** Un compte Gmail gratuit plafonne à **~500 e-mails/jour** — suffisant pour une démonstration, à surveiller si le volume augmente.
 
 Envoi réel vérifié le 2026-10-06 (e-mail de vérification livré via Gmail). Le paiement Chargily exige une clé de test et une URL publique pour recevoir le webhook (la vérification active via la page de résultat fonctionne sans webhook).
+
+**Production — Render bloque le SMTP.** Depuis 2025-09, **Render Free bloque les ports SMTP sortants (25/465/587)** ; l'envoi en production ne passera donc **pas** par Gmail SMTP mais par l'**API HTTP de Brevo** (compte gratuit, expéditeur unique vérifié, sans domaine requis), câblée **au moment du déploiement** (petit changement de mailer + clé API ; voir `15-technical-decisions.md` TD-16). `config/services.php` câble déjà des mailers HTTP (`resend`, `postmark`) ; Brevo s'ajoute de la même façon. En **local**, Gmail SMTP reste utilisé.

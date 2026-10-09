@@ -62,6 +62,9 @@
 | Pair (peer) WireGuard | Client autorisé sur la passerelle, identifié par sa clé publique et son adresse tunnel |
 | Proxy (Next.js 16) | Fichier `proxy.ts` (ex-middleware) exécuté avant le rendu des pages |
 | Rate limiting | Limitation du nombre de requêtes par période |
+| Sanctum (Laravel) | Paquet d'authentification par **jetons personnels** (Bearer) ; utilisé pour l'API mobile `/api/mobile/*` (sans session ni CSRF). App mobile reportée, back-end conservé |
+| Jeton Bearer (Bearer token) | Jeton envoyé dans l'en-tête `Authorization: Bearer <token>` pour authentifier un client sans cookie de session (API mobile) |
+| Brevo | Fournisseur d'envoi d'e-mails par **API HTTP** (anciennement Sendinblue) ; retenu pour la production car Render Free bloque le SMTP sortant (D-17) |
 | Réécriture (rewrite) | Redirection interne transparente de `/backend-api/*` vers l'API Laravel |
 | Seeder | Script d'insertion de données initiales |
 | shadcn/ui | Collection de composants React copiés dans le projet, basés sur Radix UI et Tailwind |

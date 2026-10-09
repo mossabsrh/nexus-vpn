@@ -12,7 +12,7 @@
 |---|---|---|
 | Frontend (racine) | Next.js 16.2.6 (App Router, Turbopack), React 19.2, TypeScript 5.7 strict, Tailwind CSS 4.2, shadcn/ui (Radix), framer-motion, next-themes ; pnpm | `04-frontend.md`, `09` |
 | Backend (`nexus-vpn/`) | Laravel 12.60 (PHP ^8.2 ; 8.2 local, 8.3 Docker), PHPUnit 11, Pint, Laravel Boost | `05-backend.md`, `09` |
-| Base de données | SQLite (local, tests en mémoire), PostgreSQL (production) ; 17 migrations | `06-database.md` |
+| Base de données | SQLite (local, tests en mémoire), PostgreSQL (production) ; 18 migrations (dont `personal_access_tokens`, Sanctum — app mobile reportée) | `06-database.md` |
 | Services | Chargily Pay v2 (mode test), WireGuard (passerelle externe), SMTP | `13-deployment.md` |
 | Hébergement | Vercel (frontend) + Render Free (Docker PHP/Apache + PostgreSQL, Francfort) | `13-deployment.md` |
 
@@ -43,7 +43,7 @@
 ## Modules clés
 
 * **Contrat** : navigateur → `/backend-api/*` (même origine) → Laravel `/api/*` ; session cookie + CSRF (`XSRF-TOKEN` / `X-XSRF-TOKEN`, rejeu sur 419). Référence complète : `07-api.md`.
-* **Authentification** : sessions Laravel (pas de Sanctum/JWT), e-mail vérifié requis pour payer et pour le VPN, rôles `user`/`admin` (middleware `admin`), `proxy.ts` fail-closed pour `/admin`. `08-authentication-security.md`.
+* **Authentification** : sessions Laravel + CSRF pour le **web** ; **jetons Sanctum** (Bearer) pour l'API mobile `/api/mobile/*` (ajoutés 2026-10-07, login web inchangé ; **app mobile reportée**, D-16). E-mail vérifié requis pour payer et pour le VPN, rôles `user`/`admin` (middleware `admin`), `proxy.ts` fail-closed pour `/admin`. `08-authentication-security.md`.
 * **Abonnements** : statuts `trialing`/`active`/`canceled`/`expired` ; un seul abonnement courant par utilisateur (index partiel) ; accès = période en cours (`grantingAccess`). `05` §7.1.
 * **Paiement** : montant serveur, paiement enregistré avant Chargily, webhook HMAC + vérification active, montant **et** devise contrôlés avant activation, `markSucceeded` idempotent, réconciliation planifiée des `pending` (`payments:reconcile`), pas de renouvellement automatique. `05` §7.2, §7.6 pour la suppression de compte (anonymisation + soft delete). Chargily en mode **test** uniquement (TD-13).
 * **VPN** : clés Curve25519 générées en PHP (`sodium`), clé privée chiffrée (`encrypted`), adresses du pool `10.66.0.0/16` jamais réutilisées ; synchronisation de la passerelle manuelle (`vpn:peers`). `05` §7.3.
@@ -59,8 +59,8 @@
 ## État actuel (2026-10-05)
 
 * Code inchangé depuis le commit initial `067e68d` ; documentation de référence complète (commits `e246b4d` → `4e9c025` + synthèse finale).
-* Tests : backend 110/110 réussis ; frontend : lint, types et build réussis ; aucun test frontend.
+* Tests : backend 130/130 réussis ; frontend : lint, types et build réussis ; aucun test frontend.
 * Exigences : 31 FR, 14 NFR (`02`) ; 22 fonctionnalités (`10`) ; 20 problèmes résolus (`14`) ; 12 décisions (`15`).
 * Historique : l'essentiel du durcissement et des fonctionnalités a été réalisé les 2026-10-04/05 juste avant le versionnement (`11` §2.5, `17`).
 * Risques ouverts principaux (`08` §11) : R-01 révocation VPN non propagée à la passerelle, R-02 base Render Free expirant après 30 jours, R-03 routes héritées actives, R-04 planificateur en veille, R-05 `TRUSTED_PROXIES="*"`.
-* À produire : `03-architecture.md`, diagrammes (seul `assets/diagrams/erd.mmd` existe), captures (`assets/screenshots/TODO.md`), réponses aux questions de `README.md`.
+* À produire : `03-architecture.md` ; diagrammes traduits en anglais + notation UML (sources `.mmd` dans `memoire-assets/diagrams/`) ; captures déjà générées (68 dans `memoire-assets/screenshots/`) ; réponses aux questions de `README.md`. Vérification pré-rédaction : `docs/memoire/{ground-truth,docs-audit,content-spec,gap-report}.md`.

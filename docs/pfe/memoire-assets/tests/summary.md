@@ -2,7 +2,7 @@
 
 - **Commande** : `php artisan test` (dans `nexus-vpn/`)
 - **Base de données** : SQLite en mémoire (`:memory:`, isolée de la base de dev)
-- **Résultat** : **121 tests réussis, 0 échec** (470 assertions), ~13 s
+- **Résultat** : **130 tests réussis, 0 échec** (502 assertions), ~14 s
 - **Sortie complète** : [`test-output.txt`](test-output.txt)
 
 > Cadre : PHPUnit 11 (pas de Pest). Principalement des **tests de fonctionnalités** (`tests/Feature`) qui appellent les routes HTTP réelles et vérifient la réponse JSON, l'état de la base et les effets de bord.
@@ -12,6 +12,7 @@
 | Fichier | Nb | Couverture |
 |---|---|---|
 | `Api/AuthenticationTest.php` | 4 | Inscription + authentification, connexion/`me`, déconnexion |
+| `Api/MobileAuthTest.php` | 9 | **API mobile (jetons Sanctum)** : inscription/connexion renvoyant un jeton, 401 sans jeton, 401 mauvais mot de passe, 429 verrouillage, déconnexion révoquant le jeton, un jeton mobile n'ouvre pas les routes web à session, changement de mot de passe révoquant les autres jetons *(app mobile reportée ; back-end conservé)* |
 | `Api/AccountSecurityTest.php` | 12 | Verrouillage après 5 échecs, e-mails de vérification/bienvenue, lien signé, **renvoi du lien**, anti-énumération, réinitialisation par jeton, en-têtes de sécurité/CORS |
 | `Api/AccountDeletionTest.php` | 5 | `DELETE /api/account` : anonymisation + conservation de l'historique, impossibilité de se reconnecter, mot de passe requis (422), blocage admin/propriétaire d'équipe (409) |
 | `Api/AdminUserDeletionTest.php` | 6 | `DELETE /api/admin/users/{user}` : anonymisation, suppression d'un autre admin, refus (soi-même, dernier admin, propriétaire d'équipe) (422), refus non-admin (403) |
@@ -30,4 +31,4 @@
 |---|---|
 | `Auth/*`, `Settings/*`, `DashboardTest`, `Unit/ExampleTest` | 26 |
 
-**Total : 121 tests** (95 sur l'API réelle et les commandes, 26 hérités).
+**Total : 130 tests** (104 sur l'API réelle et les commandes, 26 hérités).

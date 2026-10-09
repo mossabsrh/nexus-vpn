@@ -78,8 +78,8 @@ npx pnpm@10 dlx @mermaid-js/mermaid-cli -b white -i diagrams/01-architecture.mmd
 
 | Fichier | Contenu |
 |---|---|
-| `tests/summary.md` | Synthèse : 121 tests, tableau par fichier et couverture. |
-| `tests/test-output.txt` | Sortie complète de `php artisan test` (121 réussis, 470 assertions). |
+| `tests/summary.md` | Synthèse : 130 tests, tableau par fichier et couverture. |
+| `tests/test-output.txt` | Sortie complète de `php artisan test` (130 réussis, 502 assertions). |
 
 ---
 

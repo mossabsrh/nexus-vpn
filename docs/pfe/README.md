@@ -17,25 +17,24 @@ Dossier de travail regroupant les informations techniques et les preuves nécess
 | `07-api.md` | Contrat frontend ↔ backend : 50 endpoints, CSRF, conventions d'erreur, incohérences |
 | `08-authentication-security.md` | Mécanismes de sécurité et registre des risques R-01 à R-25 |
 | `09-technologies-and-packages.md` | Inventaire des technologies et paquets (backend et frontend) |
-| `10-features.md` | 22 fonctionnalités reliées aux exigences |
+| `10-features.md` | 23 fonctionnalités reliées aux exigences |
 | `11-development-history.md` | État initial du dépôt et phases de développement |
-| `12-testing.md` | Tests backend (94) et vérifications frontend (lint, types, build) |
+| `12-testing.md` | Tests backend (130) et vérifications frontend (lint, types, build) |
 | `13-deployment.md` | Vercel + Render (Docker, PostgreSQL), variables, développement local |
 | `14-problems-and-solutions.md` | 13 problèmes résolus visibles dans le code |
-| `15-technical-decisions.md` | 12 décisions techniques justifiées |
+| `15-technical-decisions.md` | 16 décisions techniques justifiées |
 | `16-sources.md` | Sources consultées (aucune externe pour l'instant) |
 | `17-changelog.md` | Journal daté des changements |
 | `18-glossary.md` | Abréviations et termes techniques |
 | `18-audit-final.md` | Audit final de qualité/débogage avant soutenance (2026-10-07) |
 | `19-limitations-and-future-work.md` | Limites fonctionnelles/techniques et perspectives |
 | `20-memoire-mapping.md` | Correspondance fichiers ↔ chapitres du mémoire |
-| `assets/diagrams/erd.mmd` | Diagramme entité-association (Mermaid) |
-| `assets/screenshots/TODO.md` | 34 captures d'écran à réaliser manuellement |
+| `memoire-assets/` | Assets du mémoire : `diagrams/` (9 .mmd + PNG/SVG), `database/` (erd.mmd + tables.md), `code/`, `tests/`, `screenshots/` (68 captures) — voir `memoire-assets/README.md` |
 
 ## État actuel (2026-10-05)
 
 * Audit de référence terminé (4 étapes, aucun code modifié). Application fonctionnellement complète, en environnement de test (Chargily `test`, offres gratuites Render/Vercel).
-* Preuves : 110 tests backend réussis ; lint, contrôle de types et build frontend réussis (`12-testing.md`).
+* Preuves : 130 tests backend réussis ; lint, contrôle de types et build frontend réussis (`12-testing.md`).
 * Restent à produire : `03-architecture.md` et les diagrammes (cas d'utilisation, classes, séquences, activités, déploiement, architecture, MCD/MLD) ; captures d'écran ; réponses aux questions ci-dessous.
 
 ## Points à compléter par l'étudiant

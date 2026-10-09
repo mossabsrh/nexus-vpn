@@ -124,7 +124,7 @@ Signalement de connexions en échec. Vérification (lecture seule) de la base de
 | Élément | Valeur |
 |---|---|
 | Commande | `php artisan test --compact` (base de test `:memory:` uniquement) |
-| Résultat | **121 réussis, 0 échec** (470 assertions) |
+| Résultat | **130 réussis, 0 échec** (502 assertions) |
 
 ## 4. Frontend (application Next.js)
 
@@ -161,7 +161,7 @@ Route (app)
 
 Audit complet avant soutenance (rapport : `18-audit-final.md`). Base de développement sauvegardée au préalable ; aucune modification du code (l'état audité est l'état final). Tests exécutés sur la base `:memory:` ; parcours E2E sur le **build de production** (`php artisan serve` + `pnpm start`), pilotés par Playwright (Chromium headless), un contexte à la fois (RAM limitée).
 
-**Base de référence re-vérifiée :** `php artisan test` → 121 réussis (470 assertions) ; `pnpm lint`, `tsc --noEmit`, `next build` → réussis.
+**Base de référence re-vérifiée :** `php artisan test` → 130 réussis (502 assertions) ; `pnpm lint`, `tsc --noEmit`, `next build` → réussis.
 
 **Parcours E2E vérifiés en direct (21/22) :**
 
