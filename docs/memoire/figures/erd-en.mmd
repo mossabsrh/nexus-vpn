@@ -1,0 +1,139 @@
+%% ERD NexusVPN (English) — from the real schema (php artisan db:table), 2026-10-10.
+%% Technical tables (sessions, cache, jobs, password_resets, migrations) omitted.
+%% PERSONAL_ACCESS_TOKENS (Sanctum, mobile) shown as a POSTPONED placeholder.
+erDiagram
+    USERS {
+        int id PK
+        string name
+        string email UK
+        string password
+        string role "user | admin"
+        datetime email_verified_at
+        string remember_token
+        datetime deleted_at "soft delete"
+    }
+    PLANS {
+        int id PK
+        string slug UK
+        string name
+        text description
+        int monthly_price "null = sales-assisted"
+        int yearly_price
+        int yearly_total
+        string currency "DZD"
+        text features "JSON"
+        bool popular
+        string cta
+        bool is_active
+        datetime deleted_at "soft delete"
+    }
+    SUBSCRIPTIONS {
+        int id PK
+        int user_id FK
+        int plan_id FK
+        int seats
+        string billing_period "monthly | yearly"
+        string status "trialing | active | canceled | expired | past_due"
+        datetime started_at
+        datetime trial_ends_at
+        datetime current_period_end
+        datetime canceled_at
+        datetime trial_reminder_sent_at
+        datetime renewal_reminder_sent_at
+        datetime deleted_at "soft delete"
+    }
+    PAYMENTS {
+        int id PK
+        int user_id FK
+        int subscription_id FK "nullable"
+        int amount
+        string currency
+        string status "pending | succeeded | failed | refunded"
+        string provider
+        string provider_reference UK "Chargily checkout id"
+        text provider_response "JSON"
+        text metadata "JSON (plan_id, billing_period...)"
+        datetime paid_at
+        string failure_reason
+        string error_code
+        datetime refunded_at
+        string refund_reason
+        datetime deleted_at "soft delete"
+    }
+    TEAMS {
+        int id PK
+        string name
+        int owner_id FK
+        int subscription_id FK "nullable"
+    }
+    TEAM_USER {
+        int team_id PK, FK
+        int user_id PK, FK
+        string role "owner | member"
+        datetime created_at
+    }
+    VPN_CREDENTIALS {
+        int id PK
+        int user_id FK
+        int subscription_id FK "nullable"
+        string public_key UK
+        text private_key "encrypted"
+        string address UK
+        string status "active | revoked"
+        datetime revoked_at
+    }
+    TESTIMONIALS {
+        int id PK
+        int user_id FK
+        text content
+        string status "pending | approved | rejected"
+        int moderated_by FK "nullable"
+        datetime moderated_at
+    }
+    CONTACT_REQUESTS {
+        int id PK
+        int user_id FK "nullable"
+        string name
+        string email
+        string company
+        int seats
+        text message
+        string status "new | handled"
+        int handled_by FK "nullable"
+        datetime handled_at
+        string ip_address
+    }
+    AUDIT_LOGS {
+        int id PK
+        int actor_id FK "nullable"
+        string action
+        string subject_type
+        int subject_id
+        text metadata "JSON"
+        string ip_address
+        datetime created_at
+    }
+    PERSONAL_ACCESS_TOKENS {
+        int id PK
+        string tokenable_type "mobile (POSTPONED)"
+        int tokenable_id
+        string token UK
+        datetime expires_at
+    }
+
+    USERS ||--o{ SUBSCRIPTIONS : "subscribes (RESTRICT)"
+    PLANS ||--o{ SUBSCRIPTIONS : "is for (RESTRICT)"
+    USERS ||--o{ PAYMENTS : "makes (RESTRICT)"
+    SUBSCRIPTIONS |o--o{ PAYMENTS : "funds (SET NULL)"
+    USERS ||--o{ TEAMS : "owns (CASCADE)"
+    SUBSCRIPTIONS |o--o| TEAMS : "covers (SET NULL)"
+    TEAMS ||--o{ TEAM_USER : "contains (CASCADE)"
+    USERS ||--o{ TEAM_USER : "member of (CASCADE)"
+    USERS ||--o{ VPN_CREDENTIALS : "holds (RESTRICT)"
+    SUBSCRIPTIONS |o--o{ VPN_CREDENTIALS : "authorizes (SET NULL)"
+    USERS ||--o{ TESTIMONIALS : "writes (CASCADE)"
+    USERS |o--o{ TESTIMONIALS : "moderates (SET NULL)"
+    USERS |o--o{ CONTACT_REQUESTS : "sends (SET NULL)"
+    USERS |o--o{ CONTACT_REQUESTS : "handles (SET NULL)"
+    USERS |o--o{ AUDIT_LOGS : "actor (SET NULL)"
+    USERS |o--o{ PERSONAL_ACCESS_TOKENS : "owns (postponed)"

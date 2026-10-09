@@ -1,0 +1,30 @@
+%% Global use-case diagram (English). NOTE: for the final figure, redraw in real UML
+%% (PlantUML) with actors + system boundary + <<include>>/<<extend>>. Mobile = placeholder (postponed).
+flowchart TB
+    visitor(["Visitor"])
+    user(["User (client)"])
+    admin(["Administrator"])
+
+    subgraph S["NexusVPN"]
+        UC1["Browse VPN offers"]
+        UC2["Create account + 7-day trial"]
+        UC3["Log in / out"]
+        UC4["Verify e-mail"]
+        UC5["Subscribe & pay (Chargily)"]
+        UC6["Cancel subscription"]
+        UC7["Download WireGuard config"]
+        UC8["Manage account (e-mail, password)"]
+        UC9["Delete account"]
+        UC10["Send a contact request (Team)"]
+        UC11["Manage users (incl. deletion)"]
+        UC12["Manage offers"]
+        UC13["Billing: payments, refunds"]
+        UC14["Moderate testimonials"]
+        UC15["View audit log"]
+        UC16["Handle contact requests"]
+        UC17["Create a team subscription"]
+    end
+
+    visitor --> UC1 & UC2 & UC3 & UC10
+    user --> UC1 & UC3 & UC4 & UC5 & UC6 & UC7 & UC8 & UC9
+    admin --> UC3 & UC11 & UC12 & UC13 & UC14 & UC15 & UC16 & UC17

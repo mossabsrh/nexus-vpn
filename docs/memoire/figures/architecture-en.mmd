@@ -1,0 +1,31 @@
+%% Global architecture (English) — NexusVPN. Mobile app POSTPONED (shown dashed).
+flowchart LR
+    subgraph Client["Browser / Device"]
+        U["User"]
+        WG["WireGuard client"]
+    end
+    subgraph Vercel["Vercel — Frontend"]
+        NEXT["Next.js 16 (App Router)\nproxy.ts (gates /admin, /dashboard)\nrewrite /backend-api -> API"]
+    end
+    subgraph Render["Render — Backend (Docker)"]
+        API["Laravel 12 (REST API)\nSession + CSRF, rate limiting\nScheduler (schedule:work)"]
+        DB[("PostgreSQL\n(SQLite locally)")]
+    end
+    subgraph External["External services"]
+        CH["Chargily Pay v2\n(EDAHABIA / CIB)"]
+        MAIL["E-mail\n(Gmail SMTP local / Brevo HTTP in prod)"]
+        GW["WireGuard gateway\n(manual sync: vpn:peers)"]
+    end
+    MOB["Mobile app (Flutter)\n[POSTPONED] token API /api/mobile"]
+
+    U -->|HTTPS| NEXT
+    NEXT -->|/backend-api -> /api| API
+    MOB -. "Bearer token (postponed)" .-> API
+    API --> DB
+    API -->|checkout + HMAC webhook| CH
+    API -->|verification, receipts, reminders| MAIL
+    API -. "peer export" .-> GW
+    WG -->|encrypted tunnel| GW
+    CH -->|redirect + webhook| NEXT
+    class MOB postponed
+    classDef postponed stroke-dasharray: 6 4, opacity:0.55
