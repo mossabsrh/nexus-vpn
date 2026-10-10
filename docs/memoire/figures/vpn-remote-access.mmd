@@ -1,0 +1,11 @@
+%%{init: {'theme':'neutral'}}%%
+flowchart LR
+  C1["Remote user 1"]
+  C2["Remote user 2"]
+  C3["Remote user 3"]
+  GW["VPN gateway"]
+  NET["Private network /<br/>Internet access"]
+  C1 == "encrypted tunnel" ==> GW
+  C2 == "encrypted tunnel" ==> GW
+  C3 == "encrypted tunnel" ==> GW
+  GW ==> NET

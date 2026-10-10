@@ -1,0 +1,11 @@
+%%{init: {'theme':'neutral'}}%%
+flowchart LR
+  Client["Client device<br/>(real IP address)"]
+  subgraph NET["Public Internet"]
+    Tunnel(["Encrypted tunnel<br/>encapsulation + encryption"])
+  end
+  GW["VPN gateway<br/>(gateway IP address)"]
+  Dest["Destination server<br/>(sees the gateway IP)"]
+  Client == "1. establish" ==> Tunnel
+  Tunnel == "2. protected traffic" ==> GW
+  GW == "3. forward" ==> Dest

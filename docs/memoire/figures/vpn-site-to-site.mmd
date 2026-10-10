@@ -1,0 +1,9 @@
+%%{init: {'theme':'neutral'}}%%
+flowchart LR
+  subgraph SA["Site A"]
+    LANA["Local network A"] --- GWA["Gateway A"]
+  end
+  subgraph SB["Site B"]
+    GWB["Gateway B"] --- LANB["Local network B"]
+  end
+  GWA == "site-to-site tunnel<br/>(over the Internet)" ==> GWB

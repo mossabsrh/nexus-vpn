@@ -169,7 +169,7 @@ Output folders (created when needed):
 | ◐ | 5.5 | II.4 E-commerce (II.4.1 definition, II.4.2 business models, II.4.3 e-sales process; Algerian e-payment context, law 18-05) — **DRAFTED** | Claude | 5.1 | ch2 |
 | ◐ | 5.6 | II.5 Portal design principles (II.5.1 UX, II.5.2 payment security, II.5.3 rights management, II.5.4 traceability) — **DRAFTED** | Claude | 5.1 | ch2 |
 | ◐ | 5.7 | II.6 Competitive analysis (II.6.1 competitors table, II.6.2 pros and cons) + conclusion — **DRAFTED** (commercial figures flagged for student) | Claude; Student validates facts | 5.1 | ch2 |
-| ☐ | 5.8 | 🔴 Review Ch II → fixes. **Pending:** student review/approval + 3 conceptual figures (II.1–II.3) to render | Student (+ Mossab) | 5.2–5.7 | ch2 approved |
+| ☐ | 5.8 | 🔴 Review Ch II → fixes. **Figures II.1–II.3 rendered + inserted**; student's jury-fix pass applied (Law 18-05 → art. 6; IPsec origin 1995/RFC 1825; footnote AUTHOR (First) format; BLAKE2s → WireGuard protocol page; traffic-log wording = portal only; code claims re-verified). **Pending:** student review/approval | Student (+ Mossab) | 5.2–5.7 | ch2 approved |
 
 ## Phase 6 — Chapter III: analysis and design (Lane A) → `chapters/ch3.md`
 

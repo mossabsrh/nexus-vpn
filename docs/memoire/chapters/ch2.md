@@ -3,9 +3,9 @@ DRAFT — Chapter II (English Markdown, per P-03: converted to Word at the end).
 Numbering follows the supervisor's structure (VPN_Portal_Thesis_Structure.txt): this is CHAPTER II
 (the student's early draft mislabelled it "Chapter I"; Chapter I is the host organisation, EADN).
 Citation convention (methodology guide): numbered footnotes with full references.
-Website footnotes carry the access date (10 October 2026); the student adds the exact access time
+Website footnotes carry the access date (10–11 October 2026); the student adds the exact access time
 when finalising, as the guide's example shows. Sources are tracked in docs/memoire/ch2-sources.md.
-Figures are captioned placeholders to be drawn/inserted (see the note after the conclusion).
+Figures II.1–II.3 are rendered (docs/memoire/figures/) and inserted.
 Mobile elements are marked as POSTPONED (decision D-16).
 -->
 
@@ -23,14 +23,13 @@ This chapter establishes that theoretical foundation. It first presents the fund
 
 A Virtual Private Network is a technology that allows two endpoints to communicate securely across a shared or public network — typically the Internet — as if they were connected by a dedicated private link. This is achieved by *tunnelling*: the original network packets are encapsulated and protected inside an outer, encrypted channel established between the two endpoints.[^nist]
 
-A VPN is expected to provide four security properties:
+A VPN tunnel provides three core security services:[^nist]
 
 - **Confidentiality** — transmitted data is encrypted, so that a third party intercepting the traffic cannot read it;
 - **Integrity** — any alteration of the data in transit can be detected, usually through a message authentication code;
-- **Authentication** — each endpoint can verify the identity of the other before exchanging traffic, which prevents impersonation;
-- **IP masking (pseudonymity)** — the user's real IP address is hidden behind that of the VPN server, which limits tracking and location disclosure.[^nist]
+- **Authentication** — each endpoint can verify the identity of the other before exchanging traffic, which prevents impersonation.
 
-These properties explain why VPNs are widely used both by organisations, to connect remote sites and teleworkers to internal resources, and by individuals, to protect their traffic on untrusted networks such as public Wi-Fi.
+A remote-access VPN also has a consequence for privacy: because the user's traffic is routed through the gateway (see II.1.2), the services it reaches observe the gateway's IP address rather than the user's own. This is why VPNs are used both by organisations, to connect remote sites and teleworkers to internal resources, and by individuals, to protect their traffic on untrusted networks such as public Wi-Fi.
 
 ### II.1.2 VPN Architecture
 
@@ -43,23 +42,25 @@ Establishing a tunnel follows a consistent sequence, regardless of the protocol 
 3. an **encrypted tunnel** is established, and application traffic is encapsulated, encrypted and sent through it;
 4. the server **decapsulates** the traffic and forwards it to its destination, returning responses through the same tunnel.
 
-> **Figure II.1 — Principle of a VPN tunnel.** *Source: author, adapted from NIST SP 800-77 Rev. 1.* — diagram: client → encrypted tunnel over the public Internet → VPN gateway → destination; the real IP is replaced by the gateway's IP.
+![Figure II.1 — Principle of a VPN tunnel](../figures/vpn-tunnel.png)
+
+**Figure II.1 — Principle of a VPN tunnel.** *Source: author.*
 
 ### II.1.3 Common VPN Protocols
 
 A VPN protocol defines how authentication, key exchange and encapsulation are carried out. Three families dominate current practice:
 
 - **IPsec** (Internet Protocol Security) is a suite of protocols standardised by the IETF that secures communication at the network layer. Its architecture is defined in RFC 4301, and key management is handled by IKE (Internet Key Exchange). IPsec is mature and is the traditional choice for site-to-site VPNs, but its configuration is comparatively complex.[^rfc4301][^nist]
-- **OpenVPN** is a widely deployed open-source solution that builds the tunnel on top of the TLS/SSL protocol and the OpenSSL library. It is flexible and portable across operating systems, at the cost of a large codebase.[^openvpn]
-- **WireGuard** is a recent protocol designed for simplicity and performance. It uses a small, fixed set of modern cryptographic primitives — static **Curve25519** keys for mutual authentication (in the manner of OpenSSH) and **ChaCha20-Poly1305** for authenticated encryption of packets carried over UDP — and its reference implementation is deliberately compact, at *"less than 4,000 lines of code"*, which makes it far easier to audit than its predecessors.[^wireguard]
+- **OpenVPN** is a widely deployed open-source solution that builds the tunnel on top of the TLS/SSL protocol and the OpenSSL library. It is flexible and portable across operating systems.[^openvpn]
+- **WireGuard** is a recent protocol designed for simplicity and performance. It uses a small, fixed set of modern cryptographic primitives — static **Curve25519** keys for mutual authentication (in the manner of OpenSSH), **ChaCha20-Poly1305** for authenticated encryption of packets carried over UDP,[^wireguard] and **BLAKE2s** for hashing and keyed hashing[^wgproto] — and its reference implementation is deliberately compact, at *"less than 4,000 lines of code"*, which makes it far easier to audit than its predecessors.[^wireguard]
 
 The **portal developed in this project provisions WireGuard tunnels**: for each entitled subscription it generates a Curve25519 key pair and a ready-to-import configuration file for the official WireGuard client. WireGuard was chosen for its performance, its modern cryptography and the small, auditable code base highlighted above. Table II.1 compares the three protocol families on the criteria most relevant to this choice.
 
 | Criterion | IPsec | OpenVPN | WireGuard |
 |---|---|---|---|
-| Standardisation / origin | IETF (RFC 4301 and related), 2005 | Open-source project (OpenVPN Inc.) | Open-source project (J. A. Donenfeld), 2016 |
+| Standardisation / origin | IETF; original architecture 1995 (RFC 1825[^rfc1825]), current RFC 4301 (2005) | Open-source project (OpenVPN Inc.) | Open-source project (J. A. Donenfeld); whitepaper 2017[^wireguard] |
 | Network layer | Network layer (IP) | Application layer, over TLS/SSL | Network layer, over UDP |
-| Cryptography | Configurable suites (AES, SHA, DH/ECDH) | TLS cipher suites via OpenSSL | Fixed modern set (Curve25519, ChaCha20-Poly1305, BLAKE2s) |
+| Cryptography | Configurable suites (AES, SHA, DH/ECDH) | TLS cipher suites via OpenSSL | Fixed modern set — Curve25519, ChaCha20-Poly1305, BLAKE2s[^wgproto] |
 | Code base | Very large | Large | Small ("< 4,000 lines") |
 | Configuration | Complex | Moderate | Simple |
 | Typical use | Site-to-site, enterprise | Remote access, cross-platform | Remote access and consumer VPNs, high performance |
@@ -74,13 +75,17 @@ VPNs are usually classified by the kind of endpoints they connect.
 
 A **remote-access VPN** connects a single user device to a private network or to the Internet through a gateway. The user runs a client application that establishes the tunnel on demand. This model is used by teleworkers who need to reach their organisation's internal resources, and, in the consumer market, by individuals who want to protect their browsing on untrusted networks.
 
-> **Figure II.2 — Remote-access VPN.** *Source: author.* — diagram: several individual client devices each establishing a tunnel to a central VPN gateway.
+![Figure II.2 — Remote-access VPN](../figures/vpn-remote-access.png)
+
+**Figure II.2 — Remote-access VPN.** *Source: author.*
 
 ### II.2.2 Site-to-Site VPN
 
-A **site-to-site VPN** connects two entire networks, for example the local networks of two branch offices, over the Internet. The tunnel is established between the gateways of each site rather than on individual devices, so it is transparent to the end users. This model is typically implemented with IPsec and is used to build an organisation-wide intranet or an extranet with partners.
+A **site-to-site VPN** connects two entire networks, for example the local networks of two branch offices, over the Internet. The tunnel is established between the gateways of each site rather than on individual devices, so it is transparent to the end users. This model is typically implemented with IPsec and is used to build an organisation-wide intranet or an extranet with partners.[^nist]
 
-> **Figure II.3 — Site-to-site VPN.** *Source: author.* — diagram: two site gateways (each behind a local network) joined by a single tunnel across the Internet.
+![Figure II.3 — Site-to-site VPN](../figures/vpn-site-to-site.png)
+
+**Figure II.3 — Site-to-site VPN.** *Source: author.*
 
 ### II.2.3 Client-Server VPN
 
@@ -116,7 +121,7 @@ A service that handles personal data and payments must respect information-secur
 - The **General Data Protection Regulation (GDPR, Regulation (EU) 2016/679)** governs the processing of personal data for individuals in the European Union. It establishes principles such as lawfulness, purpose limitation, **data minimisation**, storage limitation, and a set of rights for the data subject (access, rectification, erasure).[^gdpr]
 - In Algeria, the protection of personal data is governed by **Law 18-07 of 10 June 2018**, which sets the rules for processing personal data and created the national supervisory authority (ANPDP); it was amended in 2025 by **Law 25-11**.[^law1807]
 
-These frameworks directly shape the design of the portal: personal data is limited to what the service requires (data minimisation), subscribers can close their account and have their personal data erased while anonymised billing records are retained, and no VPN *traffic* logs are collected — consistent with a zero-log posture. The distinction between traffic logs (not collected) and the security/billing **audit log** (collected) is discussed in II.5.4.
+These frameworks directly shape the design of the portal: the personal data collected is limited to what the service requires (data minimisation); a subscriber can close their account, which erases their personal data while retaining anonymised billing records; and the portal's data model stores no VPN connection or traffic data. The only logging the portal keeps is a security and billing **audit log**, discussed in II.5.4.
 
 ## II.4 E-commerce and Sales Portals
 
@@ -126,7 +131,7 @@ Several authoritative definitions of electronic commerce coexist, and the presen
 
 The **OECD** defines an e-commerce transaction as *"the sale or purchase of goods or services, conducted over computer networks by methods specifically designed for the purpose of receiving or placing of orders"*, adding that payment and delivery may take place on- or off-line.[^oecd] The **World Trade Organization**, in its 1998 Work Programme on Electronic Commerce, uses a broader formulation: *"the production, distribution, marketing, sale or delivery of goods and services by electronic means"*.[^wto]
 
-For the Algerian context, **Law 18-05 of 10 May 2018** establishes the legal framework for electronic commerce and defines it (art. 2) as the commercial activity by which a supplier offers or provides, remotely and by electronic means, goods or services to a consumer.[^law1805] This legal grounding is important for the project, since the portal is intended to operate in Algeria and to accept national payment instruments (see II.4.3).
+For the Algerian context, **Law 18-05 of 10 May 2018** establishes the legal framework for electronic commerce. Its **Article 6** defines electronic commerce as the activity by which an electronic supplier (*e-fournisseur*) offers or provides to an electronic consumer (*e-consommateur*), remotely and by electronic means of communication, the supply of goods and services; the law's scope is set out in Article 2.[^law1805] This legal grounding is important for the project, since the portal is intended to operate in Algeria and to accept national payment instruments (see II.4.3).
 
 ### II.4.2 Online Business Models
 
@@ -161,7 +166,7 @@ Ergonomics in web design concern usability, accessibility and the overall user e
 
 Handling payments securely is a central requirement of any sales portal. Good practice is to **delegate the collection of card data to a specialised payment gateway** rather than storing it, so that sensitive card details never transit through or rest on the portal's own servers. The integrity of the exchange with the gateway must also be guaranteed: payment notifications (webhooks) should be **cryptographically signed and verified**, and the processing of a payment should be **idempotent**, so that a notification received more than once cannot activate a subscription or charge a customer twice.
 
-The project applies these principles through the Chargily integration: checkout is hosted by the gateway, the webhook is verified with an HMAC-SHA256 signature, and payment handling is idempotent.[^chargily] The corresponding implementation is presented in Chapter IV (II.5.2 ↔ IV.5.2).
+The project applies these principles through the Chargily integration: checkout is hosted by the gateway, the webhook is verified with an HMAC-SHA256 signature, and payment handling is idempotent.[^chargily] The corresponding implementation is presented in Chapter IV (§IV.5.2).
 
 ### II.5.3 User Rights Management
 
@@ -171,7 +176,7 @@ A portal exposes different capabilities to different users, and must enforce tha
 
 **Traceability** is the ability to record significant actions and events, and **auditability** is the ability to review those records afterwards. Keeping an **audit trail** of security- and billing-relevant events supports accountability, incident investigation and compliance; the OWASP project lists insufficient logging and monitoring among the common weaknesses of web applications.[^owasptop10]
 
-It is important to distinguish two kinds of logging. A privacy-respecting VPN service does **not** record users' *traffic* (a zero-log posture, consistent with the data-minimisation principle of II.3.3). It does, however, keep a security and billing **audit log** of events such as administrative actions, authentication failures and payment state changes. The project maintains such an audit log; its structure is described in Chapters III and IV.
+It is important to distinguish two kinds of logging. Recording users' browsing or connection *traffic* would run counter to the data-minimisation principle (II.3.3); a privacy-oriented VPN service is therefore designed not to keep such records (a "zero-log" posture). What the present work implements is on the portal side: the portal's data model stores no VPN connection or traffic data, and the only log it keeps is a security and billing **audit log** of events such as administrative actions, authentication failures and payment state changes. The audit log's structure is described in Chapters III and IV.
 
 ## II.6 Competitive Analysis
 
@@ -203,30 +208,28 @@ This chapter has established the theoretical foundation on which the rest of the
 ---
 
 <!--
-FIGURES TO INSERT (captioned above; to be drawn and placed in the final document, then listed in the List of Figures):
-- Figure II.1 — Principle of a VPN tunnel
-- Figure II.2 — Remote-access VPN
-- Figure II.3 — Site-to-site VPN
-These are standard conceptual diagrams; they can be produced quickly (e.g. with the project's Mermaid/PlantUML pipeline) once the prose is approved.
-
-ACCESS DATES: website footnotes show "accessed 10 October 2026"; add the exact time when finalising (methodology guide example).
-The exact verbatim text of art. 2 of Law 18-05 should be quoted from the Journal officiel n° 28 in the final version.
+FIGURES: Figures II.1–II.3 are rendered (docs/memoire/figures/vpn-tunnel.png, vpn-remote-access.png,
+vpn-site-to-site.png, Mermaid, scale 3) and inserted above; add them to the List of Figures when assembling the document.
+ACCESS DATES: website footnotes show "accessed 10/11 October 2026"; add the exact time when finalising (methodology guide example).
+The verbatim text of Article 6 of Law 18-05 should be quoted from the Journal officiel n° 28 in the final version.
 Commercial figures in Table II.3 (prices, server counts) are to be validated by the student.
 -->
 
 ## Notes
 
-[^nist]: BARKER, Elaine, DANG, Quynh, FRANKEL, Sheila, SCARFONE, Karen, WOUTERS, Paul: *Guide to IPsec VPNs*, NIST Special Publication 800-77 Revision 1, National Institute of Standards and Technology, Gaithersburg (MD), 2020. https://doi.org/10.6028/NIST.SP.800-77r1 (accessed 10 October 2026).
-[^wireguard]: DONENFELD, Jason A.: *WireGuard: Next Generation Kernel Network Tunnel*, NDSS Symposium 2017, Internet Society, 2017. https://www.wireguard.com/papers/wireguard.pdf (accessed 10 October 2026).
+[^nist]: BARKER (Elaine), DANG (Quynh), FRANKEL (Sheila), SCARFONE (Karen), WOUTERS (Paul): *Guide to IPsec VPNs*, NIST Special Publication 800-77 Revision 1, National Institute of Standards and Technology, Gaithersburg (MD), 2020. https://doi.org/10.6028/NIST.SP.800-77r1 (accessed 10 October 2026).
+[^wireguard]: DONENFELD (Jason A.): *WireGuard: Next Generation Kernel Network Tunnel*, NDSS Symposium 2017, Internet Society, 2017. https://www.wireguard.com/papers/wireguard.pdf (accessed 10 October 2026).
+[^wgproto]: WireGuard: *Protocol & Cryptography* (official protocol page). https://www.wireguard.com/protocol/ (accessed 11 October 2026).
 [^openvpn]: OpenVPN Inc.: *OpenVPN — Community Resources (documentation)*. https://openvpn.net/community-resources/ (accessed 10 October 2026).
-[^rfc4301]: KENT, Stephen, SEO, Karen: *Security Architecture for the Internet Protocol*, Request for Comments (RFC) 4301, Internet Engineering Task Force (IETF), 2005. https://www.rfc-editor.org/rfc/rfc4301 (accessed 10 October 2026).
-[^rfc8446]: RESCORLA, Eric: *The Transport Layer Security (TLS) Protocol Version 1.3*, Request for Comments (RFC) 8446, Internet Engineering Task Force (IETF), 2018. https://www.rfc-editor.org/rfc/rfc8446 (accessed 10 October 2026).
+[^rfc1825]: ATKINSON (Randall): *Security Architecture for the Internet Protocol*, Request for Comments (RFC) 1825, Internet Engineering Task Force (IETF), August 1995 (obsoleted by RFC 2401, then by RFC 4301). https://www.rfc-editor.org/rfc/rfc1825 (accessed 11 October 2026).
+[^rfc4301]: KENT (Stephen), SEO (Karen): *Security Architecture for the Internet Protocol*, Request for Comments (RFC) 4301, Internet Engineering Task Force (IETF), 2005. https://www.rfc-editor.org/rfc/rfc4301 (accessed 10 October 2026).
+[^rfc8446]: RESCORLA (Eric): *The Transport Layer Security (TLS) Protocol Version 1.3*, Request for Comments (RFC) 8446, Internet Engineering Task Force (IETF), 2018. https://www.rfc-editor.org/rfc/rfc8446 (accessed 10 October 2026).
 [^iso27001]: International Organization for Standardization: *ISO/IEC 27001 — Information security, cybersecurity and privacy protection — Information security management systems — Requirements*, ISO, Geneva, 2022. https://www.iso.org/standard/27001 (accessed 10 October 2026).
-[^gdpr]: Regulatory text: Regulation (EU) 2016/679 of the European Parliament and of the Council of 27 April 2016 on the protection of natural persons with regard to the processing of personal data (General Data Protection Regulation), *Official Journal of the European Union*, L 119, 4 May 2016. https://eur-lex.europa.eu/eli/reg/2016/679/oj (accessed 10 October 2026).
-[^law1807]: Regulatory text: Loi n° 18-07 du 10 juin 2018 relative à la protection des personnes physiques dans le traitement des données à caractère personnel, *Journal officiel de la République algérienne démocratique et populaire*, n° 34, 10 June 2018 (amended by Loi n° 25-11, *JORADP* n° 48, 24 July 2025).
+[^gdpr]: Regulation (EU) 2016/679 of the European Parliament and of the Council of 27 April 2016 on the protection of natural persons with regard to the processing of personal data (General Data Protection Regulation), *Official Journal of the European Union*, L 119, 4 May 2016. https://eur-lex.europa.eu/eli/reg/2016/679/oj (accessed 10 October 2026).
+[^law1807]: Loi n° 18-07 du 10 juin 2018 relative à la protection des personnes physiques dans le traitement des données à caractère personnel, *Journal officiel de la République algérienne démocratique et populaire*, n° 34, 10 June 2018 (amended by Loi n° 25-11, *JORADP* n° 48, 24 July 2025).
 [^oecd]: Organisation for Economic Co-operation and Development (OECD): *The 2025 OECD Definition of E-commerce and Guidelines for Interpretation* (reaffirming the 2009 definition), OECD Publishing, Paris, 2025. https://www.oecd.org/en/publications/the-2025-oecd-definition-of-e-commerce-and-guidelines-for-interpretation_2254f1de-en.html (accessed 10 October 2026).
 [^wto]: World Trade Organization: *Work Programme on Electronic Commerce*, document WT/L/274, WTO, Geneva, 25 September 1998. https://www.wto.org/english/tratop_e/ecom_e/ecom_e.htm (accessed 10 October 2026).
-[^law1805]: Regulatory text: Loi n° 18-05 du 10 mai 2018 relative au commerce électronique, *Journal officiel de la République algérienne démocratique et populaire*, n° 28, 16 May 2018.
+[^law1805]: Loi n° 18-05 du 10 mai 2018 relative au commerce électronique, *Journal officiel de la République algérienne démocratique et populaire*, n° 28, 16 May 2018 (definition of electronic commerce: Article 6; scope: Article 2).
 [^chargily]: Chargily: *Chargily Pay — Developer Documentation (v2)*. https://dev.chargily.com/ (accessed 10 October 2026).
 [^owasptop10]: OWASP Foundation: *OWASP Top 10 — Web Application Security Risks*. https://owasp.org/www-project-top-ten/ (accessed 10 October 2026).
 [^nordvpn]: Nord Security: *NordVPN — official website*. https://nordvpn.com/ (accessed 10 October 2026). Commercial details to be validated.
