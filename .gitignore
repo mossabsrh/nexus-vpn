@@ -42,3 +42,6 @@ nexus-vpn/.claude/settings.local.json
 # Mémoire: never push another student's work or raw EADN material (D-14 / P-05)
 docs/memoire-ref/
 docs/memoire/eadn/
+
+# Local archive of the postponed mobile app (the mobile/ source is versioned; the .7z is a local backup)
+mobile.7z

@@ -99,7 +99,7 @@ Output folders (created when needed):
 | ☐ | 3.7 | Business rules list + relationships and cardinalities list | Claude | 3.4 | lists |
 | ☐ | 3.8 | Gantt chart | Claude | 0.12 | `figures/` |
 | ☑ | 3.9 | Missing web screenshots **captured**: checkout dialog, team management, account settings, contact form, validation error, **success message, empty state, failed payment** (`screenshots/memoire/`) | Claude (capture script) | — | screenshots |
-| ◐ | 3.10 | **29 print-usable screenshots** selected + **EN captions + mémoire section** in `screenshots/README.md` (desktop 1440×900 light @2×, a few mobile-responsive) — ⚠ student approves selection + Claude **re-captures 4** after data cleanup (testimonial `04`, junk `19`/`20`/`21`) | Claude proposes, Student approves | 3.9 | selection list |
+| ◐ | 3.10 | **29 print-usable screenshots** selected + **EN captions + mémoire section** in `screenshots/README.md` (desktop 1440×900 light @2×, a few mobile-responsive); **test/junk data removed + 4 figures re-captured clean (2026-10-10)** — only student's final approval of the selection remains | Claude proposes, Student approves | 3.9 | selection list |
 | ☐ | 3.11 | Tool logos (frameworks, DBMS, Docker, Git/GitHub, IDE, Vercel, Render, Chargily, WireGuard, modelling tools) | Claude (Student if download blocked) | — | `figures/logos/` |
 | ☐ | 3.12 | Short, commented code excerpts in English | Claude | — | snippets |
 | ◐ | 3.13 | Deployment diagram (English) **done + rendered** (`deployment-en.mmd` + PNG, planned hosts Render/Vercel); update with **real URLs** after deploy | Claude | 1.13 | `figures/` |

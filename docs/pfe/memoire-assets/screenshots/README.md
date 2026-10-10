@@ -68,12 +68,8 @@ Mémoire chapter map: these illustrate **Chapter IV — Implementation and Deplo
 
 > ⏸️ The native **Flutter mobile app is POSTPONED** (decision D-16). §IV.4.4 stays a marked placeholder. The two images above are the **responsive website** on a phone-sized viewport, not the mobile app.
 
-### ⚠ Data cleanup needed before printing (4 figures)
-These four show real test/junk data on **non-demo** accounts; the capture format is fine, but clean the data and re-capture before use:
-- `04-testimonials.png` — an approved testimonial on the real admin account contains inappropriate wording. Remove it (Admin → Comments → filter *Approved* → Reject/Delete), then re-capture.
-- `19-admin-offers.png`, `20-admin-subscriptions.png`, `21-admin-payments.png` — a junk offer **"b"** (slug "a"), junk plans **"b" / "dgdtgy"**, and a junk pending payment appear. Delete these test offers/plans/payments (and the `nexusvpn.pfe@gmail.com` test payment), then re-capture.
-
-Re-capturing just these four keeps every date/reference consistent with the others. (Re-running `DemoDataSeeder` would shift all relative demo dates and force re-capturing the whole set — avoid it unless you redo everything.)
+### ✅ Data cleanup done (2026-10-10)
+All four figures were **re-captured after cleaning the test/junk data** (DB backed up first; only non-demo, non-admin test data removed, foreign keys respected): the inappropriate approved testimonial, a junk offer "b" (slug "a") + its trial/subscription/VPN/pending payment, a soft-deleted junk plan "dgdtgy", the whole `nexusvpn.pfe@gmail.com` test account + its payment/subscription/VPN, and a junk contact request. The demo accounts, the real admin account, and the audit log were left intact. These four now match the rest of the set — nothing further to do.
 
 ### How to regenerate the `memoire/` set
 Backend on :8000 and the **production** frontend on :3000 (`npx pnpm@10 start`), then run the capture script from the repo root:
