@@ -90,19 +90,19 @@ Output folders (created when needed):
 
 | ✓ | # | Task | Who | Needs | Produces |
 |---|---|---|---|---|---|
-| ◐ | 3.1 | Translate the Mermaid diagrams to English; export PNG — **done: architecture, use-case, ERD (`figures/*-en.mmd`)**; pending: 5 sequences + deployment + PNG render (Phase 13) | Claude | 0.3 | `figures/` |
-| ◐ | 3.2 | UML use case diagrams — **EN Mermaid draft done (`figures/use-case-en.mmd`)**; pending: redraw in real UML (PlantUML) + client/admin split | Claude | 0.1, 0.3 | `figures/` |
-| ☐ | 3.3 | Sequence diagrams for the chosen use cases (add missing: browse offers, cancel subscription, contact…) | Claude | 0.1, 3.1 | `figures/` |
-| ☐ | 3.4 | Class diagram in English, checked against the models | Claude | 3.1 | `figures/` |
+| ☑ | 3.1 | Translate the Mermaid diagrams to English **and render PNG** — **DONE: architecture, class, ERD, 5 sequences, deployment (`figures/*-en.mmd` + `.png`), all checked readable** | Claude | 0.3 | `figures/` |
+| ☑ | 3.2 | UML use case diagrams **in real UML** — **DONE: PlantUML global / client / admin (support merged, G-05) with actors, system boundary, «include»/«extend», mobile placeholder (`figures/use-case-*.puml` + `.png`)** | Claude | 0.1, 0.3 | `figures/` |
+| ◐ | 3.3 | Sequence diagrams — **5 core translated to EN + rendered** (register+verify, login, Chargily payment, VPN config, admin delete); pending: add browse/cancel/contact when writing III.6 | Claude | 0.1, 3.1 | `figures/` |
+| ☑ | 3.4 | Class diagram in English, checked against the models (**`class-diagram-en.mmd` + PNG**; incl. `PersonalAccessToken` ⏸️) | Claude | 3.1 | `figures/` |
 | ☑ | 3.5 | Relational model (text form) + data dictionary (name, meaning, type, size, constraint) — in `ch3-design-material.md` (EN) | Claude | — | `ch3-design-material.md` |
 | ☑ | 3.6 | Role/permission matrix (G-01) — in `ch3-design-material.md` | Claude | 0.1 | table |
 | ☐ | 3.7 | Business rules list + relationships and cardinalities list | Claude | 3.4 | lists |
 | ☐ | 3.8 | Gantt chart | Claude | 0.12 | `figures/` |
-| ☐ | 3.9 | Missing web screenshots: checkout dialog, team management, account settings, contact form, validation error and success states | Claude (capture script) or Student | — | screenshots |
-| ☐ | 3.10 | Pick the screenshots for the mémoire (mostly desktop light, a few mobile-responsive) + captions | Claude proposes, Student approves | 3.9 | selection list |
+| ☑ | 3.9 | Missing web screenshots **captured**: checkout dialog, team management, account settings, contact form, validation error, **success message, empty state, failed payment** (`screenshots/memoire/`) | Claude (capture script) | — | screenshots |
+| ◐ | 3.10 | **29 print-usable screenshots** selected + **EN captions + mémoire section** in `screenshots/README.md` (desktop 1440×900 light @2×, a few mobile-responsive) — ⚠ student approves selection + Claude **re-captures 4** after data cleanup (testimonial `04`, junk `19`/`20`/`21`) | Claude proposes, Student approves | 3.9 | selection list |
 | ☐ | 3.11 | Tool logos (frameworks, DBMS, Docker, Git/GitHub, IDE, Vercel, Render, Chargily, WireGuard, modelling tools) | Claude (Student if download blocked) | — | `figures/logos/` |
 | ☐ | 3.12 | Short, commented code excerpts in English | Claude | — | snippets |
-| ☐ | 3.13 | Deployment diagram with the real hosts (English) | Claude | 1.13 | `figures/` |
+| ◐ | 3.13 | Deployment diagram (English) **done + rendered** (`deployment-en.mmd` + PNG, planned hosts Render/Vercel); update with **real URLs** after deploy | Claude | 1.13 | `figures/` |
 | ☐ | 3.14 | Architecture figure: web frontend + Laravel backend (English; **mark where the mobile client will be added later**) | Claude | 3.1 | `figures/` |
 
 ## Phase 4 — Mobile app: Flutter client (Lane C) — ⏸️ POSTPONED (2026-10-09)
@@ -384,3 +384,4 @@ Three things can stop the whole chain (the mobile app is POSTPONED, so it no lon
 | 2026-10-07 | **Phase 4A done**: Sanctum token auth built + tested (130/130, web login unchanged), docs updated. Committed. Next: 4B Flutter app, starting with auth screens. |
 | 2026-10-09 | **Mobile app POSTPONED** (D-16). Phase 4 marked ⏸️ (backend 4.4–4.9 stays done/committed; Flutter auth code written & committed in `mobile/`; 4.10–4.24 on hold). Removed mobile from the critical path and from the dependencies of 6.1/6.5/6.6/6.7/7.1/7.14 (now web-first with marked placeholders); added web architecture figure 3.14. Reviews no longer wait on Mossab. |
 | 2026-10-10 | **Pre-chapter verification (6 steps) done** → `ground-truth.md`, `docs-audit.md`, `content-spec.md`, `gap-report.md`, `ch3-design-material.md`, `ch2-sources.md`, `figures/*`. Corrected `docs/pfe` (130 tests, Sanctum, Brevo, reconcile, mapping). Ticked 0.14 (Brevo D-17), 3.5, 3.6, 5.1; 3.1/3.2 partial (EN diagrams done, PlantUML/PNG pending). No app code changed; dev DB intact. |
+| 2026-10-10 | **Step-5 finish done.** Re-read both PDFs page by page (content-spec/decisions §2 confirmed). Diagrams: **5 sequences + deployment translated to EN**; **use-cases redrawn in real UML (PlantUML global/client/admin, support merged G-05)**; **all 11 EN diagrams rendered to PNG and checked readable** → ticked 3.1, 3.2, 3.4; 3.3/3.13 ◐. Screenshots: **29 print-usable captures** (`screenshots/memoire/`, 1440×900 light @2×, one per component, missing states incl. team mgmt/success/empty/failed) + EN captions & mémoire section in README → ticked 3.9; 3.10 ◐ (student approves + 4 re-captures after data cleanup). E-commerce definition source **resolved** (Law 18-05 art. 2 + OECD). **Fixed a demo-data bug** (`DemoDataSeeder` didn't attach the team owner to the pivot → owner couldn't see their team): seeder fixed + `DemoDataSeederTest` → **131/131 tests**; dev DB patched surgically (backup taken). ⚠ Flagged for student: inappropriate testimonial (`04`) + junk offer/plans/payments (`19`/`20`/`21`) to clean before printing. |

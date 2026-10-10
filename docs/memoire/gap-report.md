@@ -49,7 +49,7 @@
 | IV.1 technologies (+ logos, versions) | `09-technologies`, `ground-truth` (exact versions) | EN section + **logos**; MFA→future (G-06); +Sanctum (A2); ⏸️ mobile | 🔨 + 🌐 **logos** (official brand assets) |
 | IV.2 architecture (pattern/layers/APIs) | `13`,`15` TD-01/02 | EN section; Chargily + **Brevo** + WireGuard | 🔨 |
 | IV.3 modules (8) | `05-backend`,`07-api`,`10-features` | one subsection per module (adapt §5: G-05 helpdesk→contact+moderation, G-07 VPN provisioning) | 🔨 from **code** |
-| IV.4 interface walkthrough | **68 screenshots** (current, verified) | selection + captions; capture missing **states** (validation error, success, checkout dialog, team mgmt, account settings, contact) ; ⏸️ mobile | 🔨 select + ⏳ capture missing (needs frontend running) |
+| IV.4 interface walkthrough | **29 print-usable screenshots** (`screenshots/memoire/`, desktop 1440×900 light @2×, one per section/component, EN captions + mémoire section) + 68 legacy kept | ⚠ re-capture **4** after 👤 cleans data (inappropriate testimonial in `04`; junk offer/plans/payments in `19`/`20`/`21`); ⏸️ mobile placeholder | ✅ **done** (states captured: validation error, success, checkout dialog, team mgmt, account settings, empty, failed payment) — 🔨 re-capture 4 after cleanup |
 | IV.5 critical components (security/payment/notifications/reporting) | `code/backend.md`, `08`, `ground-truth` | EN section + **code excerpts** (CSRF/headers, HMAC webhook, scheduler, stats) | 🔨 from **source code** |
 | IV.6 testing (unit/integration, security, performance) | `12-testing` (**130 tests**) | the tests table (EN); **G-10** header/TLS scans + manual-check evidence; **G-09** Lighthouse + load test | 🔨 tests table now; ⏳ **live scans after deploy** (free online tools) |
 | IV.7 deployment (prod env, CI/CD, monitoring) | `13-deployment`, `render.yaml`, Dockerfile | EN section + **deployment diagram** + screenshots; **G-11** move/fix CI to repo-root `.github/`; **G-12** logs + `/up` + audit (+ uptime monitor) | 🔨 CI fix (config only) + ⏳ deployment screenshots after deploy |
@@ -99,12 +99,13 @@ P-01 gap handling (§5), P-03 writing workflow, P-04 diagram tools, Q-10 problem
 - **Glossary** extended (Sanctum, Bearer token, Brevo).
 - **Ch III design material** (EN, `ch3-design-material.md`): role/permission matrix, 10 use-case tables (adapted §5), relational model, data dictionary, cardinalities, business rules.
 - **Ch II sources** (`ch2-sources.md`): official theory references + verified Algerian laws 18-05/18-07.
-- **English diagrams** (`figures/`): architecture, use-case (Mermaid), ERD — with mobile placeholders; **logo source list**.
+- **English diagrams COMPLETE** (`figures/`): architecture, class, ERD, **5 sequence diagrams + deployment translated to EN**, and the **use-case redrawn in real UML (PlantUML)** — global / client / admin (support merged, G-05) with actors, system boundary and «include»/«extend», mobile marked placeholder. **All 11 rendered to PNG and checked readable one by one.** Logo source list ready.
+- **Print-usable screenshots COMPLETE** (`screenshots/memoire/`, 29): desktop 1440×900, light, `deviceScaleFactor 2`, one per section/component; **missing states captured** (validation error, success message, Chargily checkout dialog, team management, account settings, empty/prospect, failed payment); EN captions + mémoire section in `screenshots/README.md`; legacy 68 kept. ⚠ 4 need a quick data cleanup before printing (see README).
+- **E-commerce definition source RESOLVED** (`ch2-sources.md`): Law 18-05 art. 2 (primary, Algerian) + OECD 2009/2025 (international) — wordings verified by web search 2026-10-10; no "to confirm" left.
+- **Demo-data bug FIXED**: `DemoDataSeeder` now attaches the team owner to the membership pivot (mirrors the real `AdminBillingController` flow), so a team owner sees their team on the dashboard; regression test added — **131/131 tests**.
 - **E-mail decision** (D-17 Brevo) recorded.
 
 ### ⏳ Still to BUILD — deferred with reason (no new app code)
-- **EN translation of the 5 sequence diagrams + the deployment diagram** — reliable text work; do when writing Ch III.6 (same structure, French labels → English).
-- **Use-case redraw in PlantUML + PNG/SVG rendering of all diagrams** — **production step (Phase 13)**: needs a headless browser (Mermaid) / Java (PlantUML), heavy/flaky here. Sources are ready.
 - **Code excerpts** (`memoire-assets/code/*.md`) are still accurate (web code unchanged); **add one Sanctum excerpt** when writing IV.1/IV.5.
 - **CI fix** (move/fix `tests.yml`/`lint.yml` to repo-root `.github/`) — config only; **apply when the repo is first pushed** (Phase 1).
 - **Gantt chart** — needs the **real project dates** (👤 student, Q-18).
@@ -116,4 +117,4 @@ Live test evidence (Lighthouse, header/TLS scans), deployment screenshots, Brevo
 All of **Chapter I** (EADN visit 11–12/10, interview sheet ready); **cover facts** (speciality, promotion, year, supervisor name+grade, name spelling); internship dates + EADN supervisor; **real project dates** (Gantt); dedications/acknowledgements; **Arabic abstract** check; validate Ch II competitor facts; choose the problem-statement wording; institute's printing rules.
 
 ### Bottom line
-Everything that could be verified and built **without the EADN visit, deployment, or new app code is done**. The mémoire's Ch II–IV supporting material is now accurate (130 tests, Sanctum, Brevo) and the core Ch III design artifacts exist in English. The remaining work is: write the chapters (next), the EADN-dependent Chapter I, deployment + live evidence, and rendering the diagrams to images.
+Everything that could be verified and built **without the EADN visit, deployment, or new app code is done**. The Ch II–IV supporting material is accurate (**131 tests**, Sanctum, Brevo), the Ch III design artifacts exist in English, **all diagrams are translated/redrawn to real UML and rendered to readable PNGs**, and **29 print-usable screenshots** (with the missing states) are captured and captioned. The remaining work is: **write the chapters (next)**; the EADN-dependent Chapter I; deployment + live evidence; a quick **data cleanup + re-capture of 4 screenshots** (👤, see `screenshots/README.md`); the Gantt (real dates, 👤); and the CI move on first push.

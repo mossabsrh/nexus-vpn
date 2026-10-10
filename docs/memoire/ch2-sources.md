@@ -28,9 +28,13 @@
 | E-payment context | Chargily Pay v2 (EDAHABIA / CIB) — see `docs/pfe/16-sources.md` (5 Chargily refs, accessed 2026-10-06) | https://dev.chargily.com/ | Already collected |
 
 ## E-commerce (II.4)
-| Ref | Source | URL | Note |
-|---|---|---|---|
-| E-commerce definition / models | OECD / WTO e-commerce references (choose one authoritative) | https://www.oecd.org/digital/ (to confirm) | II.4.1–II.4.2 — pick a stable official definition |
+Authoritative definition **chosen** (no "to confirm" left): the **Algerian legal definition (Law 18-05, art. 2)** is the primary one for the local context; the **OECD** statistical definition is the international/economic one. The WTO wording is optional for the trade-policy framing. Wordings below were **confirmed by web search on 2026-10-10** (OECD, ILO and UNESCWA glossaries corroborate the OECD wording; WTO secondary sources corroborate the WTO wording). Note: oecd.org and wto.org block automated fetchers — open each in a browser when writing to record the exact access date (the same access-date step every website citation needs).
+
+| Ref | Source | Definition (verbatim core) | URL | Note |
+|---|---|---|---|---|
+| **E-commerce — primary (Algerian law)** | **Loi n° 18-05 du 10 mai 2018, art. 2** (see *Algerian legal framework* above) | legal definition of "commerce électronique" applicable in Algeria | https://commerce.gov.dz/fr/actualites/la-loi-relative-au-commerce-electronique-fixant-les-regles-generales-du-commerce-electronique-des-biens-et-des-services | **Verified** — use as the primary definition (II.4.1) |
+| **E-commerce — international (economic)** | **OECD** — definition of an e-commerce transaction (2009 standard, reaffirmed in *The 2025 OECD Definition of E-commerce and Guidelines for Interpretation*) | "An e-commerce transaction is the sale or purchase of goods or services, … conducted over computer networks by methods specifically designed for the purpose of receiving or placing of orders. … payment and … delivery … may be conducted on- or off-line." | https://www.oecd.org/en/publications/the-2025-oecd-definition-of-e-commerce-and-guidelines-for-interpretation_2254f1de-en.html | **Wording verified** (search 2026-10-10); record browser access date |
+| E-commerce — trade-policy framing (optional) | **WTO** — Work Programme on Electronic Commerce (WT/L/274, 25 Sept 1998) | e-commerce = "the production, distribution, marketing, sale or delivery of goods and services by electronic means" | https://www.wto.org/english/tratop_e/ecom_e/ecom_e.htm | **Wording verified** (search 2026-10-10); gateway page |
 
 ## Technologies used (cross-ref to Ch IV)
 | Ref | Source | URL |
@@ -44,5 +48,5 @@
 ## To do when writing Ch II
 - Re-open each URL, confirm it loads, record the **exact access date & time** (website citation rule).
 - For II.6 (competitors), add the official pages of the competitors chosen (e.g. NordVPN, Proton VPN) + an Algerian ISP VPN offer if relevant — **student validates the facts**.
-- Pick **one** authoritative e-commerce definition source (OECD/WTO/academic) rather than a blog.
+- ~~Pick one authoritative e-commerce definition source~~ **Done:** Law 18-05 art. 2 (primary, Algerian) + OECD 2009/2025 (international). Just record the browser access date for the OECD/WTO URLs when writing.
 - Keep footnote format: AUTHOR (First name): *Title*, publisher, place, year, page / website: full URL + access date.
