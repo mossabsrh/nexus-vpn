@@ -1,0 +1,20 @@
+sequenceDiagram
+    autonumber
+    actor U as User
+    participant F as Frontend
+    participant A as Laravel API
+    participant DB as Database
+    U->>F: Enter e-mail + password
+    F->>A: GET /api/csrf-cookie (XSRF-TOKEN cookie)
+    A-->>F: 204 + CSRF cookie
+    F->>A: POST /api/auth/login (X-XSRF-TOKEN)
+    A->>A: Rate limiter (5 attempts / 60 s per-account lockout)
+    A->>DB: Auth::attempt(email, password) - verify bcrypt hash
+    alt valid credentials
+        A->>A: Regenerate the session
+        A->>DB: audit auth.admin_login (if admin)
+        A-->>F: 200 { user }
+    else invalid
+        A->>DB: audit auth.login_failed
+        A-->>F: 401 Invalid email or password
+    end

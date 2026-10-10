@@ -1,0 +1,14 @@
+sequenceDiagram
+    autonumber
+    actor U as User
+    participant F as Frontend (Dashboard)
+    participant A as Laravel API
+    participant DB as Database
+    U->>F: Click "Download configuration"
+    F->>A: GET /api/vpn/config
+    A->>A: Check active access + verified e-mail + gateway configured
+    A->>DB: issueFor() - reuse or create a keypair + tunnel address
+    A->>A: Build nexusvpn.conf ([Interface] + [Peer])
+    A->>DB: audit vpn.config_downloaded
+    A-->>F: .conf file (Cache-Control: no-store)
+    F-->>U: WireGuard file download

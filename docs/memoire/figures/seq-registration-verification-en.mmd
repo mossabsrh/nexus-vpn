@@ -1,0 +1,19 @@
+sequenceDiagram
+    autonumber
+    actor U as User
+    participant F as Frontend (Next.js)
+    participant A as Laravel API
+    participant DB as Database
+    participant M as E-mail (SMTP local / Brevo prod)
+    U->>F: Fill in the registration form
+    F->>A: POST /api/auth/register (name, email, password, plan_slug)
+    A->>A: Normalize e-mail, validate, check self-serve plan
+    A->>DB: Create user + trial subscription (transaction)
+    A->>M: Send verification e-mail (signed link, 60 min)
+    A-->>F: 201 Created (user + trial)
+    M-->>U: "Verify Email Address" e-mail
+    U->>F: Click the link -> /verify-email?id&hash&expires&signature
+    F->>A: GET /api/email/verify/{id}/{hash}?expires&signature
+    A->>A: Verify the signature (signed middleware) + e-mail hash
+    A->>DB: markEmailAsVerified() + audit account.email_verified
+    A-->>F: 200 { verified: true }

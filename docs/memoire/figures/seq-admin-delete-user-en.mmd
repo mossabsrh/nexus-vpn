@@ -1,0 +1,18 @@
+sequenceDiagram
+    autonumber
+    actor AD as Administrator
+    participant F as Frontend (Admin)
+    participant A as Laravel API
+    participant DB as Database
+    AD->>F: Click "Delete" then confirm
+    F->>A: DELETE /api/admin/users/{user}
+    A->>A: Guards: last admin? self? team owner?
+    alt refused
+        A-->>F: 422 (explicit message)
+    else allowed
+        A->>DB: User::closeAccount(admin) - transaction
+        Note over A,DB: cancel subscription, revoke VPN,<br/>leave teams, anonymize data,<br/>soft delete, purge sessions
+        A->>DB: audit account.deleted (actor = admin)
+        A-->>F: 200 { message }
+        F->>A: Reload the accounts list
+    end

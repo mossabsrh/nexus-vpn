@@ -1,0 +1,82 @@
+classDiagram
+    class User {
+        +int id
+        +string name
+        +string email
+        +string role
+        +datetime email_verified_at
+        +isAdmin() bool
+        +currentSubscription() Subscription
+        +hasVpnAccess() bool
+        +closeAccount(actor) void
+    }
+    class Plan {
+        +string slug
+        +string name
+        +int monthly_price
+        +int yearly_total
+        +bool is_active
+        +isSelfServe() bool
+    }
+    class Subscription {
+        +string status
+        +int seats
+        +string billing_period
+        +datetime current_period_end
+        +cancel(reason) void
+        +grantsAccess() bool
+    }
+    class Payment {
+        +int amount
+        +string currency
+        +string status
+        +string provider
+        +markSucceeded(data) bool
+        +markFailed(reason) bool
+        +recordRefund(reason, end, admin) void
+    }
+    class VpnCredential {
+        +string public_key
+        +string private_key
+        +string address
+        +string status
+        +issueFor(user, sub)$ VpnCredential
+        +revokeFor(user, reason)$ int
+    }
+    class Team {
+        +string name
+        +seatLimit() int
+    }
+    class Testimonial {
+        +string content
+        +string status
+    }
+    class ContactRequest {
+        +string company
+        +int seats
+        +string status
+    }
+    class AuditLog {
+        +string action
+        +json metadata
+        +record(action, subject, meta, actor)$ AuditLog
+    }
+    class PersonalAccessToken {
+        +string name
+        +string token
+        +datetime expires_at
+    }
+
+    User "1" --> "*" Subscription
+    User "1" --> "*" Payment
+    User "1" --> "*" VpnCredential
+    User "1" --> "*" Testimonial
+    User "1" --> "*" ContactRequest : sends
+    User "1" --> "*" AuditLog : actor
+    User "1" --> "*" PersonalAccessToken : tokens (POSTPONED)
+    Plan "1" --> "*" Subscription
+    Subscription "1" --> "*" Payment
+    Subscription "1" --> "*" VpnCredential
+    Subscription "1" --> "0..1" Team
+    User "1" --> "*" Team : owner
+    Team "*" --> "*" User : members

@@ -1,0 +1,28 @@
+sequenceDiagram
+    autonumber
+    actor U as User
+    participant F as Frontend
+    participant A as Laravel API
+    participant DB as Database
+    participant C as Chargily Pay v2
+    U->>F: Choose a plan and click "Pay"
+    F->>A: POST /api/checkout (plan, period)
+    A->>A: Amount computed server-side, verified e-mail required
+    A->>DB: Create a "pending" payment
+    A->>C: POST /checkouts (amount, success/failure_url, metadata)
+    C-->>A: { id, checkout_url }
+    A->>DB: Store provider_reference
+    A-->>F: { checkout_url }
+    F->>C: Redirect to the payment page
+    U->>C: Enter the Edahabia/CIB card + OTP
+    par Webhook (server to server)
+        C->>A: POST /api/webhooks/chargily (HMAC signature)
+        A->>A: Verify HMAC-SHA256(body, secret key)
+        A->>A: Check amount + currency
+        A->>DB: markSucceeded() (idempotent) + VPN + receipt
+    and Browser return
+        C-->>F: Redirect /payment/result?payment=ID
+        F->>A: GET /api/payments/{id}/verify
+        A->>C: GET /checkouts/{id} (fallback)
+        A-->>F: Final status
+    end

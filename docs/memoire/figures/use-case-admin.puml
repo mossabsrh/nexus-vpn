@@ -1,0 +1,34 @@
+@startuml use-case-admin
+left to right direction
+skinparam packageStyle rectangle
+title Admin-side use-case diagram (support merged, G-05) — NexusVPN
+
+actor "Administrator" as A
+
+rectangle "Admin console" {
+  usecase "View dashboard & analytics" as UC1
+  usecase "Manage users\n(search, edit, delete)" as UC2
+  usecase "Manage offers (CRUD)" as UC3
+  usecase "Manage subscriptions\n(cancel, create team sub)" as UC4
+  usecase "Manage payments\n(list, refund)" as UC5
+  usecase "Handle contact requests\n(support)" as UC6
+  usecase "Moderate testimonials\n(support)" as UC7
+  usecase "View audit log" as UC8
+}
+
+A --> UC1
+A --> UC2
+A --> UC3
+A --> UC4
+A --> UC5
+A --> UC6
+A --> UC7
+A --> UC8
+
+note bottom
+  Support = Contact requests + Moderation (G-05):
+  the separate "Support Portal" is merged here,
+  ticketing/helpdesk is future work.
+  Every action is recorded in the audit log.
+end note
+@enduml

@@ -1,0 +1,50 @@
+@startuml use-case-client
+left to right direction
+skinparam packageStyle rectangle
+title Client-side use-case diagram — NexusVPN
+
+actor "Visitor" as V
+actor "User (client)" as U
+actor "Team owner" as TO
+actor "Chargily Pay" as C <<external>>
+
+rectangle "Client portal" {
+  usecase "Browse offers & testimonials" as UC1
+  usecase "Register (+ 7-day trial)" as UC2
+  usecase "Authenticate" as UC3
+  usecase "Verify e-mail" as UC4
+  usecase "Subscribe & checkout" as UC5
+  usecase "Process payment" as UC6
+  usecase "Get VPN configuration" as UC7
+  usecase "View billing history\n& receipts" as UC8
+  usecase "Manage subscription\n(cancel)" as UC9
+  usecase "Manage account\n(e-mail, password, delete)" as UC10
+  usecase "Submit a testimonial" as UC11
+  usecase "Contact the company (Team)" as UC12
+  usecase "Manage team members" as UC13
+}
+
+V --> UC1
+V --> UC2
+V --> UC12
+U --> UC1
+U --> UC3
+U --> UC5
+U --> UC7
+U --> UC8
+U --> UC9
+U --> UC10
+U --> UC11
+TO --> UC13
+
+UC2 ..> UC4 : <<include>>
+UC5 ..> UC6 : <<include>>
+UC6 --> C
+UC5 .> UC4 : <<extend>>\n(verified e-mail)
+UC7 .> UC4 : <<extend>>\n(verified e-mail)
+
+note bottom
+  Team owner is a User with extra rights.
+  Mobile client (Flutter) — POSTPONED.
+end note
+@enduml

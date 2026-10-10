@@ -1,0 +1,21 @@
+flowchart TB
+    subgraph Repo["Git repository (monorepo)"]
+        direction TB
+        FR["/ (root)\nNext.js frontend\napp/, components/, hooks/, lib/, proxy.ts"]
+        BE["/nexus-vpn\nLaravel backend\napp/, routes/, database/, tests/"]
+        MOB["/mobile\nFlutter app [POSTPONED]"]
+        DOC["/docs\nmémoire documentation"]
+    end
+    subgraph Prod["Production"]
+        V["Vercel\n(Next.js build)"]
+        R["Render (Docker)\nmigrate --seed + schedule:work"]
+        PG[("Render PostgreSQL")]
+        BREVO["Brevo (HTTP e-mail API)"]
+    end
+    FR -->|deploy| V
+    BE -->|Docker image| R
+    R --> PG
+    R -->|transactional e-mail| BREVO
+    V -->|rewrite /backend-api| R
+    class MOB postponed
+    classDef postponed stroke-dasharray: 6 4, opacity:0.55
