@@ -59,7 +59,7 @@ Needs: a **main question** + sub-questions, then **hypotheses** (one per questio
 | Conclusion | — | BUILD |
 
 ## CHAPTER III — System Analysis and Design
-> Reference level: **one table per use case** (Title, Actor, Description, Pre-condition, Nominal scenario, Alternative scenario); **use-case diagram per application**; a short paragraph before each sequence diagram; **relational model (text)**, **data dictionary**, business rules, cardinalities, **Gantt**. We HAVE most of this in `docs/pfe` + diagrams (need EN + real UML). Adapted per decisions.md §5.
+> Reference level: **one table per use case** (Title, Actor, Description, Pre-condition, Nominal scenario, Alternative scenario); **use-case diagram per application**; a short paragraph before each sequence diagram; **relational model (text)**, **data dictionary**, business rules, cardinalities, **Gantt**. We HAVE most of this in `docs/pfe` + diagrams (need EN + real UML). Adapted per decisions.md §5. **Open III.4/III.5 with a brief UML explanation** (actors, use cases, associations) as the reference does, and include an **actor description table** (reference Tableau III.1) before the use-case tables.
 
 | Section | Needs | Source |
 |---|---|---|
@@ -78,7 +78,7 @@ Needs: a **main question** + sub-questions, then **hypotheses** (one per questio
 | Conclusion | — | BUILD |
 
 ## CHAPTER IV — Implementation and Deployment
-> Reference level: each tool with **logo + paragraph**; a "special technology" section; a **code excerpt**; a **screenshot of every screen** with a caption (web, then mobile). The supervisor asks for **much more** than the reference (architecture, 8 modules, security, tests, deployment, CI/CD, monitoring). We HAVE almost everything in `docs/pfe` + 68 screenshots + code excerpts; adapted per §5.
+> Reference level: each tool with **logo + paragraph**; a "special technology" section; a **code excerpt**; a **screenshot of every screen** with a caption (web, then mobile). The supervisor asks for **much more** than the reference (architecture, 8 modules, security, tests, deployment, CI/CD, monitoring). We HAVE almost everything in `docs/pfe` + 68 screenshots + code excerpts; adapted per §5. The reference's **"special technology" deep-dive** (Datamatrix) → ours = a focused section on **WireGuard** (or Chargily); its **modelling tool** (Astah UML) → ours = **PlantUML / Mermaid** (IV.1.5).
 
 | Section | Needs | Source |
 |---|---|---|

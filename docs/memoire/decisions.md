@@ -43,7 +43,7 @@ Other files: supervisor's structure `C:\Users\My_Pc\Downloads\VPN_Portal_Thesis_
 - **Titles:** chapter 16 bold underlined; section 14 bold underlined; sub-section 12 bold underlined (the guide's example page shows bold italic instead → Q-12).
 - **Problem statement:** main question (+ sub-questions), then hypotheses (one per question).
 - **Figures/tables:** number + title + source under each; all listed at the start (number, title, page).
-- **Citations:** numbered **footnotes** at the bottom of the page. Book: AUTHOR (First name): *Title*, publisher, edition, place, year, page. Website: exact address + date and time of access.
+- **Citations:** numbered **footnotes** at the bottom of the page. **Book:** AUTHOR (First name): *Title*, publisher, edition number (if any), place (collection if any), year, page. **Regulatory text** (law/decree/circular…): type of text, number + date, domain — *use this for the Algerian laws 18-05 / 18-07*. **Document:** institution, *document title*, year. **Website:** exact address + **date and time** of access (e.g. `http://… (22/02/2009 à 22h00)`).
 - **Conclusion (6 points):** reminder of the objective; summary of theory; main results; answer to the problem statement (hypotheses confirmed or not); value and limits; difficulties met.
 - **Bibliography:** after the conclusion, no page numbers, alphabetical by author, grouped: books → journals → academic works → regulatory texts → reports/administrative documents → websites.
 - **Annexes:** e.g. interview guide/questionnaire, documents, extra figures.
@@ -54,6 +54,16 @@ Other files: supervisor's structure `C:\Users\My_Pc\Downloads\VPN_Portal_Thesis_
 - Ch III: one table per use case (Title, Actor, Description, Pre-condition, Nominal scenario, Alternative scenario); one use case diagram per application (web + mobile); a short paragraph before each sequence diagram; relational model in text form; data dictionary; business rules; cardinalities; Gantt chart.
 - Ch IV: each tool with logo + paragraph; one "special technology" section; a code excerpt; a screenshot of every screen with a short caption — web, then mobile.
 - Supervisor's Ch IV asks for much more than the reference (architecture, modules, security, tests, deployment, CI/CD, monitoring).
+
+**Re-read of both PDFs page by page (2026-10-10) — the digest above is confirmed. Refinements added:**
+- Footnote formats for **regulatory texts** and **documents** added above (needed for the Algerian laws + EADN documents).
+- **Cover institute** (from the guide's example + the reference's cover): "**Institut National Spécialisé de la Formation Professionnelle — Bou-Ismaïl (Centre de Formation dans les TIC et les Métiers de la Téléphonie)**" — student confirms the exact wording (Q-16). Promotion line example: "Promotion … Septembre 2026".
+- **Abstracts confirmed in the reference** (تلخيص / Résumé / Abstract, each ~5–6 lines + **keywords**), placed after the dedications/acknowledgements — even though the guide's components list omits them. Keep all three.
+- **Dedications & acknowledgements are "facultatif"** (optional) in the guide — we keep them (one dedication per author, as in the reference).
+- **Q-12 refined:** the guide's *rule* says chapter/section/sub-section titles 16/14/12 **bold underlined**; the guide's *example page* instead shows **bold italic** (and even "Chapitre police 10") — a contradiction in the guide. Confirm the intended style with the methodology teacher; default to the rule text (bold underlined).
+- **Use-case table columns confirmed** (reference Tableau III.2): Titre · Acteur · Description · Pré-condition · Scénario nominal · Scénario alternatif — matches `ch3-design-material.md`.
+- **Reference Ch IV** = each technology with logo+paragraph, a **modelling tool** (Astah UML → ours: PlantUML/Mermaid), a **"special technology" deep-dive** (Datamatrix → ours could be **WireGuard** or **Chargily**), then application screenshots per screen (desktop then mobile).
+- **Reference Ch I** confirms: one **field table per document** (Tableau I-2…I-5) and one **table per work position** (Tableau I-6…I-8), plus an abbreviations table.
 
 ## 3. What writing in English changes (guide and reference are in French)
 
