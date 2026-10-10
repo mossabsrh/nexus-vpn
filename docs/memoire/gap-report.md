@@ -89,3 +89,31 @@
 
 ## 9. Still-open student decisions that shape content (from decisions.md)
 P-01 gap handling (§5), P-03 writing workflow, P-04 diagram tools, Q-10 problem statement, Q-12 title style, Q-13 theme title, Q-14 (does EADN sell VPN?), Q-16 cover facts, Q-17 keep name "NexusVPN", Q-18 dates. **None block the Step-5 BUILD-now list** except where marked 👤.
+
+---
+
+## 10. Status after Step 5 (updated 2026-10-10, Step 6)
+
+### ✅ Done (committed)
+- **Existing docs corrected** (Step 5a): test counts 110/121 → **130/502** everywhere (incl. regenerated `tests/test-output.txt`); **Sanctum** added to `06`/`09`/`18-glossary` + TD-15; **Brevo**/Render-SMTP note in `09`/`13` + TD-16; `payments:reconcile` in `13`; `20-memoire-mapping` realigned; stray `assets/` folder removed.
+- **Glossary** extended (Sanctum, Bearer token, Brevo).
+- **Ch III design material** (EN, `ch3-design-material.md`): role/permission matrix, 10 use-case tables (adapted §5), relational model, data dictionary, cardinalities, business rules.
+- **Ch II sources** (`ch2-sources.md`): official theory references + verified Algerian laws 18-05/18-07.
+- **English diagrams** (`figures/`): architecture, use-case (Mermaid), ERD — with mobile placeholders; **logo source list**.
+- **E-mail decision** (D-17 Brevo) recorded.
+
+### ⏳ Still to BUILD — deferred with reason (no new app code)
+- **EN translation of the 5 sequence diagrams + the deployment diagram** — reliable text work; do when writing Ch III.6 (same structure, French labels → English).
+- **Use-case redraw in PlantUML + PNG/SVG rendering of all diagrams** — **production step (Phase 13)**: needs a headless browser (Mermaid) / Java (PlantUML), heavy/flaky here. Sources are ready.
+- **Code excerpts** (`memoire-assets/code/*.md`) are still accurate (web code unchanged); **add one Sanctum excerpt** when writing IV.1/IV.5.
+- **CI fix** (move/fix `tests.yml`/`lint.yml` to repo-root `.github/`) — config only; **apply when the repo is first pushed** (Phase 1).
+- **Gantt chart** — needs the **real project dates** (👤 student, Q-18).
+
+### ⏳ After deployment (Phase 1–2, with the student)
+Live test evidence (Lighthouse, header/TLS scans), deployment screenshots, Brevo wiring (D-17), DB-expiry date (R-02), deployment diagram with real URLs.
+
+### 👤🏢 Only the student / EADN can provide (parallel, not blocking)
+All of **Chapter I** (EADN visit 11–12/10, interview sheet ready); **cover facts** (speciality, promotion, year, supervisor name+grade, name spelling); internship dates + EADN supervisor; **real project dates** (Gantt); dedications/acknowledgements; **Arabic abstract** check; validate Ch II competitor facts; choose the problem-statement wording; institute's printing rules.
+
+### Bottom line
+Everything that could be verified and built **without the EADN visit, deployment, or new app code is done**. The mémoire's Ch II–IV supporting material is now accurate (130 tests, Sanctum, Brevo) and the core Ch III design artifacts exist in English. The remaining work is: write the chapters (next), the EADN-dependent Chapter I, deployment + live evidence, and rendering the diagrams to images.

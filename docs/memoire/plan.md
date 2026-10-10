@@ -55,7 +55,7 @@ Output folders (created when needed):
 | ☐ | 0.11 | Contact EADN to **book** the visit (booking only — the visit is 9.3) and ask which documents they can share. Book early: EADN needs notice and is closed Fri–Sat | Student + EADN | — | appointment |
 | ☐ | 0.12 | Real project timeline: start date, phases, internship dates (Q-18) | Student + Mossab | — | decisions.md |
 | ☐ | 0.13 | AI-assistance mention: check the institute's rule (Q-11) | Student | — | decisions.md |
-| ☐ | 0.14 | 🔴 Choose how the live site sends e-mails: Render Free blocks SMTP (Q-22). Options: a) paid Render instance; b) HTTP e-mail API (e.g. Brevo, Mailgun, Postmark, Resend) — small code/config change; c) another host | Student (Claude explains) | — | decisions.md |
+| ☑ | 0.14 | **Decided: Brevo HTTP API** (D-17; Render Free blocks SMTP). Wire at deploy time (task 1.3) | Student | — | decisions.md |
 
 ## Phase 1 — Deployment (Lane B) — 🔴 Chapter IV needs it, and the EADN visit waits for Chapter IV
 
@@ -90,12 +90,12 @@ Output folders (created when needed):
 
 | ✓ | # | Task | Who | Needs | Produces |
 |---|---|---|---|---|---|
-| ☐ | 3.1 | Translate the 10 Mermaid diagrams to English; export PNG | Claude | 0.3 | `figures/` |
-| ☐ | 3.2 | UML use case diagrams: global, client, admin (with the support side per G-05) | Claude | 0.1, 0.3 | `figures/` |
+| ◐ | 3.1 | Translate the Mermaid diagrams to English; export PNG — **done: architecture, use-case, ERD (`figures/*-en.mmd`)**; pending: 5 sequences + deployment + PNG render (Phase 13) | Claude | 0.3 | `figures/` |
+| ◐ | 3.2 | UML use case diagrams — **EN Mermaid draft done (`figures/use-case-en.mmd`)**; pending: redraw in real UML (PlantUML) + client/admin split | Claude | 0.1, 0.3 | `figures/` |
 | ☐ | 3.3 | Sequence diagrams for the chosen use cases (add missing: browse offers, cancel subscription, contact…) | Claude | 0.1, 3.1 | `figures/` |
 | ☐ | 3.4 | Class diagram in English, checked against the models | Claude | 3.1 | `figures/` |
-| ☐ | 3.5 | Relational model (text form) + data dictionary (name, meaning, type, size, constraint) | Claude | — | tables (Markdown) |
-| ☐ | 3.6 | Role/permission matrix (G-01) | Claude | 0.1 | table |
+| ☑ | 3.5 | Relational model (text form) + data dictionary (name, meaning, type, size, constraint) — in `ch3-design-material.md` (EN) | Claude | — | `ch3-design-material.md` |
+| ☑ | 3.6 | Role/permission matrix (G-01) — in `ch3-design-material.md` | Claude | 0.1 | table |
 | ☐ | 3.7 | Business rules list + relationships and cardinalities list | Claude | 3.4 | lists |
 | ☐ | 3.8 | Gantt chart | Claude | 0.12 | `figures/` |
 | ☐ | 3.9 | Missing web screenshots: checkout dialog, team management, account settings, contact form, validation error and success states | Claude (capture script) or Student | — | screenshots |
@@ -162,7 +162,7 @@ Output folders (created when needed):
 
 | ✓ | # | Task | Who | Needs | Produces |
 |---|---|---|---|---|---|
-| ☐ | 5.1 | Working sources list: official docs, standards, laws, competitor pages, with access dates | Claude; Student checks links | 0.2 | `docs/memoire/sources.md` |
+| ☑ | 5.1 | Working sources list (official docs, standards, laws, access dates) — in `ch2-sources.md` (Algerian laws 18-05/18-07 verified) | Claude; Student checks links | 0.2 | `ch2-sources.md` |
 | ☐ | 5.2 | Intro + II.1 VPN fundamentals (II.1.1 concepts, II.1.2 architecture, II.1.3 protocols + WireGuard/OpenVPN/IPsec table), starting from the student's own draft | Claude | 5.1 | ch2 |
 | ☐ | 5.3 | II.2 Types of VPN (II.2.1 remote access, II.2.2 site-to-site, II.2.3 client-server) | Claude | 5.1 | ch2 |
 | ☐ | 5.4 | II.3 Security and compliance (II.3.1 encryption/authentication, II.3.2 protocols, II.3.3 ISO/IEC 27001, GDPR, Algerian law 18-07) | Claude | 5.1 | ch2 |
@@ -383,3 +383,4 @@ Three things can stop the whole chain (the mobile app is POSTPONED, so it no lon
 | 2026-10-07 | Phase 4 rewritten for **D-15 (build a real Flutter client app)**: 4A backend Sanctum token auth (4.4–4.9, website login untouched), 4B Flutter app (4.10–4.20), 4C mémoire material (4.21–4.24). Updated critical path, risks, fallback. Build waits for approval of the Step-1 proposal. |
 | 2026-10-07 | **Phase 4A done**: Sanctum token auth built + tested (130/130, web login unchanged), docs updated. Committed. Next: 4B Flutter app, starting with auth screens. |
 | 2026-10-09 | **Mobile app POSTPONED** (D-16). Phase 4 marked ⏸️ (backend 4.4–4.9 stays done/committed; Flutter auth code written & committed in `mobile/`; 4.10–4.24 on hold). Removed mobile from the critical path and from the dependencies of 6.1/6.5/6.6/6.7/7.1/7.14 (now web-first with marked placeholders); added web architecture figure 3.14. Reviews no longer wait on Mossab. |
+| 2026-10-10 | **Pre-chapter verification (6 steps) done** → `ground-truth.md`, `docs-audit.md`, `content-spec.md`, `gap-report.md`, `ch3-design-material.md`, `ch2-sources.md`, `figures/*`. Corrected `docs/pfe` (130 tests, Sanctum, Brevo, reconcile, mapping). Ticked 0.14 (Brevo D-17), 3.5, 3.6, 5.1; 3.1/3.2 partial (EN diagrams done, PlantUML/PNG pending). No app code changed; dev DB intact. |
