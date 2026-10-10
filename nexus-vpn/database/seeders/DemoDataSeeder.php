@@ -109,6 +109,10 @@ class DemoDataSeeder extends Seeder
                 'current_period_end' => now()->addMonths(7),
             ]);
             $teamModel = Team::create(['name' => 'Sonatrach IT', 'owner_id' => $rachid->id, 'subscription_id' => $teamSub->id]);
+            // The owner is also a team member (role "owner"), exactly as AdminBillingController does when
+            // provisioning a real team. Without this the owner is not returned by /api/team (which reads the
+            // membership pivot), so their dashboard would not show the team they own.
+            $teamModel->members()->syncWithoutDetaching([$rachid->id => ['role' => 'owner', 'created_at' => now()->subMonths(5)]]);
             $this->payment($rachid, $teamSub, ($team->monthly_price ?: 9000) * 12, 'succeeded', now()->subMonths(5));
             $this->issueVpn($rachid, $teamSub);
 
