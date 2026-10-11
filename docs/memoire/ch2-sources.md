@@ -33,9 +33,17 @@ Authoritative definition **chosen** (no "to confirm" left): the **Algerian legal
 
 | Ref | Source | Definition (verbatim core) | URL | Note |
 |---|---|---|---|---|
-| **E-commerce — primary (Algerian law)** | **Loi n° 18-05 du 10 mai 2018, art. 2** (see *Algerian legal framework* above) | legal definition of "commerce électronique" applicable in Algeria | https://commerce.gov.dz/fr/actualites/la-loi-relative-au-commerce-electronique-fixant-les-regles-generales-du-commerce-electronique-des-biens-et-des-services | **Verified** — use as the primary definition (II.4.1) |
+| **E-commerce — primary (Algerian law)** | **Loi n° 18-05 du 10 mai 2018, art. 6** (definition; art. 2 = scope) (see *Algerian legal framework* above) | legal definition of "commerce électronique" applicable in Algeria | https://commerce.gov.dz/fr/actualites/la-loi-relative-au-commerce-electronique-fixant-les-regles-generales-du-commerce-electronique-des-biens-et-des-services | **Verified 2026-10-11** — use as the primary definition (II.4.1); art. 6 per Ministry of Commerce guide |
 | **E-commerce — international (economic)** | **OECD** — definition of an e-commerce transaction (2009 standard, reaffirmed in *The 2025 OECD Definition of E-commerce and Guidelines for Interpretation*) | "An e-commerce transaction is the sale or purchase of goods or services, … conducted over computer networks by methods specifically designed for the purpose of receiving or placing of orders. … payment and … delivery … may be conducted on- or off-line." | https://www.oecd.org/en/publications/the-2025-oecd-definition-of-e-commerce-and-guidelines-for-interpretation_2254f1de-en.html | **Wording verified** (search 2026-10-10); record browser access date |
 | E-commerce — trade-policy framing (optional) | **WTO** — Work Programme on Electronic Commerce (WT/L/274, 25 Sept 1998) | e-commerce = "the production, distribution, marketing, sale or delivery of goods and services by electronic means" | https://www.wto.org/english/tratop_e/ecom_e/ecom_e.htm | **Wording verified** (search 2026-10-10); gateway page |
+
+## Competitors (II.6) — verified 2026-10-11 from the official pages
+| Ref | Source | URL | Note |
+|---|---|---|---|
+| NordVPN payment | Nord Security — *What payment methods do you accept?* | https://support.nordvpn.com/hc/en-us/articles/19685782821265 | **Opened & verified 2026-10-11.** Cards, cryptocurrency, PayPal, Sofort (Klarna), bank transfers, prepaid cards, Apple/Google Pay + app stores. No EDAHABIA/CIB/DZD. |
+| NordVPN protocols | Nord Security — *The NordLynx protocol (WireGuard)* | https://nordvpn.com/blog/nordlynx-protocol-wireguard/ | Verified via search (nordvpn.com bot-blocks direct fetch). NordLynx = WireGuard-based; also OpenVPN, IKEv2/IPsec. |
+| Proton VPN payment | Proton AG — *Payment methods* | https://protonvpn.com/support/payment-options/ | **Opened & verified 2026-10-11.** Cards, PayPal, Apple/Google Pay, Bitcoin, cash (CHF/USD/EUR), bank transfer. Local currency only in a few countries, **Algeria not listed**. No EDAHABIA/CIB. |
+| Proton VPN protocols | Proton AG — *How to change VPN protocols* | https://protonvpn.com/support/how-to-change-vpn-protocols/ | **Opened & verified 2026-10-11.** WireGuard, OpenVPN, IKEv2, Stealth (WireGuard-based), Smart Protocol. |
 
 ## Technologies used (cross-ref to Ch IV)
 | Ref | Source | URL |
@@ -48,6 +56,6 @@ Authoritative definition **chosen** (no "to confirm" left): the **Algerian legal
 
 ## To do when writing Ch II
 - Re-open each URL, confirm it loads, record the **exact access date & time** (website citation rule).
-- For II.6 (competitors), add the official pages of the competitors chosen (e.g. NordVPN, Proton VPN) + an Algerian ISP VPN offer if relevant — **student validates the facts**.
+- ~~For II.6 (competitors), add the official pages of the competitors chosen~~ **Done 2026-10-11:** NordVPN + Proton VPN payment & protocol pages verified (section above); Table II.3 facts all confirmed, nothing left to validate.
 - ~~Pick one authoritative e-commerce definition source~~ **Done:** Law 18-05 art. 2 (primary, Algerian) + OECD 2009/2025 (international). Just record the browser access date for the OECD/WTO URLs when writing.
 - Keep footnote format: AUTHOR (First name): *Title*, publisher, place, year, page / website: full URL + access date.

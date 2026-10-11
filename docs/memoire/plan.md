@@ -163,13 +163,13 @@ Output folders (created when needed):
 | ✓ | # | Task | Who | Needs | Produces |
 |---|---|---|---|---|---|
 | ☑ | 5.1 | Working sources list (official docs, standards, laws, access dates) — in `ch2-sources.md` (Algerian laws 18-05/18-07 verified) | Claude; Student checks links | 0.2 | `ch2-sources.md` |
-| ◐ | 5.2 | Intro + II.1 VPN fundamentals (II.1.1 concepts, II.1.2 architecture, II.1.3 protocols + WireGuard/OpenVPN/IPsec table), starting from the student's own draft — **DRAFTED** (`chapters/ch2.md`) | Claude | 5.1 | ch2 |
-| ◐ | 5.3 | II.2 Types of VPN (II.2.1 remote access, II.2.2 site-to-site, II.2.3 client-server) — **DRAFTED** | Claude | 5.1 | ch2 |
-| ◐ | 5.4 | II.3 Security and compliance (II.3.1 encryption/authentication, II.3.2 protocols, II.3.3 ISO/IEC 27001, GDPR, Algerian law 18-07) — **DRAFTED** | Claude | 5.1 | ch2 |
-| ◐ | 5.5 | II.4 E-commerce (II.4.1 definition, II.4.2 business models, II.4.3 e-sales process; Algerian e-payment context, law 18-05) — **DRAFTED** | Claude | 5.1 | ch2 |
-| ◐ | 5.6 | II.5 Portal design principles (II.5.1 UX, II.5.2 payment security, II.5.3 rights management, II.5.4 traceability) — **DRAFTED** | Claude | 5.1 | ch2 |
-| ◐ | 5.7 | II.6 Competitive analysis (II.6.1 competitors table, II.6.2 pros and cons) + conclusion — **DRAFTED** (commercial figures flagged for student) | Claude; Student validates facts | 5.1 | ch2 |
-| ☐ | 5.8 | 🔴 Review Ch II → fixes. **Figures II.1–II.3 rendered + inserted**; student's jury-fix pass applied (Law 18-05 → art. 6; IPsec origin 1995/RFC 1825; footnote AUTHOR (First) format; BLAKE2s → WireGuard protocol page; traffic-log wording = portal only; code claims re-verified). **Pending:** student review/approval | Student (+ Mossab) | 5.2–5.7 | ch2 approved |
+| ☑ | 5.2 | Intro + II.1 VPN fundamentals (II.1.1 concepts, II.1.2 architecture, II.1.3 protocols + WireGuard/OpenVPN/IPsec table), starting from the student's own draft (`chapters/ch2.md`) | Claude | 5.1 | ch2 |
+| ☑ | 5.3 | II.2 Types of VPN (II.2.1 remote access, II.2.2 site-to-site, II.2.3 client-server) | Claude | 5.1 | ch2 |
+| ☑ | 5.4 | II.3 Security and compliance (II.3.1 encryption/authentication, II.3.2 protocols, II.3.3 ISO/IEC 27001, GDPR, Algerian law 18-07) | Claude | 5.1 | ch2 |
+| ☑ | 5.5 | II.4 E-commerce (II.4.1 definition **art. 6**, II.4.2 business models, II.4.3 e-sales process; Algerian e-payment context, law 18-05) | Claude | 5.1 | ch2 |
+| ☑ | 5.6 | II.5 Portal design principles (II.5.1 UX, II.5.2 payment security, II.5.3 rights management, II.5.4 traceability) | Claude | 5.1 | ch2 |
+| ☑ | 5.7 | II.6 Competitive analysis — **Table II.3 verified from NordVPN + Proton VPN official pages (2026-10-11)**; pros/cons + conclusion | Claude | 5.1 | ch2 |
+| ☑ | 5.8 | Review Ch II → fixes. Figures II.1–II.3 rendered + inserted; jury-fix pass + Table II.3 verification applied; **Chapter II APPROVED by student (2026-10-11)** | Student (+ Mossab) | 5.2–5.7 | ch2 approved |
 
 ## Phase 6 — Chapter III: analysis and design (Lane A) → `chapters/ch3.md`
 

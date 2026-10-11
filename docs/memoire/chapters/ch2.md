@@ -182,24 +182,21 @@ It is important to distinguish two kinds of logging. Recording users' browsing o
 
 ### II.6.1 Existing Solutions / Competitors
 
-The consumer VPN market is dominated by a small number of global providers that distribute their service through a client-server model and a subscription business model, with applications for the main desktop and mobile operating systems and large networks of servers. Representative examples are **NordVPN**, **Proton VPN**, **ExpressVPN** and **Surfshark**.[^nordvpn][^protonvpn] Table II.3 compares them, at a high level, with the solution proposed in this work.
+The consumer VPN market is dominated by a small number of global providers that distribute their service through a client-server model and a subscription business model, with applications for the main desktop and mobile operating systems and large networks of servers. Two of the most prominent are **NordVPN** and **Proton VPN**; other well-known providers include ExpressVPN and Surfshark. Table II.3 compares NordVPN and Proton VPN — examined from their official documentation — with the solution proposed in this work.
 
-> The exact prices, server counts and payment options of commercial providers change frequently; the comparison below is limited to stable, structural characteristics, and the specific commercial figures are to be **validated by the student** against the providers' official pages before the final version.
-
-| Characteristic | Global providers (NordVPN, Proton VPN, …) | Proposed portal |
+| Characteristic | NordVPN / Proton VPN (representative global providers) | Proposed portal |
 |---|---|---|
 | Distribution model | Client-server, subscription | Client-server, subscription |
 | Target market | Global | Algeria (local focus) |
-| Payment instruments | International cards, PayPal, cryptocurrencies | **EDAHABIA and CIB, in DZD** (via Chargily) |
-| Pricing currency | Mainly USD/EUR | **Algerian dinar (DZD)** |
-| Local support / language | Limited for Algeria | Oriented to the local context |
-| Underlying VPN protocol | WireGuard / OpenVPN / proprietary | WireGuard |
+| Payment instruments | Credit/debit cards, PayPal, cryptocurrency, Apple Pay / Google Pay; Proton VPN also accepts cash (CHF/USD/EUR) and bank transfer — **neither lists EDAHABIA or CIB**[^nordvpnpay][^protonpay] | **EDAHABIA and CIB, in DZD**, via Chargily[^chargily] |
+| Pricing currency | Foreign currencies (USD, EUR, CHF); local currency only in a few listed countries, not Algeria[^protonpay] | **Algerian dinar (DZD)**[^chargily] |
+| VPN protocols | WireGuard, OpenVPN and IKEv2 (NordVPN's NordLynx and Proton VPN's Stealth are WireGuard-based)[^nordvpnproto][^protonproto] | WireGuard[^wgproto] |
 
-**Table II.3 — High-level comparison with existing solutions.** *Source: author; commercial details to be validated by the student.*[^nordvpn][^protonvpn][^chargily]
+**Table II.3 — Comparison with two representative global providers.** *Source: author, from the NordVPN and Proton VPN official pages (accessed 11 October 2026).*
 
 ### II.6.2 Pros and Cons
 
-Global providers offer undeniable strengths: very large server networks, mature and polished applications, and strong security track records. For an Algerian user, however, they present concrete limitations: payment generally **cannot be made with EDAHABIA or CIB in dinars**, prices are set in foreign currency, and support is not oriented to the local context. These limitations define the opportunity addressed by this project — a VPN sales portal designed for the Algerian market, accepting national payment instruments in dinars, with a simple purchase and provisioning flow. The analysis of the existing situation at the host organisation, which motivates the project in practical terms, is presented in Chapter I.
+Global providers offer undeniable strengths: large server networks, mature and polished applications, and a choice of modern protocols. For an Algerian user, however, their published payment options reveal a concrete limitation: as shown in Table II.3, **neither NordVPN nor Proton VPN lists EDAHABIA or CIB** among its payment methods, and both charge in foreign currencies (Proton VPN's local-currency list does not include Algeria). This is the gap the present project addresses — a VPN sales portal designed for the Algerian market, accepting the national payment instruments in dinars, with a simple purchase and provisioning flow. The analysis of the existing situation at the host organisation, which motivates the project in practical terms, is presented in Chapter I.
 
 ## Conclusion
 
@@ -212,7 +209,7 @@ FIGURES: Figures II.1–II.3 are rendered (docs/memoire/figures/vpn-tunnel.png, 
 vpn-site-to-site.png, Mermaid, scale 3) and inserted above; add them to the List of Figures when assembling the document.
 ACCESS DATES: website footnotes show "accessed 10/11 October 2026"; add the exact time when finalising (methodology guide example).
 The verbatim text of Article 6 of Law 18-05 should be quoted from the Journal officiel n° 28 in the final version.
-Commercial figures in Table II.3 (prices, server counts) are to be validated by the student.
+Table II.3 was verified from the NordVPN and Proton VPN official pages on 11 October 2026 (payment methods, currencies, protocols); no commercial figure is left for the student to validate.
 -->
 
 ## Notes
@@ -232,5 +229,7 @@ Commercial figures in Table II.3 (prices, server counts) are to be validated by 
 [^law1805]: Loi n° 18-05 du 10 mai 2018 relative au commerce électronique, *Journal officiel de la République algérienne démocratique et populaire*, n° 28, 16 May 2018 (definition of electronic commerce: Article 6; scope: Article 2).
 [^chargily]: Chargily: *Chargily Pay — Developer Documentation (v2)*. https://dev.chargily.com/ (accessed 10 October 2026).
 [^owasptop10]: OWASP Foundation: *OWASP Top 10 — Web Application Security Risks*. https://owasp.org/www-project-top-ten/ (accessed 10 October 2026).
-[^nordvpn]: Nord Security: *NordVPN — official website*. https://nordvpn.com/ (accessed 10 October 2026). Commercial details to be validated.
-[^protonvpn]: Proton AG: *Proton VPN — official website*. https://protonvpn.com/ (accessed 10 October 2026). Commercial details to be validated.
+[^nordvpnpay]: Nord Security: *What payment methods do you accept?* (NordVPN support). https://support.nordvpn.com/hc/en-us/articles/19685782821265 (accessed 11 October 2026).
+[^nordvpnproto]: Nord Security: *The NordLynx protocol — the solution for a fast and secure VPN connection* (NordVPN blog). https://nordvpn.com/blog/nordlynx-protocol-wireguard/ (accessed 11 October 2026). Confirms NordLynx is NordVPN's WireGuard-based protocol; NordVPN also offers OpenVPN and IKEv2/IPsec.
+[^protonpay]: Proton AG: *Payment methods* (Proton VPN support). https://protonvpn.com/support/payment-options/ (accessed 11 October 2026).
+[^protonproto]: Proton AG: *How to change VPN protocols* (Proton VPN support). https://protonvpn.com/support/how-to-change-vpn-protocols/ (accessed 11 October 2026).
