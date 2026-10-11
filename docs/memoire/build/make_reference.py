@@ -52,7 +52,10 @@ for sname in ['Normal', 'Body Text', 'First Paragraph', 'Compact']:
 for hname, size in {'Heading 1': 16, 'Heading 2': 14, 'Heading 3': 12, 'Heading 4': 12}.items():
     try:
         st = styles[hname]
-        set_font(st, size=size, bold=True, italic=False, underline=False, color=RGBColor(0, 0, 0))
+        # Guide rule (p6 "Caractéristiques de présentation"): chapter/section/sub-section titles are
+        # 16/14/12, BOLD and UNDERLINED. (The guide's own example on p8 shows bold-italic, and the
+        # 19/20 reference uses bold + navy colour without underline — see review-report.md, Q-12.)
+        set_font(st, size=size, bold=True, italic=False, underline=True, color=RGBColor(0, 0, 0))
         pf = st.paragraph_format
         pf.space_before = Pt(12); pf.space_after = Pt(6)
         pf.line_spacing_rule = WD_LINE_SPACING.SINGLE

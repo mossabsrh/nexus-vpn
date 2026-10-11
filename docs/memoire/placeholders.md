@@ -19,10 +19,13 @@ Legend for *Blocked by*: 👤 student · 🏢 EADN visit · 🚀 deployment (Pha
 | P10 | Preliminary pages | (assembled at the end) | **Cover, dedications, acknowledgements, abstracts (FR/AR/EN)** and the cover facts (institute, speciality, promotion, year, supervisor name + grade, author names); Arabic abstract checked by a native speaker | 👤 |
 | P11 | Front matter | `lists.md` → final lists | **Page numbers** in the lists of figures / tables / code listings / abbreviations and the table of contents; added when the final Word document is assembled | (end) |
 | P12 | IV · IV.7.2 | `chapters/ch4.md` | **Live CI/CD evidence**: a green GitHub Actions run and the automatic Render/Vercel deployments — after the repo is pushed to GitHub (the workflows themselves are done, see P9) | 🚀 |
-| P13 | IV · IV.1 (Figure IV.1) | `figures/tech-stack.png` | *Optional polish:* WireGuard and Chargily are shown as branded text badges (no standard icon-set logo); their official brand logos can be swapped in at assembly if wanted (sources in `figures/logos-sources.md`) | 👤 |
+
+> **Style decisions** raised by the full review are tracked separately in `review-report.md` §D (heading style D1, optional chapter title pages / coloured headers D2, chapter-title separator D3).
 
 ## Filled / resolved
 *(moved here as completed, with the date.)*
 
 - **P9 — CI workflows at the repository root (G-11).** Done 2026-10-11: created `.github/workflows/backend-tests.yml` (PHPUnit on PHP 8.2 & 8.3) and `.github/workflows/frontend.yml` (pnpm lint + `tsc --noEmit` + build); removed the old inert copies under `nexus-vpn/.github/workflows/`. The **live run** evidence is now tracked as P12.
-- **Test count refreshed.** 2026-10-11: the backend suite is **131 tests / 508 assertions** (was 130 before this session's `DemoDataSeederTest`); `docs/pfe/memoire-assets/tests/test-output.txt` regenerated and Table IV.5 built from it.
+- **Test count refreshed.** 2026-10-11: the backend suite is **131 tests / 508 assertions** (was 130 before this session's `DemoDataSeederTest`); `docs/pfe/memoire-assets/tests/test-output.txt` regenerated and the test table built from it.
+- **P13 — Figure IV.1 logos.** Done 2026-10-11: the official **WireGuard** dragon icon and **Chargily** mark (from their favicons) now appear both in the per-technology logos of IV.1 and in the Figure IV.1 overview montage (no more text badges).
+- **Marketing claims (R-09).** Done 2026-10-11: the public site was aligned with the real implementation (Part 1); no longer a "mock-up" caveat in the mémoire.

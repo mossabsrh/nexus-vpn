@@ -30,8 +30,9 @@ caption = re.compile(r'^(Figure|Table|Listing)\s+[IVXLCDM]+\.\d+\s+[—\-]')
 n = 0
 for p in doc.paragraphs:
     if caption.match(p.text):
-        p.paragraph_format.alignment = WD_ALIGN_PARAGRAPH.LEFT
+        # Centered captions, as in the 19/20 reference (the guide only requires the source below).
+        p.paragraph_format.alignment = WD_ALIGN_PARAGRAPH.CENTER
         n += 1
 
 doc.save(sys.argv[1])
-print('post-processed: code left-aligned, %d captions left-aligned:' % n, sys.argv[1])
+print('post-processed: code left-aligned, %d captions centred:' % n, sys.argv[1])
