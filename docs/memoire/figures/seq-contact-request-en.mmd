@@ -1,0 +1,20 @@
+sequenceDiagram
+    autonumber
+    actor V as Visitor / User
+    participant F as Frontend
+    participant A as Laravel API
+    participant DB as Database
+    actor Ad as Admin
+    V->>F: Fill the Team-plan contact form
+    F->>A: POST /api/contact (name, email, company?, seats?, message)
+    A->>A: Validate + rate-limit (throttle:contact)
+    A->>DB: Create contact_request (status = new, IP recorded)
+    A-->>F: 201 "Our team will reply by e-mail"
+    Note over Ad,DB: Later, in the admin console
+    Ad->>A: GET /api/admin/contact-requests
+    A->>DB: List requests (+ new count)
+    A-->>Ad: Requests (new / handled)
+    Ad->>A: PATCH /api/admin/contact-requests/{id} (handled)
+    A->>DB: status = handled, handled_by, handled_at
+    A->>DB: audit admin.contact_request_handled
+    A-->>Ad: Updated request

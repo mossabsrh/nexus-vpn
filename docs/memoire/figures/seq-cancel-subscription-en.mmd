@@ -1,0 +1,24 @@
+sequenceDiagram
+    autonumber
+    actor U as User
+    participant F as Frontend
+    participant A as Laravel API
+    participant DB as Database
+    U->>F: Account settings -> "Cancel subscription"
+    F->>A: POST /api/subscriptions/cancel (CSRF)
+    A->>DB: Load the current subscription
+    alt no current subscription
+        A-->>F: 409 Nothing to cancel
+    else team subscription (owner)
+        A-->>F: 409 Managed by the sales team
+    else trial
+        A->>DB: status = canceled, current_period_end = now
+        A->>DB: Revoke the VPN peer (no access left)
+        A->>DB: audit subscription.canceled
+        A-->>F: 200 Trial canceled
+    else paid period
+        A->>DB: status = canceled, keep current_period_end
+        A->>DB: audit subscription.canceled (VPN kept until the period ends)
+        A-->>F: 200 Access kept until <date>
+    end
+    F-->>U: Show the updated subscription

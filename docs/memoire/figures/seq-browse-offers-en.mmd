@@ -1,0 +1,14 @@
+sequenceDiagram
+    autonumber
+    actor V as Visitor / User
+    participant F as Frontend
+    participant A as Laravel API
+    participant DB as Database
+    V->>F: Open the landing / pricing page
+    F->>A: GET /api/pricing
+    A->>DB: Read active plans (is_active = true)
+    A-->>F: 200 { plans } (cached 10 min, Cache-Control)
+    F->>A: GET /api/testimonials
+    A->>DB: Read approved testimonials
+    A-->>F: 200 { testimonials }
+    F-->>V: Render offers (monthly / yearly) + testimonials

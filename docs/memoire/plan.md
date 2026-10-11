@@ -175,20 +175,20 @@ Output folders (created when needed):
 
 | ✓ | # | Task | Who | Needs | Produces |
 |---|---|---|---|---|---|
-| ☐ | 6.1 | Intro + III.1 Project overview (+ web architecture figure; mobile marked as a future addition) | Claude | 0.1, 3.14 | ch3 |
-| ☐ | 6.2 | III.2 Stakeholders (adapted per G-01) | Claude | 0.1 | ch3 |
-| ☐ | 6.3 | III.3 Role and permission mapping | Claude | 3.6 | ch3 |
-| ☐ | 6.4 | III.4.1–III.4.10 use case tables: Authenticate · Browse VPN offers · Choose a plan and get the VPN configuration · Subscribe and checkout · Process payment · Manage VPN accounts · View billing history · View payment receipts · Manage subscriptions · Contact the company | Claude | 0.1 | ch3 |
-| ⏸️ | 6.5 | Mobile use case tables — **POSTPONED**; leave a marked placeholder in ch3 | Claude | — | ch3 placeholder |
-| ☐ | 6.6 | III.5 Use case diagrams with text: III.5.1 global, III.5.2 client, III.5.3 admin (+ support side); **III.5.4 mobile → marked placeholder (postponed)** | Claude | 3.2 | ch3 |
-| ☐ | 6.7 | III.6 Sequence diagrams, one paragraph each (**web**; mobile sequence → marked placeholder, postponed) | Claude | 3.3 | ch3 |
-| ☐ | 6.8 | III.7 Class diagram + explanation | Claude | 3.4 | ch3 |
-| ☐ | 6.9 | III.8 Relational database model | Claude | 3.5 | ch3 |
-| ☐ | 6.10 | III.9 Data dictionary | Claude | 3.5 | ch3 |
-| ☐ | 6.11 | III.10 Business logic and rules | Claude | 3.7 | ch3 |
-| ☐ | 6.12 | III.11 Relationships and cardinalities | Claude | 3.7 | ch3 |
-| ☐ | 6.13 | III.12 Gantt chart + conclusion | Claude | 3.8 | ch3 |
-| ☐ | 6.14 | 🔴 Review Ch III → fixes | Student | 6.1–6.13 | ch3 approved |
+| ☑ | 6.1 | Intro (+ UML introduction) + III.1 Project overview (+ web architecture figure; mobile future) | Claude | 0.1, 3.14 | ch3 |
+| ☑ | 6.2 | III.2 Stakeholders (five business roles mapped per G-01) | Claude | 0.1 | ch3 |
+| ☑ | 6.3 | III.3 Role and permission mapping (matrix) | Claude | 3.6 | ch3 |
+| ☑ | 6.4 | III.4.1–III.4.10 use case tables (10, 6-row format; verified against the code) | Claude | 0.1 | ch3 |
+| ⏸️ | 6.5 | Mobile use case tables — **POSTPONED**; marked placeholder inserted in ch3 (III.4, III.5.4) | Claude | — | ch3 placeholder |
+| ☑ | 6.6 | III.5 Use case diagrams with text (III.5.1 global, III.5.2 client, III.5.3 admin+support G-05; III.5.4 mobile = placeholder) | Claude | 3.2 | ch3 |
+| ☑ | 6.7 | III.6 Sequence diagrams (8, one paragraph each; **added the missing 3: cancel, contact, browse offers**, rendered + verified; mobile = placeholder) | Claude | 3.3 | ch3 |
+| ☑ | 6.8 | III.7 Class diagram + explanation | Claude | 3.4 | ch3 |
+| ☑ | 6.9 | III.8 Relational database model (R(…) + ERD figure) | Claude | 3.5 | ch3 |
+| ☑ | 6.10 | III.9 Data dictionary (Table III.14) | Claude | 3.5 | ch3 |
+| ☑ | 6.11 | III.10 Business logic and rules | Claude | 3.7 | ch3 |
+| ☑ | 6.12 | III.11 Relationships and cardinalities | Claude | 3.7 | ch3 |
+| ☑ | 6.13 | III.12 Gantt (marked placeholder, real dates pending Q-18) + conclusion | Claude | 3.8 | ch3 |
+| ☐ | 6.14 | 🔴 Review Ch III → fixes. **Chapter III DRAFTED** (`chapters/ch3.md`); figures + running lists (`lists.md`) done. Pending: student review/approval | Student | 6.1–6.13 | ch3 approved |
 
 ## Phase 7 — Chapter IV: implementation and deployment (Lane A) → `chapters/ch4.md`
 
@@ -384,5 +384,6 @@ Three things can stop the whole chain (the mobile app is POSTPONED, so it no lon
 | 2026-10-07 | **Phase 4A done**: Sanctum token auth built + tested (130/130, web login unchanged), docs updated. Committed. Next: 4B Flutter app, starting with auth screens. |
 | 2026-10-09 | **Mobile app POSTPONED** (D-16). Phase 4 marked ⏸️ (backend 4.4–4.9 stays done/committed; Flutter auth code written & committed in `mobile/`; 4.10–4.24 on hold). Removed mobile from the critical path and from the dependencies of 6.1/6.5/6.6/6.7/7.1/7.14 (now web-first with marked placeholders); added web architecture figure 3.14. Reviews no longer wait on Mossab. |
 | 2026-10-10 | **Pre-chapter verification (6 steps) done** → `ground-truth.md`, `docs-audit.md`, `content-spec.md`, `gap-report.md`, `ch3-design-material.md`, `ch2-sources.md`, `figures/*`. Corrected `docs/pfe` (130 tests, Sanctum, Brevo, reconcile, mapping). Ticked 0.14 (Brevo D-17), 3.5, 3.6, 5.1; 3.1/3.2 partial (EN diagrams done, PlantUML/PNG pending). No app code changed; dev DB intact. |
+| 2026-10-11 | **Tools + Chapter II approved + Chapter III drafted.** (1) Permanent "best tool per task" rule → `CLAUDE.md` + memory; **Graphviz installed** (use-case diagrams unchanged — Smetana ≈ dot). (2) **Chapter II approved**: Table II.3 verified from NordVPN + Proton VPN official pages; jury-fix pass (law 18-05 art. 6, IPsec 1995/RFC 1825, footnote format, BLAKE2s source, traffic-log wording, code re-verified) + 3 figures rendered. (3) **Chapter III drafted** (`chapters/ch3.md`): full III.1–III.12 per supervisor structure + UML intro; role/permission matrix, actor table, 10 use-case tables, 3 use-case diagrams, **8 sequence diagrams** (added cancel/contact/browse, rendered + verified), class diagram, relational model + ERD, data dictionary, business rules, cardinalities, Gantt placeholder (Q-18). 15 figures + 15 tables, all captioned; running lists in `lists.md`. Every fact re-verified against the code (routes, controllers, models, schema, rate limits, VPN pool). Mobile = placeholders (D-16). Tasks 6.1–6.13 ☑; 6.14 pending student review. **No app code changed.** |
 | 2026-10-10 | **Data cleanup + Chapter II draft.** (1) Student-approved removal of test/junk data (FK-safe transaction; backup first): inappropriate testimonial, junk offer/plan "b"+chain, junk plan "dgdtgy", whole `nexusvpn.pfe` test account, junk contact request — admin + 11 demo + audit log preserved; figs 04/19/20/21 re-captured clean (commit 5d65c74); `mobile.7z` gitignored. (2) **Chapter II drafted** (`chapters/ch2.md`, P-01/P-03 approved): full II.1–II.6 per the supervisor's structure, expanding the student's own draft; 3 comparison tables, 13 sourced footnotes (access dates), claims matched to the real code; mobile marked POSTPONED (D-16); e-commerce defs = Law 18-05 + OECD/WTO. Tasks 5.2–5.7 ◐ (drafted); pending: student review (5.8) + 3 conceptual figures (II.1–II.3). **No app code changed.** |
 | 2026-10-10 | **Step-5 finish done.** Re-read both PDFs page by page (content-spec/decisions §2 confirmed). Diagrams: **5 sequences + deployment translated to EN**; **use-cases redrawn in real UML (PlantUML global/client/admin, support merged G-05)**; **all 11 EN diagrams rendered to PNG and checked readable** → ticked 3.1, 3.2, 3.4; 3.3/3.13 ◐. Screenshots: **29 print-usable captures** (`screenshots/memoire/`, 1440×900 light @2×, one per component, missing states incl. team mgmt/success/empty/failed) + EN captions & mémoire section in README → ticked 3.9; 3.10 ◐ (student approves + 4 re-captures after data cleanup). E-commerce definition source **resolved** (Law 18-05 art. 2 + OECD). **Fixed a demo-data bug** (`DemoDataSeeder` didn't attach the team owner to the pivot → owner couldn't see their team): seeder fixed + `DemoDataSeederTest` → **131/131 tests**; dev DB patched surgically (backup taken). ⚠ Flagged for student: inappropriate testimonial (`04`) + junk offer/plans/payments (`19`/`20`/`21`) to clean before printing. |
