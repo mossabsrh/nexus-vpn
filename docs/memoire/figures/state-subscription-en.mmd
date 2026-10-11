@@ -1,0 +1,11 @@
+stateDiagram-v2
+    [*] --> trialing: start 7-day trial
+    [*] --> active: subscribe and pay
+    trialing --> active: pay (convert the trial)
+    trialing --> canceled: cancel (access ends now)
+    trialing --> expired: trial period ends
+    active --> active: renew / change plan
+    active --> canceled: cancel (access kept until the period end)
+    active --> expired: current period ends
+    canceled --> [*]
+    expired --> [*]

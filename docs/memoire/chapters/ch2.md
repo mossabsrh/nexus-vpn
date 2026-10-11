@@ -1,14 +1,3 @@
-<!--
-DRAFT — Chapter II (English Markdown, per P-03: converted to Word at the end).
-Numbering follows the supervisor's structure (VPN_Portal_Thesis_Structure.txt): this is CHAPTER II
-(the student's early draft mislabelled it "Chapter I"; Chapter I is the host organisation, EADN).
-Citation convention (methodology guide): numbered footnotes with full references.
-Website footnotes carry the access date (10–11 October 2026); the student adds the exact access time
-when finalising, as the guide's example shows. Sources are tracked in docs/memoire/ch2-sources.md.
-Figures II.1–II.3 are rendered (docs/memoire/figures/) and inserted.
-Mobile elements are marked as POSTPONED (decision D-16).
--->
-
 # CHAPTER II — Overview of VPN Services and E‑commerce
 
 ## Introduction
@@ -42,9 +31,11 @@ Establishing a tunnel follows a consistent sequence, regardless of the protocol 
 3. an **encrypted tunnel** is established, and application traffic is encapsulated, encrypted and sent through it;
 4. the server **decapsulates** the traffic and forwards it to its destination, returning responses through the same tunnel.
 
-![Figure II.1 — Principle of a VPN tunnel](../figures/vpn-tunnel.png)
+Figure II.1 illustrates this principle, from the client through the encrypted tunnel across the public network to the server that forwards the traffic to its destination.
 
-**Figure II.1 — Principle of a VPN tunnel.** *Source: author.*
+![Principle of a VPN tunnel](../figures/vpn-tunnel.png)
+
+**Figure II.1 — Principle of a VPN tunnel.** *Source: prepared by the authors.*
 
 ### II.1.3 Common VPN Protocols
 
@@ -59,13 +50,13 @@ The **portal developed in this project provisions WireGuard tunnels**: for each 
 | Criterion | IPsec | OpenVPN | WireGuard |
 |---|---|---|---|
 | Standardisation / origin | IETF; original architecture 1995 (RFC 1825[^rfc1825]), current RFC 4301 (2005) | Open-source project (OpenVPN Inc.) | Open-source project (J. A. Donenfeld); whitepaper 2017[^wireguard] |
-| Network layer | Network layer (IP) | Application layer, over TLS/SSL | Network layer, over UDP |
+| Operation and transport | Kernel / network layer (IP); IKE key exchange[^rfc4301] | User-space; TLS control channel, data over UDP or TCP[^openvpn] | Kernel or user-space; data over UDP[^wireguard] |
 | Cryptography | Configurable suites (AES, SHA, DH/ECDH) | TLS cipher suites via OpenSSL | Fixed modern set — Curve25519, ChaCha20-Poly1305, BLAKE2s[^wgproto] |
 | Code base | Very large | Large | Small ("< 4,000 lines") |
 | Configuration | Complex | Moderate | Simple |
 | Typical use | Site-to-site, enterprise | Remote access, cross-platform | Remote access and consumer VPNs, high performance |
 
-**Table II.1 — Comparison of the main VPN protocols.** *Source: author, compiled from the cited references.*[^rfc4301][^openvpn][^wireguard]
+**Table II.1 — Comparison of the main VPN protocols.** *Source: prepared by the authors, compiled from the cited references.*[^rfc4301][^openvpn][^wireguard]
 
 ## II.2 Types of VPN Services
 
@@ -73,23 +64,23 @@ VPNs are usually classified by the kind of endpoints they connect.
 
 ### II.2.1 Remote Access VPN
 
-A **remote-access VPN** connects a single user device to a private network or to the Internet through a gateway. The user runs a client application that establishes the tunnel on demand. This model is used by teleworkers who need to reach their organisation's internal resources, and, in the consumer market, by individuals who want to protect their browsing on untrusted networks.
+A **remote-access VPN** connects a single user device to a private network or to the Internet through a gateway. The user runs a client application that establishes the tunnel on demand. This model is used by teleworkers who need to reach their organisation's internal resources, and, in the consumer market, by individuals who want to protect their browsing on untrusted networks. Figure II.2 shows this arrangement, in which a single device reaches the private network or the Internet through a gateway.
 
-![Figure II.2 — Remote-access VPN](../figures/vpn-remote-access.png)
+![Remote-access VPN](../figures/vpn-remote-access.png)
 
-**Figure II.2 — Remote-access VPN.** *Source: author.*
+**Figure II.2 — Remote-access VPN.** *Source: prepared by the authors.*
 
 ### II.2.2 Site-to-Site VPN
 
-A **site-to-site VPN** connects two entire networks, for example the local networks of two branch offices, over the Internet. The tunnel is established between the gateways of each site rather than on individual devices, so it is transparent to the end users. This model is typically implemented with IPsec and is used to build an organisation-wide intranet or an extranet with partners.[^nist]
+A **site-to-site VPN** connects two entire networks, for example the local networks of two branch offices, over the Internet. The tunnel is established between the gateways of each site rather than on individual devices, so it is transparent to the end users. This model is typically implemented with IPsec and is used to build an organisation-wide intranet or an extranet with partners.[^nist] Figure II.3 shows two sites joined by a tunnel established between their gateways.
 
-![Figure II.3 — Site-to-site VPN](../figures/vpn-site-to-site.png)
+![Site-to-site VPN](../figures/vpn-site-to-site.png)
 
-**Figure II.3 — Site-to-site VPN.** *Source: author.*
+**Figure II.3 — Site-to-site VPN.** *Source: prepared by the authors.*
 
 ### II.2.3 Client-Server VPN
 
-In the **client-server** model, a dedicated client application installed on the user's device manages the connection to a provider's VPN servers, handling key exchange, encryption and reconnection. This is the model used by commercial VPN providers, where a subscriber installs an application and selects a server to connect to.
+Unlike the two network-level categories above — which classify tunnels by the endpoints they connect — the **client-server** model describes how a VPN service is packaged and deployed rather than a distinct tunnelling architecture: a dedicated client application installed on the user's device manages the connection to a provider's VPN servers, handling key exchange, encryption and reconnection. This is the model used by commercial VPN providers, where a subscriber installs an application and selects a server to connect to.
 
 The service distributed through the proposed portal follows this **client-server, remote-access** model: customers obtain a WireGuard configuration and connect from their own device to the service's gateways. The portal itself is responsible not for carrying VPN traffic but for *selling* and *provisioning* the service — managing offers, subscriptions, payments and the issuance of VPN credentials.
 
@@ -109,7 +100,7 @@ A desirable property of the key-exchange step is **forward secrecy**: session ke
 Beyond the VPN tunnel itself, a VPN **sales portal** also relies on web-security protocols:
 
 - **TLS 1.3** (RFC 8446) secures all communication between the user's browser and the portal, providing encryption, integrity and authentication of the server, with forward secrecy by default.[^rfc8446]
-- **IPsec** (RFC 4301) and the VPN protocols discussed in II.1.3 secure the VPN traffic proper.[^rfc4301]
+- The **tunnel protocols** discussed in II.1.3 — in this project, **WireGuard** — secure the VPN traffic itself.[^wgproto]
 
 In this project, all browser-to-server exchanges go over HTTPS/TLS, and the application adds further defences at the HTTP layer (security headers, anti-CSRF tokens) that are described in Chapters III and IV.
 
@@ -121,7 +112,7 @@ A service that handles personal data and payments must respect information-secur
 - The **General Data Protection Regulation (GDPR, Regulation (EU) 2016/679)** governs the processing of personal data for individuals in the European Union. It establishes principles such as lawfulness, purpose limitation, **data minimisation**, storage limitation, and a set of rights for the data subject (access, rectification, erasure).[^gdpr]
 - In Algeria, the protection of personal data is governed by **Law 18-07 of 10 June 2018**, which sets the rules for processing personal data and created the national supervisory authority (ANPDP); it was amended in 2025 by **Law 25-11**.[^law1807]
 
-These frameworks directly shape the design of the portal: the personal data collected is limited to what the service requires (data minimisation); a subscriber can close their account, which erases their personal data while retaining anonymised billing records; and the portal's data model stores no VPN connection or traffic data. The only logging the portal keeps is a security and billing **audit log**, discussed in II.5.4.
+These frameworks directly shape the design of the portal: the personal data collected is limited to what the service requires (data minimisation); a subscriber can close their account, which **anonymises their personal data and soft-deletes** the record while keeping anonymised billing history; and the portal's data model stores no VPN connection or traffic data. For accountability the portal keeps a security and billing **audit log** (which records the actor's source IP), stores the source IP of contact-request submissions, and writes a standard server application log; these are discussed in II.5.4. Law 18-07 also makes the **transfer of personal data abroad** subject to the authorisation of the national authority and to an adequate level of protection in the destination country (Articles 44–45), a requirement reinforced by Law 25-11.[^law1807] Because the service's configured hosting is outside Algeria — the API and database in Frankfurt and the front end on a global platform — this cross-border processing would require such authorisation and an adequacy assessment; it is noted here as a compliance limitation of the current deployment.
 
 ## II.4 E-commerce and Sales Portals
 
@@ -144,7 +135,7 @@ Electronic commerce is commonly classified by the nature of the parties involved
 | C2C (Consumer-to-Consumer) | Individuals sell to each other | Classified-ads and marketplace platforms | Not applicable |
 | C2B (Consumer-to-Business) | Individuals offer to businesses | Freelancing, influencer services | Not applicable |
 
-**Table II.2 — Classic e-commerce business models.** *Source: author.*
+**Table II.2 — Classic e-commerce business models.** *Source: prepared by the authors.*
 
 The portal therefore operates mainly as a **B2C** service, with a **B2B** component for team/organisation subscriptions.
 
@@ -160,11 +151,11 @@ This section presents the principles that govern a well-designed sales portal an
 
 ### II.5.1 UI/UX & Ergonomic Principles
 
-Ergonomics in web design concern usability, accessibility and the overall user experience: the interface should be clear, consistent, responsive across screen sizes, and should guide the user through the purchase with as little friction as possible. The portal's interface is built as a responsive web application and follows these principles; a native mobile client is planned as future work (**POSTPONED — decision D-16**) and is not part of the current scope.
+Ergonomics in web design concern usability, accessibility and the overall user experience: the interface should be clear, consistent, responsive across screen sizes, and should guide the user through the purchase with as little friction as possible. The portal's interface is built as a responsive web application and follows these principles; a native mobile client is planned as future work and is not part of the current scope.
 
 ### II.5.2 Payment Security
 
-Handling payments securely is a central requirement of any sales portal. Good practice is to **delegate the collection of card data to a specialised payment gateway** rather than storing it, so that sensitive card details never transit through or rest on the portal's own servers. The integrity of the exchange with the gateway must also be guaranteed: payment notifications (webhooks) should be **cryptographically signed and verified**, and the processing of a payment should be **idempotent**, so that a notification received more than once cannot activate a subscription or charge a customer twice.
+Handling payments securely is a central requirement of any sales portal. Good practice is to **delegate the collection of card data to a specialised payment gateway** rather than storing it, so that sensitive card details never transit through or rest on the portal's own servers. This follows the approach of the **Payment Card Industry Data Security Standard (PCI DSS)**: by never handling card data directly, the portal keeps that data — and most PCI DSS obligations — within the scope of the certified payment gateway rather than its own systems.[^pcidss] The integrity of the exchange with the gateway must also be guaranteed: payment notifications (webhooks) should be **cryptographically signed and verified**, and the processing of a payment should be **idempotent**, so that a notification received more than once cannot activate a subscription or charge a customer twice.
 
 The project applies these principles through the Chargily integration: checkout is hosted by the gateway, the webhook is verified with an HMAC-SHA256 signature, and payment handling is idempotent.[^chargily] The corresponding implementation is presented in Chapter IV (§IV.5.2).
 
@@ -176,13 +167,13 @@ A portal exposes different capabilities to different users, and must enforce tha
 
 **Traceability** is the ability to record significant actions and events, and **auditability** is the ability to review those records afterwards. Keeping an **audit trail** of security- and billing-relevant events supports accountability, incident investigation and compliance; the OWASP project lists insufficient logging and monitoring among the common weaknesses of web applications.[^owasptop10]
 
-It is important to distinguish two kinds of logging. Recording users' browsing or connection *traffic* would run counter to the data-minimisation principle (II.3.3); a privacy-oriented VPN service is therefore designed not to keep such records (a "zero-log" posture). What the present work implements is on the portal side: the portal's data model stores no VPN connection or traffic data, and the only log it keeps is a security and billing **audit log** of events such as administrative actions, authentication failures and payment state changes. The audit log's structure is described in Chapters III and IV.
+It is important to distinguish two kinds of logging. Recording users' browsing or connection *traffic* would run counter to the data-minimisation principle (II.3.3); a privacy-oriented VPN service is therefore designed not to keep such records (a "zero-log" posture). What the present work implements is on the portal side: the portal's data model stores no VPN connection or traffic data. It does keep ordinary operational records — a security and billing **audit log** of events such as administrative actions, authentication failures and payment state changes (recording the actor's source IP), the source IP of contact-request submissions, and the standard server application log (written to standard error). These are security and operational records, not a log of users' VPN activity; the audit log's structure is described in Chapters III and IV.
 
 ## II.6 Competitive Analysis
 
 ### II.6.1 Existing Solutions / Competitors
 
-The consumer VPN market is dominated by a small number of global providers that distribute their service through a client-server model and a subscription business model, with applications for the main desktop and mobile operating systems and large networks of servers. Two of the most prominent are **NordVPN** and **Proton VPN**; other well-known providers include ExpressVPN and Surfshark. Table II.3 compares NordVPN and Proton VPN — examined from their official documentation — with the solution proposed in this work.
+The consumer VPN market is dominated by a small number of global providers that distribute their service through a client-server model and a subscription business model, with applications for the main desktop and mobile operating systems and large networks of servers. Two of the most prominent are **NordVPN** and **Proton VPN**; other well-known providers include ExpressVPN and Surfshark. Both NordVPN and Proton VPN build their fastest option on WireGuard (NordLynx and Stealth respectively) and also offer OpenVPN and IKEv2/IPsec.[^nordvpnproto][^protonproto] Table II.3 compares NordVPN and Proton VPN — examined from their official documentation — with the solution proposed in this work.
 
 | Characteristic | NordVPN / Proton VPN (representative global providers) | Proposed portal |
 |---|---|---|
@@ -192,7 +183,7 @@ The consumer VPN market is dominated by a small number of global providers that 
 | Pricing currency | Foreign currencies (USD, EUR, CHF); local currency only in a few listed countries, not Algeria[^protonpay] | **Algerian dinar (DZD)**[^chargily] |
 | VPN protocols | WireGuard, OpenVPN and IKEv2 (NordVPN's NordLynx and Proton VPN's Stealth are WireGuard-based)[^nordvpnproto][^protonproto] | WireGuard[^wgproto] |
 
-**Table II.3 — Comparison with two representative global providers.** *Source: author, from the NordVPN and Proton VPN official pages (accessed 11 October 2026).*
+**Table II.3 — Comparison with two representative global providers.** *Source: prepared by the authors, from the NordVPN and Proton VPN official pages (consulted on 11/10/2026 at 22:30).*
 
 ### II.6.2 Pros and Cons
 
@@ -204,32 +195,25 @@ This chapter has established the theoretical foundation on which the rest of the
 
 ---
 
-<!--
-FIGURES: Figures II.1–II.3 are rendered (docs/memoire/figures/vpn-tunnel.png, vpn-remote-access.png,
-vpn-site-to-site.png, Mermaid, scale 3) and inserted above; add them to the List of Figures when assembling the document.
-ACCESS DATES: website footnotes show "accessed 10/11 October 2026"; add the exact time when finalising (methodology guide example).
-The verbatim text of Article 6 of Law 18-05 should be quoted from the Journal officiel n° 28 in the final version.
-Table II.3 was verified from the NordVPN and Proton VPN official pages on 11 October 2026 (payment methods, currencies, protocols); no commercial figure is left for the student to validate.
--->
-
 ## Notes
 
-[^nist]: BARKER (Elaine), DANG (Quynh), FRANKEL (Sheila), SCARFONE (Karen), WOUTERS (Paul): *Guide to IPsec VPNs*, NIST Special Publication 800-77 Revision 1, National Institute of Standards and Technology, Gaithersburg (MD), 2020. https://doi.org/10.6028/NIST.SP.800-77r1 (accessed 10 October 2026).
-[^wireguard]: DONENFELD (Jason A.): *WireGuard: Next Generation Kernel Network Tunnel*, NDSS Symposium 2017, Internet Society, 2017. https://www.wireguard.com/papers/wireguard.pdf (accessed 10 October 2026).
-[^wgproto]: WireGuard: *Protocol & Cryptography* (official protocol page). https://www.wireguard.com/protocol/ (accessed 11 October 2026).
-[^openvpn]: OpenVPN Inc.: *OpenVPN — Community Resources (documentation)*. https://openvpn.net/community-resources/ (accessed 10 October 2026).
-[^rfc1825]: ATKINSON (Randall): *Security Architecture for the Internet Protocol*, Request for Comments (RFC) 1825, Internet Engineering Task Force (IETF), August 1995 (obsoleted by RFC 2401, then by RFC 4301). https://www.rfc-editor.org/rfc/rfc1825 (accessed 11 October 2026).
-[^rfc4301]: KENT (Stephen), SEO (Karen): *Security Architecture for the Internet Protocol*, Request for Comments (RFC) 4301, Internet Engineering Task Force (IETF), 2005. https://www.rfc-editor.org/rfc/rfc4301 (accessed 10 October 2026).
-[^rfc8446]: RESCORLA (Eric): *The Transport Layer Security (TLS) Protocol Version 1.3*, Request for Comments (RFC) 8446, Internet Engineering Task Force (IETF), 2018. https://www.rfc-editor.org/rfc/rfc8446 (accessed 10 October 2026).
-[^iso27001]: International Organization for Standardization: *ISO/IEC 27001 — Information security, cybersecurity and privacy protection — Information security management systems — Requirements*, ISO, Geneva, 2022. https://www.iso.org/standard/27001 (accessed 10 October 2026).
-[^gdpr]: Regulation (EU) 2016/679 of the European Parliament and of the Council of 27 April 2016 on the protection of natural persons with regard to the processing of personal data (General Data Protection Regulation), *Official Journal of the European Union*, L 119, 4 May 2016. https://eur-lex.europa.eu/eli/reg/2016/679/oj (accessed 10 October 2026).
+[^nist]: BARKER (Elaine), DANG (Quynh), FRANKEL (Sheila), SCARFONE (Karen), WOUTERS (Paul): *Guide to IPsec VPNs*, NIST Special Publication 800-77 Revision 1, National Institute of Standards and Technology, Gaithersburg (MD), 2020. https://doi.org/10.6028/NIST.SP.800-77r1 (consulted on 10/10/2026 at 19:02).
+[^wireguard]: DONENFELD (Jason A.): *WireGuard: Next Generation Kernel Network Tunnel*, NDSS Symposium 2017, Internet Society, 2017. https://www.wireguard.com/papers/wireguard.pdf (consulted on 10/10/2026 at 20:06).
+[^wgproto]: WireGuard: *Protocol & Cryptography* (official protocol page). https://www.wireguard.com/protocol/ (consulted on 11/10/2026 at 23:06).
+[^openvpn]: OpenVPN Inc.: *OpenVPN — Community Resources (documentation)*. https://openvpn.net/community-resources/ (consulted on 10/10/2026 at 23:39).
+[^rfc1825]: ATKINSON (Randall): *Security Architecture for the Internet Protocol*, Request for Comments (RFC) 1825, Internet Engineering Task Force (IETF), August 1995 (obsoleted by RFC 2401, then by RFC 4301). https://www.rfc-editor.org/rfc/rfc1825 (consulted on 11/10/2026 at 20:32).
+[^rfc4301]: KENT (Stephen), SEO (Karen): *Security Architecture for the Internet Protocol*, Request for Comments (RFC) 4301, Internet Engineering Task Force (IETF), 2005. https://www.rfc-editor.org/rfc/rfc4301 (consulted on 10/10/2026 at 19:28).
+[^rfc8446]: RESCORLA (Eric): *The Transport Layer Security (TLS) Protocol Version 1.3*, Request for Comments (RFC) 8446, Internet Engineering Task Force (IETF), 2018. https://www.rfc-editor.org/rfc/rfc8446 (consulted on 10/10/2026 at 23:20).
+[^iso27001]: International Organization for Standardization: *ISO/IEC 27001 — Information security, cybersecurity and privacy protection — Information security management systems — Requirements*, ISO, Geneva, 2022. https://www.iso.org/standard/27001 (consulted on 10/10/2026 at 23:44).
+[^gdpr]: Regulation (EU) 2016/679 of the European Parliament and of the Council of 27 April 2016 on the protection of natural persons with regard to the processing of personal data (General Data Protection Regulation), *Official Journal of the European Union*, L 119, 4 May 2016. https://eur-lex.europa.eu/eli/reg/2016/679/oj (consulted on 10/10/2026 at 19:15).
 [^law1807]: Loi n° 18-07 du 10 juin 2018 relative à la protection des personnes physiques dans le traitement des données à caractère personnel, *Journal officiel de la République algérienne démocratique et populaire*, n° 34, 10 June 2018 (amended by Loi n° 25-11, *JORADP* n° 48, 24 July 2025).
-[^oecd]: Organisation for Economic Co-operation and Development (OECD): *The 2025 OECD Definition of E-commerce and Guidelines for Interpretation* (reaffirming the 2009 definition), OECD Publishing, Paris, 2025. https://www.oecd.org/en/publications/the-2025-oecd-definition-of-e-commerce-and-guidelines-for-interpretation_2254f1de-en.html (accessed 10 October 2026).
-[^wto]: World Trade Organization: *Work Programme on Electronic Commerce*, document WT/L/274, WTO, Geneva, 25 September 1998. https://www.wto.org/english/tratop_e/ecom_e/ecom_e.htm (accessed 10 October 2026).
-[^law1805]: Loi n° 18-05 du 10 mai 2018 relative au commerce électronique, *Journal officiel de la République algérienne démocratique et populaire*, n° 28, 16 May 2018 (definition of electronic commerce: Article 6; scope: Article 2).
-[^chargily]: Chargily: *Chargily Pay — Developer Documentation (v2)*. https://dev.chargily.com/ (accessed 10 October 2026).
-[^owasptop10]: OWASP Foundation: *OWASP Top 10 — Web Application Security Risks*. https://owasp.org/www-project-top-ten/ (accessed 10 October 2026).
-[^nordvpnpay]: Nord Security: *What payment methods do you accept?* (NordVPN support). https://support.nordvpn.com/hc/en-us/articles/19685782821265 (accessed 11 October 2026).
-[^nordvpnproto]: Nord Security: *The NordLynx protocol — the solution for a fast and secure VPN connection* (NordVPN blog). https://nordvpn.com/blog/nordlynx-protocol-wireguard/ (accessed 11 October 2026). Confirms NordLynx is NordVPN's WireGuard-based protocol; NordVPN also offers OpenVPN and IKEv2/IPsec.
-[^protonpay]: Proton AG: *Payment methods* (Proton VPN support). https://protonvpn.com/support/payment-options/ (accessed 11 October 2026).
-[^protonproto]: Proton AG: *How to change VPN protocols* (Proton VPN support). https://protonvpn.com/support/how-to-change-vpn-protocols/ (accessed 11 October 2026).
+[^oecd]: Organisation for Economic Co-operation and Development (OECD): *The 2025 OECD Definition of E-commerce and Guidelines for Interpretation* (reaffirming the 2009 definition), OECD Publishing, Paris, 2025. https://www.oecd.org/en/publications/the-2025-oecd-definition-of-e-commerce-and-guidelines-for-interpretation_2254f1de-en.html (consulted on 10/10/2026 at 22:12).
+[^wto]: World Trade Organization: *Work Programme on Electronic Commerce*, document WT/L/274, WTO, Geneva, 25 September 1998. https://www.wto.org/english/tratop_e/ecom_e/ecom_e.htm (consulted on 10/10/2026 at 22:02).
+[^law1805]: Loi n° 18-05 du 10 mai 2018 relative au commerce électronique, *Journal officiel de la République algérienne démocratique et populaire*, n° 28, 16 May 2018.
+[^chargily]: Chargily: *Chargily Pay — Developer Documentation (v2)*. https://dev.chargily.com/ (consulted on 10/10/2026 at 19:21).
+[^owasptop10]: OWASP Foundation: *OWASP Top 10 — Web Application Security Risks*. https://owasp.org/www-project-top-ten/ (consulted on 10/10/2026 at 19:07).
+[^pcidss]: PCI Security Standards Council: *PCI Data Security Standard (PCI DSS)*, version 4.0, PCI SSC. https://www.pcisecuritystandards.org/ (consulted on 11/10/2026 at 23:02).
+[^nordvpnpay]: Nord Security: *What payment methods do you accept?* (NordVPN support). https://support.nordvpn.com/hc/en-us/articles/19685782821265 (consulted on 11/10/2026 at 23:56).
+[^nordvpnproto]: Nord Security: *The NordLynx protocol — the solution for a fast and secure VPN connection* (NordVPN blog). https://nordvpn.com/blog/nordlynx-protocol-wireguard/ (consulted on 11/10/2026 at 19:47).
+[^protonpay]: Proton AG: *Payment methods* (Proton VPN support). https://protonvpn.com/support/payment-options/ (consulted on 11/10/2026 at 19:55).
+[^protonproto]: Proton AG: *How to change VPN protocols* (Proton VPN support). https://protonvpn.com/support/how-to-change-vpn-protocols/ (consulted on 11/10/2026 at 21:38).

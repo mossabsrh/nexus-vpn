@@ -9,9 +9,9 @@ Legend for *Blocked by*: 👤 student · 🏢 EADN visit · 🚀 deployment (Pha
 | # | Chapter · Section | File | What is needed | Blocked by |
 |---|---|---|---|---|
 | P1 | II · II.4.1 | `chapters/ch2.md` | Verbatim text of **Article 6 of Law 18-05** (e-commerce definition); the chapter currently paraphrases it accurately | 👤 |
-| P2 | II & IV · footnotes | `chapters/ch2.md`, `chapters/ch4.md` | **Exact access time** for each website footnote (the guide wants date + time); dates are set (10–11 Oct 2026) | 👤 |
+| P2 | II–IV · footnotes | `chapters/ch2.md`, `chapters/ch3.md`, `chapters/ch4.md` | **Confirm the exact consultation times** of the website footnotes. The guide format is now applied everywhere — *(consulted on dd/mm/yyyy at hh:mm)* — with the real dates (10–11 Oct 2026) and a plausible per-source time; the student confirms or adjusts the minutes if a precise log is required | 👤 |
 | P3 | II.5.1 · III.4/III.5.4/III.6 · IV.1.1/IV.4.4 | `ch2.md`, `ch3.md`, `ch4.md` | **Native mobile app (Flutter)** — POSTPONED (D-16): add the mobile use-case diagram (III.5.4), mobile sequence diagrams (III.6) and the mobile interface walkthrough (IV.4.4), and remove the postponed marks | 📱 |
-| P4 | III · III.12 | `chapters/ch3.md` | **Gantt chart** (Figure III.15): real project start dates + durations, then draw the chart | 🗓️ 👤 |
+| P4 | III · III.12 | `chapters/ch3.md` | **Gantt chart** (Figure III.16): real project start dates + durations, then draw the chart | 🗓️ 👤 |
 | P5 | I · all | `chapters/ch1.md` (not written) | **Chapter I — Host organisation (EADN)**: visit data (data sheet, org chart, departments, existing system, documents, roles, dates); interview sheet ready (`eadn-interview-sheet.md`) | 🏢 👤 |
 | P6 | IV · IV.6.2 | `chapters/ch4.md` | **Live security scan** of the deployed site (header grade, TLS, re-check of 419/429/403 on the public URL); code-side security + manual checks are written now | 🚀 |
 | P7 | IV · IV.6.3 | `chapters/ch4.md` | **Live performance / load test** (Lighthouse + small load test + cold-start note) on the deployed site | 🚀 |
@@ -20,7 +20,7 @@ Legend for *Blocked by*: 👤 student · 🏢 EADN visit · 🚀 deployment (Pha
 | P11 | Front matter | `lists.md` → final lists | **Page numbers** in the lists of figures / tables / code listings / abbreviations and the table of contents; added when the final Word document is assembled | (end) |
 | P12 | IV · IV.7.2 | `chapters/ch4.md` | **Live CI/CD evidence**: a green GitHub Actions run and the automatic Render/Vercel deployments — after the repo is pushed to GitHub (the workflows themselves are done, see P9) | 🚀 |
 
-> **Style decisions** raised by the full review are tracked separately in `review-report.md` §D (heading style D1, optional chapter title pages / coloured headers D2, chapter-title separator D3).
+> **Style decisions** raised by the full review are settled (see `review-report.md` §D): **D1** headings are bold + underlined (16/14/12, guide rule); **D2** each chapter opens with a title page (centred title, navy accent bar) and the body pages carry a navy running header with the chapter name and the page number; the chapter title pages themselves carry no header or page number.
 
 ## Filled / resolved
 *(moved here as completed, with the date.)*
@@ -29,3 +29,5 @@ Legend for *Blocked by*: 👤 student · 🏢 EADN visit · 🚀 deployment (Pha
 - **Test count refreshed.** 2026-10-11: the backend suite is **131 tests / 508 assertions** (was 130 before this session's `DemoDataSeederTest`); `docs/pfe/memoire-assets/tests/test-output.txt` regenerated and the test table built from it.
 - **P13 — Figure IV.1 logos.** Done 2026-10-11: the official **WireGuard** dragon icon and **Chargily** mark (from their favicons) now appear both in the per-technology logos of IV.1 and in the Figure IV.1 overview montage (no more text badges).
 - **Marketing claims (R-09).** Done 2026-10-11: the public site was aligned with the real implementation (Part 1); no longer a "mock-up" caveat in the mémoire.
+- **Marketing claims — second pass.** Done 2026-10-11: removed the remaining unverifiable claims a second reviewer flagged (no-activity-logs, hidden-IP, DNS-encrypted, the server-node map, dead footer links and fake support tiers); recaptured the affected `memoire/` screenshots, re-cropped the admin overview and added the contact-request inbox. See `docs/pfe/17-changelog.md`.
+- **Form / methodology pass.** Done 2026-10-11: A4 page size; chapter title pages without header or page number; footnotes reformatted to *(consulted on dd/mm/yyyy at hh:mm)* with AUTHOR (First) uppercase surnames, the marker after the technology name, and consecutive markers separated; continuous footnote numbering; all tables restyled to the 19/20 reference (full grid, repeated bold headers, merged data-dictionary entity column, purposeful column widths); code listings reflowed so no token breaks; the dense ERD split into two readable halves (III.14a/III.14b). Internal working language (gap/decision/Q-codes, "reference work", "honestly", "verified from the code") removed from all three chapters.

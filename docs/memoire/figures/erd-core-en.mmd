@@ -1,0 +1,79 @@
+%% ERD NexusVPN — Part A: commercial core (accounts, offers, subscriptions, payments, VPN).
+%% From the real schema (php artisan db:table). Split from the full ERD for print readability;
+%% all foreign keys are also listed in the relational model (III.8).
+erDiagram
+    USERS {
+        int id PK
+        string name
+        string email UK
+        string password
+        string role "user | admin"
+        datetime email_verified_at
+        string remember_token
+        datetime deleted_at "soft delete"
+    }
+    PLANS {
+        int id PK
+        string slug UK
+        string name
+        text description
+        int monthly_price "null = sales-assisted"
+        int yearly_price
+        int yearly_total
+        string currency "DZD"
+        text features "JSON"
+        bool popular
+        string cta
+        bool is_active
+        datetime deleted_at "soft delete"
+    }
+    SUBSCRIPTIONS {
+        int id PK
+        int user_id FK
+        int plan_id FK
+        int seats
+        string billing_period "monthly | yearly"
+        string status "trialing | active | canceled | expired | past_due"
+        datetime started_at
+        datetime trial_ends_at
+        datetime current_period_end
+        datetime canceled_at
+        datetime trial_reminder_sent_at
+        datetime renewal_reminder_sent_at
+        datetime deleted_at "soft delete"
+    }
+    PAYMENTS {
+        int id PK
+        int user_id FK
+        int subscription_id FK "nullable"
+        int amount
+        string currency
+        string status "pending | succeeded | failed | refunded"
+        string provider
+        string provider_reference UK "Chargily checkout id"
+        text provider_response "JSON"
+        text metadata "JSON (plan_id, billing_period...)"
+        datetime paid_at
+        string failure_reason
+        string error_code
+        datetime refunded_at
+        string refund_reason
+        datetime deleted_at "soft delete"
+    }
+    VPN_CREDENTIALS {
+        int id PK
+        int user_id FK
+        int subscription_id FK "nullable"
+        string public_key UK
+        text private_key "encrypted"
+        string address UK
+        string status "active | revoked"
+        datetime revoked_at
+    }
+
+    USERS ||--o{ SUBSCRIPTIONS : "subscribes (RESTRICT)"
+    PLANS ||--o{ SUBSCRIPTIONS : "is for (RESTRICT)"
+    USERS ||--o{ PAYMENTS : "makes (RESTRICT)"
+    SUBSCRIPTIONS |o--o{ PAYMENTS : "funds (SET NULL)"
+    USERS ||--o{ VPN_CREDENTIALS : "holds (RESTRICT)"
+    SUBSCRIPTIONS |o--o{ VPN_CREDENTIALS : "authorizes (SET NULL)"

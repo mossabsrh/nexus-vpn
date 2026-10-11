@@ -12,7 +12,7 @@
 | Figure III.1 | Global architecture of the portal | III | `figures/architecture-en.png` |
 | Figure III.2 | Global use-case diagram | III | `figures/use-case-global.png` |
 | Figure III.3 | Client use-case diagram | III | `figures/use-case-client.png` |
-| Figure III.4 | Administration use-case diagram (support merged, G-05) | III | `figures/use-case-admin.png` |
+| Figure III.4 | Administration use-case diagram (support merged) | III | `figures/use-case-admin.png` |
 | Figure III.5 | Sequence: registration and e-mail verification | III | `figures/seq-registration-verification-en.png` |
 | Figure III.6 | Sequence: login | III | `figures/seq-login-en.png` |
 | Figure III.7 | Sequence: browse VPN offers | III | `figures/seq-browse-offers-en.png` |
@@ -22,12 +22,14 @@
 | Figure III.11 | Sequence: contact the company | III | `figures/seq-contact-request-en.png` |
 | Figure III.12 | Sequence: an administrator deletes a user | III | `figures/seq-admin-delete-user-en.png` |
 | Figure III.13 | Class diagram of the domain model | III | `figures/class-diagram-en.png` |
-| Figure III.14 | Entity-relationship diagram of the database | III | `figures/erd-en.png` |
-| Figure III.15 | Gantt chart of the project | III | placeholder (real dates pending, Q-18) |
+| Figure III.14a | Entity-relationship diagram (commercial core) | III | `figures/erd-core-en.png` |
+| Figure III.14b | Entity-relationship diagram (teams, support and audit) | III | `figures/erd-collab-en.png` |
+| Figure III.15 | State diagram of the subscription lifecycle | III | `figures/state-subscription-en.png` |
+| Figure III.16 | Gantt chart of the project | III | placeholder (real dates pending) |
 | Figure IV.1 | Main technologies of the portal | IV | `figures/tech-stack.png` |
 | Figure IV.2 | Public home page: navigation bar and hero | IV | `screenshots/memoire/01-home-navbar-hero.png` |
 | Figure IV.3 | Home page: features section | IV | `screenshots/memoire/02-features.png` |
-| Figure IV.4 | Home page: server-coverage map and statistics | IV | `screenshots/memoire/03-map-stats.png` |
+| Figure IV.4 | Home page: the network section (private routing over WireGuard) | IV | `screenshots/memoire/03-map-stats.png` |
 | Figure IV.5 | Home page: approved customer testimonials | IV | `screenshots/memoire/04-testimonials.png` |
 | Figure IV.6 | Home page: pricing plans | IV | `screenshots/memoire/05-pricing-cards.png` |
 | Figure IV.7 | Home page: Team-plan contact form | IV | `screenshots/memoire/06-contact-form.png` |
@@ -52,9 +54,10 @@
 | Figure IV.26 | Administration: analytics | IV | `screenshots/memoire/22-admin-analytics.png` |
 | Figure IV.27 | Administration: audit log | IV | `screenshots/memoire/24-admin-audit-log.png` |
 | Figure IV.28 | Support: testimonial moderation | IV | `screenshots/memoire/23-admin-comments.png` |
-| Figure IV.29 | Responsive web: home page at phone width | IV | `screenshots/memoire/90-mobile-home.png` |
-| Figure IV.30 | Responsive web: dashboard at phone width | IV | `screenshots/memoire/91-mobile-dashboard.png` |
-| Figure IV.31 | Deployment architecture | IV | `figures/deployment-en.png` |
+| Figure IV.29 | Support: contact-request inbox | IV | `screenshots/memoire/28-admin-contact-requests.png` |
+| Figure IV.30 | Responsive web: home page at phone width | IV | `screenshots/memoire/90-mobile-home.png` |
+| Figure IV.31 | Responsive web: dashboard at phone width | IV | `screenshots/memoire/91-mobile-dashboard.png` |
+| Figure IV.32 | Deployment architecture | IV | `figures/deployment-en.png` |
 
 *(Screenshots are in `docs/pfe/memoire-assets/screenshots/memoire/`.)*
 
@@ -70,7 +73,7 @@
 | Table III.3 | Actors of the system | III |
 | Table III.4 | UC-01: Authenticate | III |
 | Table III.5 | UC-02: Browse VPN offers | III |
-| Table III.6 | UC-03: Choose a plan and get the VPN configuration | III |
+| Table III.6 | UC-03: Get the VPN configuration | III |
 | Table III.7 | UC-04: Subscribe and checkout | III |
 | Table III.8 | UC-05: Process payment | III |
 | Table III.9 | UC-06: Manage VPN accounts | III |
@@ -94,7 +97,7 @@
 | Table IV.1 | Logical layers of the system | IV |
 | Table IV.2 | Functional modules and their main endpoints | IV |
 | Table IV.3 | Backend automated test suite | IV |
-| Table IV.4 | Manual security checks | IV |
+| Table IV.4 | Security checks and their evidence | IV |
 
 ## List of Code Listings
 

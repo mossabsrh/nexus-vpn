@@ -7,8 +7,9 @@ We default to clean BOLD (no underline/italic). To switch, change set_font(..., 
 for Heading 1/2/3 below."""
 import sys
 from docx import Document
-from docx.shared import Pt, Cm, RGBColor
+from docx.shared import Pt, Cm, Mm, RGBColor
 from docx.enum.text import WD_ALIGN_PARAGRAPH, WD_LINE_SPACING, WD_TAB_ALIGNMENT
+from docx.enum.section import WD_ORIENT
 from docx.oxml.ns import qn
 from docx.oxml import OxmlElement
 
@@ -17,6 +18,10 @@ doc = Document(sys.argv[1])
 NAVY = '1F3864'  # dark navy for the running-header bar and the chapter-title accent
 
 for section in doc.sections:
+    # A4 explicitly: pandoc's default reference.docx is US Letter, which LibreOffice would keep.
+    section.orientation = WD_ORIENT.PORTRAIT
+    section.page_width = Mm(210)
+    section.page_height = Mm(297)
     section.left_margin = Cm(3)
     section.right_margin = Cm(2)
     section.top_margin = Cm(2.5)
@@ -65,8 +70,9 @@ for hname, size in {'Heading 1': 16, 'Heading 2': 14, 'Heading 3': 12, 'Heading 
         pf.alignment = WD_ALIGN_PARAGRAPH.LEFT
         if hname == 'Heading 1':
             # The chapter title gets a title page: centred, pushed down, with a navy accent bar above
-            # it (a page break after the title is added in fix_docx.py so the content starts fresh).
-            pf.page_break_before = True
+            # it. fix_docx.py starts each chapter in its own section (so its title page carries no
+            # running header / page number) and adds a page break after the title so the body follows
+            # on the next page. No page_break_before here: the section break already opens a new page.
             pf.alignment = WD_ALIGN_PARAGRAPH.CENTER
             pf.space_before = Pt(170)
             pf.space_after = Pt(0)
