@@ -93,7 +93,7 @@ Ces points sont **documentés** et pour la plupart déjà dans le registre des r
 
 | Réf. | Limite | À quoi penser pendant la démo |
 |---|---|---|
-| R-01 / R-09 | La passerelle WireGuard réelle n'est pas déployée ; les chiffres marketing (87 pays, 99,98 %, kill switch…) sont des maquettes. | Le fichier `.conf` est généré correctement, mais **le tunnel ne connecte pas à un vrai serveur**. Présenter la génération de configuration, pas une connexion live. |
+| R-01 / R-09 | La passerelle WireGuard réelle n'est pas déployée (R-01). Les anciens chiffres marketing (87 pays, 99,98 %, kill switch…) ont été **retirés du site le 2026-10-11** (R-09 corrigé). | Le fichier `.conf` est généré correctement, mais **le tunnel ne connecte pas à un vrai serveur**. Présenter la génération de configuration, pas une connexion live. |
 | — | Chargily en **mode test**. | Montrer la redirection vers Chargily ; utiliser les cartes de test. Ne pas présenter comme un paiement réel. |
 | R-19 | E-mails **synchrones** (pas de file d'attente) : l'envoi via Gmail prend ≈ 6 s. | Lors d'une inscription en direct, l'interface peut sembler lente ~6 s le temps de l'envoi SMTP. Préparer ce point ou inscrire à l'avance. |
 | R-02 | PostgreSQL Render Free expire 30 jours après création. | Vérifier que la base de production n'a pas expiré **avant** la soutenance. |

@@ -12,7 +12,7 @@ const features = [
     ),
     title: "Your activity stays yours",
     badge: "Zero-log",
-    description: "We keep no connection timestamps, no IP addresses, no traffic data. Our infrastructure is architected so that we couldn't provide logs even if compelled to.",
+    description: "The portal keeps no VPN connection timestamps, no IP addresses and no traffic data. Its data model simply has nowhere to store your browsing.",
   },
   {
     icon: (
@@ -22,9 +22,9 @@ const features = [
         <circle cx="12" cy="16" r="1.5" fill="currentColor"/>
       </svg>
     ),
-    title: "End-to-end encryption",
-    badge: "ChaCha20 · AES-256",
-    description: "Traffic is encrypted before it leaves your device. We support WireGuard® and OpenVPN, with forward secrecy on every session.",
+    title: "Modern encryption",
+    badge: "WireGuard®",
+    description: "Every tunnel uses the WireGuard protocol — ChaCha20-Poly1305 encryption and Curve25519 keys, with a fresh key pair generated for each account.",
   },
   {
     icon: (
@@ -33,9 +33,9 @@ const features = [
         <path d="M5.64 6.64a9 9 0 000 10.72M8.46 9.46a5 5 0 000 5.08" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
       </svg>
     ),
-    title: "Kill switch, always on",
-    badge: "Network guard",
-    description: "If the tunnel drops unexpectedly, network access is cut immediately — before your real IP is exposed. Works at the OS level, not app level.",
+    title: "Your real IP stays hidden",
+    badge: "IP masking",
+    description: "Your traffic is routed through the encrypted tunnel, so the sites you reach see the VPN's address — not the real one your ISP assigned you.",
   },
   {
     icon: (
@@ -45,9 +45,9 @@ const features = [
         <path d="M2 12h20" stroke="currentColor" strokeWidth="1.5"/>
       </svg>
     ),
-    title: "Access without borders",
-    badge: "87 countries",
-    description: "Reach content that's geo-restricted where you are. Servers placed for speed, not just flag count — every node is on high-bandwidth fiber.",
+    title: "Pay in Algerian dinars",
+    badge: "EDAHABIA · CIB",
+    description: "Checkout in DZD with EDAHABIA or CIB through the Chargily gateway — no foreign currency and no foreign card needed to subscribe.",
   },
   {
     icon: (
@@ -56,9 +56,9 @@ const features = [
         <circle cx="12" cy="12" r="4" stroke="currentColor" strokeWidth="1.5"/>
       </svg>
     ),
-    title: "Split tunneling",
-    badge: "Per-app routing",
-    description: "Route your bank app through the VPN while your video calls go direct. Full control over which traffic gets encrypted — without losing either.",
+    title: "Up and running in minutes",
+    badge: "7-day trial",
+    description: "Create an account, start a free 7-day trial, and download a ready-to-import WireGuard configuration file for your device.",
   },
   {
     icon: (
@@ -67,9 +67,9 @@ const features = [
         <path d="M14 3v5h5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
       </svg>
     ),
-    title: "DNS leak prevention",
-    badge: "Private resolver",
-    description: "DNS queries are resolved inside the encrypted tunnel using our own resolver — not your ISP's. Your browsing lookups stay invisible.",
+    title: "One simple subscription",
+    badge: "No lock-in",
+    description: "Manage your subscription from your dashboard, view your payment receipts, and cancel whenever you want — access runs to the end of the paid period.",
   },
 ]
 

@@ -18,7 +18,7 @@ const footerLinks = {
     { name: "Help center", href: "#" },
     { name: "Contact", href: "/#contact" },
     { name: "System status", href: "#" },
-    { name: "Security audit", href: "#" },
+    { name: "Security", href: "#" },
   ],
   Legal: [
     { name: "Privacy policy", href: "#" },
@@ -48,7 +48,7 @@ export function Footer() {
               </span>
             </a>
             <p className="text-sm text-muted-foreground max-w-xs leading-relaxed mb-5">
-              Encrypted tunnels, zero activity logs, and a kill switch that never sleeps.
+              Encrypted WireGuard tunnels, no activity logs, and payment in Algerian dinars.
             </p>
             {/* Social */}
             <div className="flex gap-3">

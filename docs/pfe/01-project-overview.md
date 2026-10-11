@@ -65,7 +65,7 @@ Liste détaillée et liens vers le code : `10-features.md`.
 * Le **serveur VPN lui-même** (installation et exploitation de la passerelle WireGuard) : seules ses coordonnées sont configurées ; la synchronisation des pairs est manuelle.
 * Applications clientes VPN (mobile/desktop) : l'utilisateur importe le fichier `.conf` dans un client WireGuard existant.
 * Renouvellement automatique / prélèvement récurrent (paiements ponctuels uniquement).
-* OpenVPN, multi-serveurs/multi-pays, limitation du nombre d'appareils, kill switch, split tunneling : annoncés dans le contenu marketing mais **non implémentés** (voir `04-frontend.md` §13).
+* OpenVPN, multi-serveurs/multi-pays, limitation du nombre d'appareils, kill switch, split tunneling : **non implémentés** et, depuis le 2026-10-11, **plus annoncés** sur le site ni dans les offres (contenu marketing aligné sur le réel ; voir `04-frontend.md` §13). Restent des perspectives (`19-limitations-and-future-work.md`).
 * Interface multilingue (interface en anglais uniquement).
 
 Limites et perspectives : `19-limitations-and-future-work.md`.

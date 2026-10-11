@@ -3,12 +3,12 @@
 import { motion } from "framer-motion"
 
 const regions = [
-  { name: "North America", nodes: 24, latency: "8ms", x: "29.0%", y: "28.9%" },
-  { name: "Europe", nodes: 31, latency: "5ms", x: "52.4%", y: "22.9%" },
-  { name: "Asia Pacific", nodes: 19, latency: "14ms", x: "78.1%", y: "49.3%" },
-  { name: "South America", nodes: 7, latency: "22ms", x: "37.4%", y: "62.7%" },
-  { name: "Middle East", nodes: 4, latency: "18ms", x: "65.0%", y: "36.3%" },
-  { name: "Africa", nodes: 2, latency: "30ms", x: "57.6%", y: "64.2%" },
+  { name: "North America", x: "29.0%", y: "28.9%" },
+  { name: "Europe", x: "52.4%", y: "22.9%" },
+  { name: "Asia Pacific", x: "78.1%", y: "49.3%" },
+  { name: "South America", x: "37.4%", y: "62.7%" },
+  { name: "Middle East", x: "65.0%", y: "36.3%" },
+  { name: "Africa", x: "57.6%", y: "64.2%" },
 ]
 
 // Real-world coastlines (Natural Earth 110m land data), simplified and
@@ -31,11 +31,11 @@ export function MapSection() {
             <span className="text-xs text-primary font-medium tracking-wider uppercase">Network</span>
           </div>
           <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight max-w-2xl">
-            87 countries.{" "}
-            <span className="text-gradient">No overcrowding.</span>
+            Private wherever{" "}
+            <span className="text-gradient">you connect.</span>
           </h2>
           <p className="text-muted-foreground mt-4 max-w-xl text-lg leading-relaxed">
-            Each server is monitored for load, latency, and uptime. When a node is under pressure, we route around it automatically.
+            NexusVPN wraps your traffic in an encrypted WireGuard tunnel, so your connection stays private on any network you use.
           </p>
         </motion.div>
 
@@ -118,21 +118,10 @@ export function MapSection() {
                     <div className="absolute bottom-5 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-20">
                       <div className="glass rounded-xl px-3 py-2 whitespace-nowrap">
                         <p className="text-xs font-medium text-foreground">{region.name}</p>
-                        <p className="text-xs text-muted-foreground">{region.nodes} nodes · {region.latency} avg</p>
                       </div>
                     </div>
                   </div>
                 </motion.div>
-              ))}
-            </div>
-
-            {/* Region stats below map */}
-            <div className="grid grid-cols-3 md:grid-cols-6 divide-x divide-border border-t border-border">
-              {regions.map((region) => (
-                <div key={region.name} className="p-4 text-center">
-                  <p className="text-sm font-semibold text-foreground">{region.nodes}</p>
-                  <p className="text-xs text-muted-foreground mt-0.5 leading-tight">{region.name}</p>
-                </div>
               ))}
             </div>
           </div>

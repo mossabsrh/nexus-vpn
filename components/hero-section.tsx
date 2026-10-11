@@ -7,7 +7,7 @@ const statusItems = [
   { label: "Tunnel", value: "WireGuard®", color: "text-emerald-400" },
   { label: "DNS", value: "Protected", color: "text-emerald-400" },
   { label: "IP", value: "Masked", color: "text-emerald-400" },
-  { label: "Kill switch", value: "Active", color: "text-emerald-400" },
+  { label: "Cipher", value: "ChaCha20", color: "text-emerald-400" },
 ]
 
 /**
@@ -158,16 +158,16 @@ function VPNDashboard() {
             </div>
           </div>
 
-          {/* Server row */}
+          {/* Tunnel row */}
           <div className="flex items-center justify-between rounded-xl bg-primary/8 border border-primary/15 px-3 py-2.5">
             <div className="flex items-center gap-2.5">
-              <div className="w-6 h-6 rounded-md bg-primary/20 flex items-center justify-center text-xs">🇯🇵</div>
+              <div className="w-6 h-6 rounded-md bg-primary/20 flex items-center justify-center text-xs">🔒</div>
               <div>
-                <p className="text-xs font-medium text-foreground">Tokyo · JP‑01</p>
-                <p className="text-xs text-muted-foreground">12 ms</p>
+                <p className="text-xs font-medium text-foreground">Encrypted tunnel</p>
+                <p className="text-xs text-muted-foreground">WireGuard® · ChaCha20</p>
               </div>
             </div>
-            <button className="text-xs text-primary hover:text-primary/80 transition-colors">Switch</button>
+            <span className="text-xs font-medium text-emerald-400">Active</span>
           </div>
         </div>
       </div>
@@ -226,7 +226,7 @@ export function HeroSection() {
               <div className="flex max-w-full flex-wrap items-center justify-center gap-2 rounded-full border border-border bg-muted/50 px-3 py-1.5">
                 <div className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
                 <span className="text-[11px] font-medium uppercase tracking-[0.18em] text-muted-foreground">
-                  Open audit · no logs · WireGuard®
+                  Encrypted · no activity logs · WireGuard®
                 </span>
               </div>
             </motion.div>
@@ -246,7 +246,7 @@ export function HeroSection() {
               variants={itemVariants}
               className="mx-auto mb-8 max-w-lg text-base leading-relaxed text-muted-foreground lg:mx-0 lg:text-lg"
             >
-              NexusVPN keeps your traffic encrypted, hides your real IP, and routes you through a reliable global network built for speed and privacy.
+              NexusVPN keeps your traffic encrypted, hides your real IP, and routes it through a secure WireGuard tunnel built for speed and privacy.
             </motion.p>
 
             {/* CTAs */}
@@ -274,9 +274,9 @@ export function HeroSection() {
               className="mt-8 flex flex-wrap items-center justify-center gap-x-5 gap-y-3 lg:justify-start"
             >
               {[
-                "Zero activity logs",
-                "30-day money back",
-                "Independent audit",
+                "No activity logs",
+                "7-day free trial",
+                "WireGuard® protocol",
               ].map((item) => (
                 <div key={item} className="flex items-center gap-1.5 text-xs text-muted-foreground">
                   <svg viewBox="0 0 16 16" fill="none" className="w-3.5 h-3.5 text-primary flex-shrink-0">

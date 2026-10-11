@@ -9,8 +9,8 @@
 | L-01 | Pas de renouvellement automatique : l'utilisateur doit repayer à chaque période | Paiements Chargily ponctuels (`15-technical-decisions.md` TD-09) |
 | L-02 | Changement d'offre sans prorata : les jours restants de l'ancienne offre sont perdus | `Payment::applyToSubscription()` termine l'ancien abonnement immédiatement |
 | L-03 | Une seule passerelle VPN, pas de choix de pays/serveur | `config/services.php` (`services.vpn.*`) |
-| L-04 | Nombre d'appareils non limité ni géré : un seul identifiant WireGuard actif par utilisateur, malgré « Up to 3 devices » / « Unlimited devices » dans les offres | `VpnCredential::issueFor()`, `PlansTableSeeder` |
-| L-05 | Fonctionnalités annoncées non implémentées : OpenVPN, kill switch, split tunneling, protection DNS dédiée, SSO/SAML, IP dédiée, SLA | Contenu des offres et du site (`04-frontend.md` §13) |
+| L-04 | Un seul identifiant WireGuard actif par utilisateur ; la gestion multi-appareils (un pair par appareil) n'est pas implémentée. Les offres ne mentionnent plus de nombre d'appareils (contenu aligné, 2026-10-11). | `VpnCredential::issueFor()` |
+| L-05 | Fonctionnalités non implémentées (perspectives) : OpenVPN, kill switch, split tunneling, protection DNS dédiée, SSO/SAML, IP dédiée, SLA. **Retirées du site et des offres le 2026-10-11** ; elles ne sont donc plus annoncées. | `04-frontend.md` §13 |
 | L-06 | Pas de page de reçu/facture ni de facture PDF, alors que l'endpoint de reçu existe | `07-api.md` §13.1 |
 | L-07 | Renommage d'équipe sans interface ; les membres doivent déjà avoir un compte (pas d'invitation par e-mail) | `TeamController` |
 | L-08 | ✅ **Résolu (2026-10-06)** — Suppression de compte en libre-service ajoutée (`DELETE /api/account`, anonymisation + soft delete). Reste la route web héritée `DELETE /settings/profile` non modifiée (R-03). | `05-backend.md` §7.6, `07-api.md` §5 |
@@ -39,7 +39,7 @@ Classées par priorité suggérée (⚠️ À VÉRIFIER : priorités de l'étudi
 4. Restreindre `TRUSTED_PROXIES` et les origines CORS par environnement — R-05, R-11.
 5. Authentification à deux facteurs pour les administrateurs — R-07.
 6. Tests frontend (unitaires et de bout en bout, ex. parcours inscription → paiement) et CI exécutant tests, lint et build — R-08, L-16.
-7. Aligner le contenu marketing sur les fonctionnalités réelles, ou implémenter la gestion multi-appareils (un pair par appareil) — R-09, L-04, L-05.
+7. ✅ Contenu marketing aligné sur les fonctionnalités réelles (2026-10-11, R-09). Reste, si souhaité, à implémenter la gestion multi-appareils (un pair par appareil) — L-04 ; les fonctionnalités retirées (OpenVPN, kill switch…) demeurent des perspectives — L-05.
 8. Prorata lors d'un changement d'offre, factures PDF, page de reçu — L-02, L-06.
 9. Internationalisation (français/arabe/anglais) — L-09.
 10. File d'attente pour les e-mails — R-19.

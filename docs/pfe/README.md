@@ -53,7 +53,7 @@ Toutes les mentions ⚠️ À VÉRIFIER des fichiers, reformulées en questions.
 
 ### `04-frontend.md`
 - [ ] Le site affiche-t-il un favicon personnalisé en production (les icônes de `public/` ne sont pas déclarées) ?
-- [ ] Les chiffres marketing (87 pays, 99,98 %, 10 Gbps, nœuds par région) doivent-ils être présentés comme une maquette dans le mémoire ?
+- [x] ~~Les chiffres marketing (87 pays, 99,98 %, 10 Gbps, nœuds par région) doivent-ils être présentés comme une maquette dans le mémoire ?~~ **Résolu (2026-10-11)** : retirés du site et des offres ; le contenu décrit uniquement le réel, plus besoin de maquette.
 
 ### `05-backend.md`
 - [ ] Existe-t-il un mécanisme (cron, agent) hors dépôt qui synchronise automatiquement les pairs WireGuard sur la passerelle ?

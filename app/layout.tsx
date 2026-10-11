@@ -9,12 +9,12 @@ const geistMono = Geist_Mono({ subsets: ['latin'], variable: '--font-geist-mono'
 
 export const metadata: Metadata = {
   title: 'NexusVPN — Private by Default',
-  description: 'Encrypted tunnels, zero activity logs, and a kill switch that never sleeps. NexusVPN keeps your connection private whether you\'re at home, at work, or on the road.',
-  keywords: ['VPN', 'privacy', 'encryption', 'security', 'anonymous browsing'],
+  description: 'Encrypted WireGuard tunnels, no activity logs, and checkout in Algerian dinars. NexusVPN keeps your connection private whether you\'re at home, at work, or on the road.',
+  keywords: ['VPN', 'WireGuard', 'privacy', 'encryption', 'security', 'anonymous browsing'],
   authors: [{ name: 'NexusVPN' }],
   openGraph: {
     title: 'NexusVPN — Private by Default',
-    description: 'Encrypted tunnels, zero activity logs, and a kill switch that never sleeps.',
+    description: 'Encrypted WireGuard tunnels, no activity logs, and checkout in Algerian dinars.',
     type: 'website',
   },
 }

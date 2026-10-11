@@ -180,9 +180,9 @@ The public site is a single scrolling landing page followed by the authenticated
 
 **Figure IV.3 — Home page: features section.** *Source: author.*
 
-![Server map and statistics](../pfe/memoire-assets/screenshots/memoire/03-map-stats.png){width=14cm}
+![Network section](../pfe/memoire-assets/screenshots/memoire/03-map-stats.png){width=14cm}
 
-**Figure IV.4 — Home page: server-coverage map and statistics (marketing mock-up).** *Source: author.*
+**Figure IV.4 — Home page: the network section (private routing over WireGuard).** *Source: author.*
 
 ![Testimonials](../pfe/memoire-assets/screenshots/memoire/04-testimonials.png){width=14cm}
 

@@ -5,32 +5,32 @@ import { motion, useInView } from "framer-motion"
 
 const stats = [
   {
-    value: 87,
-    suffix: "+",
-    unit: "countries",
-    label: "Server locations",
-    description: "Spread across six continents — not artificially inflated.",
+    value: 7,
+    suffix: "-day",
+    unit: "",
+    label: "Free trial",
+    description: "Try any self-serve plan before you pay — no card required.",
   },
   {
-    value: 10,
-    suffix: "Gbps",
+    value: 256,
+    suffix: "-bit",
     unit: "",
-    label: "Uplink per node",
-    description: "Dedicated fiber, not shared hosting.",
+    label: "Encryption",
+    description: "ChaCha20-Poly1305 with Curve25519 keys, via WireGuard.",
   },
   {
-    value: 99.98,
-    suffix: "%",
-    unit: "",
-    label: "Network uptime",
-    description: "Averaged over the last 12 months.",
+    value: 2,
+    suffix: "",
+    unit: "methods",
+    label: "Local payment",
+    description: "EDAHABIA and CIB, billed in Algerian dinars.",
   },
   {
     value: 0,
     suffix: "",
     unit: "logs",
     label: "Activity records",
-    description: "Confirmed by third-party audit.",
+    description: "The portal stores no VPN connection or traffic data.",
     isZero: true,
   },
 ]
@@ -60,7 +60,7 @@ function Counter({ value, suffix, unit, isZero }: { value: number; suffix: strin
     return () => clearInterval(timer)
   }, [inView, value, isZero])
 
-  const display = isZero ? "0" : value === 99.98 ? count.toFixed(2) : Math.floor(count)
+  const display = isZero ? "0" : Math.floor(count)
 
   return (
     <span ref={ref} className="text-3xl md:text-4xl font-bold text-foreground tabular-nums">

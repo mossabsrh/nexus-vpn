@@ -11,9 +11,9 @@ import { useAuth } from "./auth-provider"
 
 /** Marketing comparison per plan slug; unknown plans show a dash instead of misaligned values. */
 const comparisonBySlug: Record<string, Record<string, string>> = {
-  essential: { Devices: 'Up to 3', 'Split tunneling': '—', 'Priority support': 'Email', 'Team dashboard': '—', 'Billing model': 'Personal' },
-  standard: { Devices: 'Unlimited', 'Split tunneling': 'Included', 'Priority support': 'Priority', 'Team dashboard': '—', 'Billing model': 'Personal' },
-  team: { Devices: '5–50 seats', 'Split tunneling': 'Included', 'Priority support': 'Dedicated', 'Team dashboard': 'Included', 'Billing model': 'Business' },
+  essential: { Seats: '1', 'Team dashboard': '—', 'Priority support': 'Email', 'Billing model': 'Personal' },
+  standard: { Seats: '1', 'Team dashboard': '—', 'Priority support': 'Priority', 'Billing model': 'Personal' },
+  team: { Seats: '5–50', 'Team dashboard': 'Included', 'Priority support': 'Dedicated', 'Billing model': 'Business' },
 }
 
 export function PricingSection() {
@@ -55,12 +55,11 @@ export function PricingSection() {
         plan.monthlyPrice === null ? 'Custom' : `${plan.monthlyPrice.toLocaleString('en-US')} DZD`,
       ),
     },
-    { label: 'Devices', values: marketingRow('Devices') },
-    { label: 'Server locations', values: comparisonPlans.map(() => '87 regions') },
-    { label: 'Protocols', values: comparisonPlans.map(() => 'WireGuard®') },
-    { label: 'Split tunneling', values: marketingRow('Split tunneling') },
-    { label: 'Priority support', values: marketingRow('Priority support') },
+    { label: 'Seats', values: marketingRow('Seats') },
+    { label: 'Protocol', values: comparisonPlans.map(() => 'WireGuard®') },
+    { label: 'Payment', values: comparisonPlans.map(() => 'EDAHABIA / CIB') },
     { label: 'Team dashboard', values: marketingRow('Team dashboard') },
+    { label: 'Priority support', values: marketingRow('Priority support') },
     { label: 'Billing model', values: marketingRow('Billing model') },
   ]
 
@@ -374,7 +373,7 @@ export function PricingSection() {
               <path d="M8 1L2 4v5c0 3.6 2.3 6.9 6 7.8C11.7 15.9 14 12.6 14 9V4L8 1z" stroke="currentColor" strokeWidth="1.2"/>
               <path d="M5.5 8l2 2L11 6" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/>
             </svg>
-            30-day money-back guarantee — no questions
+            No activity logs kept
           </div>
           <div className="flex items-center gap-2">
             <svg viewBox="0 0 16 16" fill="none" className="w-4 h-4 text-primary flex-shrink-0">
