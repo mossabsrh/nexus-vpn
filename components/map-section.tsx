@@ -2,15 +2,6 @@
 
 import { motion } from "framer-motion"
 
-const regions = [
-  { name: "North America", x: "29.0%", y: "28.9%" },
-  { name: "Europe", x: "52.4%", y: "22.9%" },
-  { name: "Asia Pacific", x: "78.1%", y: "49.3%" },
-  { name: "South America", x: "37.4%", y: "62.7%" },
-  { name: "Middle East", x: "65.0%", y: "36.3%" },
-  { name: "Africa", x: "57.6%", y: "64.2%" },
-]
-
 // Real-world coastlines (Natural Earth 110m land data), simplified and
 // projected equirectangular into an 800x400 viewBox.
 const WORLD_PATH =
@@ -64,65 +55,6 @@ export function MapSection() {
                 <path d={WORLD_PATH} fill="oklch(0.9 0.18 195 / 0.22)" stroke="oklch(0.92 0.22 195)" strokeWidth="0.9" />
               </svg>
 
-              {/* Connection lines between regions */}
-              <svg className="absolute inset-0 w-full h-full" viewBox="0 0 800 400">
-                <defs>
-                  <linearGradient id="lineGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-                    <stop offset="0%" stopColor="oklch(0.92 0.28 195)" stopOpacity="0"/>
-                    <stop offset="50%" stopColor="oklch(0.92 0.28 195)" stopOpacity="1"/>
-                    <stop offset="100%" stopColor="oklch(0.92 0.28 195)" stopOpacity="0"/>
-                  </linearGradient>
-                </defs>
-                {/* NA to EU */}
-                <path d="M232 116 Q330 60 419 92" stroke="url(#lineGrad)" strokeWidth="2.2" fill="none" opacity="1"/>
-                {/* EU to ME */}
-                <path d="M419 92 Q470 110 520 145" stroke="url(#lineGrad)" strokeWidth="2.2" fill="none" opacity="1"/>
-                {/* ME to APAC */}
-                <path d="M520 145 Q575 165 625 197" stroke="url(#lineGrad)" strokeWidth="2.2" fill="none" opacity="1"/>
-                {/* NA to SA */}
-                <path d="M232 116 Q255 190 299 251" stroke="url(#lineGrad)" strokeWidth="1.8" fill="none" opacity="0.95"/>
-                {/* ME to AF */}
-                <path d="M520 145 Q495 205 461 257" stroke="url(#lineGrad)" strokeWidth="1.8" fill="none" opacity="0.95"/>
-              </svg>
-
-              {/* Server node dots */}
-              {regions.map((region, i) => (
-                <motion.div
-                  key={region.name}
-                  className="absolute"
-                  style={{ left: region.x, top: region.y, transform: "translate(-50%, -50%)" }}
-                  initial={{ scale: 0, opacity: 0 }}
-                  whileInView={{ scale: 1, opacity: 1 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: 0.3 + i * 0.1, duration: 0.4, ease: "backOut" }}
-                >
-                  <div className="relative group cursor-default">
-                    {/* Ping ring */}
-                    <div
-                      className="absolute inset-0 w-3 h-3 rounded-full animate-ping-slow opacity-90"
-                      style={{
-                        animationDelay: `${i * 0.4}s`,
-                        backgroundColor: "oklch(0.95 0.32 195)",
-                      }}
-                    />
-                    {/* Core dot */}
-                    <div
-                      className="w-3 h-3 rounded-full border shadow-lg"
-                      style={{
-                        backgroundColor: "oklch(1 0.35 195)",
-                        borderColor: "oklch(1 0.3 195)",
-                        boxShadow: "0 0 20px oklch(0.95 0.35 195 / 1)",
-                      }}
-                    />
-                    {/* Tooltip */}
-                    <div className="absolute bottom-5 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-20">
-                      <div className="glass rounded-xl px-3 py-2 whitespace-nowrap">
-                        <p className="text-xs font-medium text-foreground">{region.name}</p>
-                      </div>
-                    </div>
-                  </div>
-                </motion.div>
-              ))}
             </div>
           </div>
         </motion.div>

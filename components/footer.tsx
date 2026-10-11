@@ -5,26 +5,9 @@ const footerLinks = {
     { name: "Features", href: "#features" },
     { name: "Network", href: "#map" },
     { name: "Pricing", href: "#pricing" },
-    { name: "Download", href: "#" },
-    { name: "Changelog", href: "#" },
-  ],
-  Company: [
-    { name: "About", href: "#" },
-    { name: "Blog", href: "#" },
-    { name: "Careers", href: "#" },
-    { name: "Press kit", href: "#" },
   ],
   Support: [
-    { name: "Help center", href: "#" },
-    { name: "Contact", href: "/#contact" },
-    { name: "System status", href: "#" },
-    { name: "Security", href: "#" },
-  ],
-  Legal: [
-    { name: "Privacy policy", href: "#" },
-    { name: "Terms of service", href: "#" },
-    { name: "No-log policy", href: "#" },
-    { name: "Cookie settings", href: "#" },
+    { name: "Contact", href: "#contact" },
   ],
 }
 
@@ -32,7 +15,7 @@ export function Footer() {
   return (
     <footer className="border-t border-border bg-background/80">
       <div className="container mx-auto px-4 md:px-6 max-w-6xl py-14">
-        <div className="grid grid-cols-2 md:grid-cols-6 gap-8 mb-12">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-12">
           {/* Brand */}
           <div className="col-span-2">
             <a href="#" className="flex items-center gap-2.5 mb-4">
@@ -48,27 +31,8 @@ export function Footer() {
               </span>
             </a>
             <p className="text-sm text-muted-foreground max-w-xs leading-relaxed mb-5">
-              Encrypted WireGuard tunnels, no activity logs, and payment in Algerian dinars.
+              Encrypted WireGuard tunnels, with billing in Algerian dinars through EDAHABIA and CIB.
             </p>
-            {/* Social */}
-            <div className="flex gap-3">
-              {[
-                { label: "Twitter / X", path: "M4 4l16 16M4 20L20 4" },
-                { label: "GitHub", path: "M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 00-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0020 4.77 5.07 5.07 0 0019.91 1S18.73.65 16 2.48a13.38 13.38 0 00-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 005 4.77a5.44 5.44 0 00-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 009 18.13V22" },
-                { label: "LinkedIn", path: "M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6zM2 9h4v12H2z M4 6a2 2 0 100-4 2 2 0 000 4z" },
-              ].map((s) => (
-                <a
-                  key={s.label}
-                  href="#"
-                  aria-label={s.label}
-                  className="w-9 h-9 rounded-lg glass flex items-center justify-center text-muted-foreground hover:text-primary hover:glow-cyan transition-all duration-200"
-                >
-                  <svg viewBox="0 0 24 24" fill="none" className="w-4 h-4">
-                    <path d={s.path} stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                  </svg>
-                </a>
-              ))}
-            </div>
           </div>
 
           {/* Link columns */}

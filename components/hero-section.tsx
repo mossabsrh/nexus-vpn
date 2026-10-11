@@ -5,9 +5,9 @@ import { motion } from "framer-motion"
 
 const statusItems = [
   { label: "Tunnel", value: "WireGuard®", color: "text-emerald-400" },
-  { label: "DNS", value: "Protected", color: "text-emerald-400" },
-  { label: "IP", value: "Masked", color: "text-emerald-400" },
   { label: "Cipher", value: "ChaCha20", color: "text-emerald-400" },
+  { label: "Keys", value: "Curve25519", color: "text-emerald-400" },
+  { label: "DNS", value: "1.1.1.1", color: "text-emerald-400" },
 ]
 
 /**
@@ -192,7 +192,7 @@ function VPNDashboard() {
       >
         <div className="flex items-center gap-1.5">
           <div className="w-1.5 h-1.5 rounded-full bg-primary" />
-          <span className="text-xs font-mono text-foreground">DNS encrypted</span>
+          <span className="text-xs font-mono text-foreground">Curve25519</span>
         </div>
       </motion.div>
     </div>
@@ -226,7 +226,7 @@ export function HeroSection() {
               <div className="flex max-w-full flex-wrap items-center justify-center gap-2 rounded-full border border-border bg-muted/50 px-3 py-1.5">
                 <div className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
                 <span className="text-[11px] font-medium uppercase tracking-[0.18em] text-muted-foreground">
-                  Encrypted · no activity logs · WireGuard®
+                  WireGuard® · ChaCha20 · dinar billing
                 </span>
               </div>
             </motion.div>
@@ -246,7 +246,7 @@ export function HeroSection() {
               variants={itemVariants}
               className="mx-auto mb-8 max-w-lg text-base leading-relaxed text-muted-foreground lg:mx-0 lg:text-lg"
             >
-              NexusVPN keeps your traffic encrypted, hides your real IP, and routes it through a secure WireGuard tunnel built for speed and privacy.
+              NexusVPN routes your traffic through a fast, encrypted WireGuard tunnel, so your connection stays private on any network — with billing in Algerian dinars.
             </motion.p>
 
             {/* CTAs */}
@@ -274,9 +274,9 @@ export function HeroSection() {
               className="mt-8 flex flex-wrap items-center justify-center gap-x-5 gap-y-3 lg:justify-start"
             >
               {[
-                "No activity logs",
                 "7-day free trial",
                 "WireGuard® protocol",
+                "Pay in Algerian dinars",
               ].map((item) => (
                 <div key={item} className="flex items-center gap-1.5 text-xs text-muted-foreground">
                   <svg viewBox="0 0 16 16" fill="none" className="w-3.5 h-3.5 text-primary flex-shrink-0">

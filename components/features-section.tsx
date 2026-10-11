@@ -10,9 +10,9 @@ const features = [
         <path d="M9 12l2 2 4-4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
       </svg>
     ),
-    title: "Your activity stays yours",
-    badge: "Zero-log",
-    description: "The portal keeps no VPN connection timestamps, no IP addresses and no traffic data. Its data model simply has nowhere to store your browsing.",
+    title: "Your browsing stays yours",
+    badge: "No traffic data",
+    description: "The portal stores no VPN connection or traffic data — no browsing history and no record of what you do inside the tunnel. Its data model simply has nowhere to keep it.",
   },
   {
     icon: (

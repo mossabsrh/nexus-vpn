@@ -2,7 +2,7 @@
 
 Two sets live here:
 
-1. **`memoire/` — print-usable captures for the mémoire (USE THESE).** 29 images, desktop **1440×900** viewport, **light** theme, `deviceScaleFactor: 2` (sharp text), each cropped to **one section / component** (not full-page), so every figure is readable when printed at **~16 cm** wide on A4. Dialogs and cards are element-cropped. Verified one by one.
+1. **`memoire/` — print-usable captures for the mémoire (USE THESE).** 30 images, desktop **1440×900** viewport, **light** theme, `deviceScaleFactor: 2` (sharp text), each cropped to **one section / component** (not full-page), so every figure is readable when printed at **~16 cm** wide on A4. Dialogs and cards are element-cropped. Verified one by one.
 2. **Legacy full-page set (this folder's root) — kept for reference.** 68 captures (17 views × desktop/mobile × light/dark). These are full-page, floor-to-ceiling images — **unusable as A4 figures**; kept only as an archive. Documented in the French section at the bottom.
 
 ---
@@ -18,11 +18,11 @@ Mémoire chapter map: these illustrate **Chapter IV — Implementation and Deplo
 |---|---|---|
 | `01-home-navbar-hero.png` | Landing page — navigation bar and hero with the live VPN-status mock-up | IV.4.1 (client) · Ch. I/II context |
 | `02-features.png` | "Why" section — the six privacy/security feature cards | IV.4.1 · IV.3 |
-| `03-map-stats.png` | Network section — 87-country server-coverage map | IV.4.1 |
+| `03-map-stats.png` | Network section — private-routing-over-WireGuard illustration (decorative world map, no server nodes) | IV.4.1 |
 | `04-testimonials.png` | Customer testimonials tied to verified accounts | IV.4.1 · IV.3.8 — ⚠ see cleanup note |
 | `05-pricing-cards.png` | Pricing — Essential / Standard / Team plan cards (DZD) | IV.4.1 · IV.3.1 (offers & pricing) |
 | `06-contact-form.png` | "Talk to us about the Team plan" sales-contact form | IV.4.1 · IV.3.8 (support / contact requests) |
-| `07-footer.png` | Page footer — product/company/support/legal links | IV.4.1 |
+| `07-footer.png` | Page footer — product and support links, brand blurb and WireGuard trademark (footer only) | IV.4.1 |
 
 ### Authentication (IV.3.7 auth & RBAC)
 | File | Caption (EN) | Mémoire section |
@@ -58,6 +58,7 @@ Mémoire chapter map: these illustrate **Chapter IV — Implementation and Deplo
 | `21-admin-payments.png` | Admin — payments list with statuses and refunds | IV.4.2 · IV.3.3 — ⚠ see cleanup note |
 | `22-admin-analytics.png` | Admin — analytics (signups, conversion, revenue) | IV.4.2 |
 | `23-admin-comments.png` | Admin — testimonial moderation queue (pending) | IV.4.3 (support) |
+| `28-admin-contact-requests.png` | Admin — contact-request inbox ("Team inquiries") | IV.4.3 (support) |
 | `24-admin-audit-log.png` | Admin — security & billing audit log | IV.4.2 · IV.5.1 |
 
 ### Responsive design (web on a phone viewport — NOT the postponed mobile app)
@@ -70,6 +71,9 @@ Mémoire chapter map: these illustrate **Chapter IV — Implementation and Deplo
 
 ### ✅ Data cleanup done (2026-10-10)
 All four figures were **re-captured after cleaning the test/junk data** (DB backed up first; only non-demo, non-admin test data removed, foreign keys respected): the inappropriate approved testimonial, a junk offer "b" (slug "a") + its trial/subscription/VPN/pending payment, a soft-deleted junk plan "dgdtgy", the whole `nexusvpn.pfe@gmail.com` test account + its payment/subscription/VPN, and a junk contact request. The demo accounts, the real admin account, and the audit log were left intact. These four now match the rest of the set — nothing further to do.
+
+### ✅ Marketing-claims cleanup and recapture (2026-10-11)
+The public site was aligned with what the product actually implements (no unverifiable claims). **Recaptured:** `01-home-navbar-hero` (hero eyebrow, subtext, trust row and the decorative status card now show protocol facts, not "no activity logs" / "hidden IP" / "DNS encrypted"), `02-features` (first card reworded to the precise "no VPN traffic data" statement), `03-map-stats` (the world map no longer shows server nodes or a backbone — it illustrates private routing), `05-pricing-cards` (plan features/descriptions carry no fake "Priority/Dedicated/Email support" tiers), `07-footer` (dead links and social icons removed; footer-only crop), `90-mobile-home`. **Re-cropped:** `17-admin-overview` (empty area removed). **Added:** `28-admin-contact-requests` (contact-request inbox, IV.4.3). Captured on a fresh `migrate:fresh --seed` + `DemoDataSeeder` database.
 
 ### How to regenerate the `memoire/` set
 Backend on :8000 and the **production** frontend on :3000 (`npx pnpm@10 start`), then run the capture script from the repo root:

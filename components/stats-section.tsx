@@ -28,8 +28,8 @@ const stats = [
   {
     value: 0,
     suffix: "",
-    unit: "logs",
-    label: "Activity records",
+    unit: "records",
+    label: "VPN activity data",
     description: "The portal stores no VPN connection or traffic data.",
     isZero: true,
   },

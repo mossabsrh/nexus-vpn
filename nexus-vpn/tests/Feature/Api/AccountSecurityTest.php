@@ -23,7 +23,7 @@ class AccountSecurityTest extends TestCase
         config(['app.frontend_url' => 'https://frontend.test']);
     }
 
-    public function test_login_locks_the_account_after_five_failed_attempts(): void
+    public function test_login_is_throttled_after_five_failed_attempts(): void
     {
         $user = User::factory()->create();
 
