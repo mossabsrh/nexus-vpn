@@ -188,7 +188,7 @@ Output folders (created when needed):
 | ☑ | 6.11 | III.10 Business logic and rules | Claude | 3.7 | ch3 |
 | ☑ | 6.12 | III.11 Relationships and cardinalities | Claude | 3.7 | ch3 |
 | ☑ | 6.13 | III.12 Gantt (marked placeholder, real dates pending Q-18) + conclusion | Claude | 3.8 | ch3 |
-| ☐ | 6.14 | 🔴 Review Ch III → fixes. **Chapter III DRAFTED** (`chapters/ch3.md`); figures + running lists (`lists.md`) done. Pending: student review/approval | Student | 6.1–6.13 | ch3 approved |
+| ◐ | 6.14 | 🔴 Review Ch III → fixes. Chapter III drafted + **first review round applied** (UML include/extend corrected + diagrams re-rendered; **11 use-case tables added** for admin/team + client gaps, UC=III.4–III.24, dict III.25, card III.26; class diagram verified name-by-name — all correct; `lists.md` abbreviations pruned). Pending: student approval | Student | 6.1–6.13 | ch3 approved |
 
 ## Phase 7 — Chapter IV: implementation and deployment (Lane A) → `chapters/ch4.md`
 

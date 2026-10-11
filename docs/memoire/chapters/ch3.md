@@ -79,7 +79,7 @@ Access control is **enforced on the server** by the authenticated session togeth
 
 ## III.4 Use Case Specifications
 
-A **use case** describes a service the system renders to an **actor** (a role interacting with the system) to achieve a goal. Actors are linked to use cases by *associations*; a use case may *«include»* another (a mandatory sub-behaviour) or be *«extended»* by another (an optional/conditional behaviour). Table III.3 lists the actors of the portal; the ten use cases that follow are described in the reference format (Title, Actor, Description, Pre-condition, Nominal scenario, Alternative scenarios). Their titles are adapted to the real system per the gap-handling rules of the analysis (decisions §5).
+A **use case** describes a service the system renders to an **actor** (a role interacting with the system) to achieve a goal. Actors are linked to use cases by *associations*; a use case may *«include»* another (a mandatory sub-behaviour) or be *«extended»* by another (an optional/conditional behaviour). Table III.3 lists the actors of the portal. The use cases that follow are described in the reference format (Title, Actor, Description, Pre-condition, Nominal scenario, Alternative scenarios): the ten core client use cases first, then the additional client, administration and team-management use cases that complete the diagrams of III.5. Their titles are adapted to the real system per the gap-handling rules of the analysis (decisions §5).
 
 | Actor | Type | Description |
 |---|---|---|
@@ -212,6 +212,142 @@ A **use case** describes a service the system renders to an **actor** (a role in
 
 **Table III.13 — UC-10: Contact the company.** *Source: author, verified from the code.*
 
+The three use cases below complete the client side (they appear in Figure III.3).
+
+### III.4.11 UC-11 — Verify e-mail
+| | |
+|---|---|
+| **Title** | Verify e-mail |
+| **Actor** | User |
+| **Description** | Confirm the e-mail address using the link sent at registration. |
+| **Pre-condition** | A registered account whose e-mail is not yet verified. |
+| **Nominal scenario** | The user opens the signed verification link (`GET /api/email/verify/{id}/{hash}`); the server checks the signature and marks the e-mail verified, which unlocks checkout and the VPN configuration. |
+| **Alternative scenarios** | Invalid or expired signature → 403; the link can be re-sent (`POST /api/email/verification-notification`). |
+
+**Table III.14 — UC-11: Verify e-mail.** *Source: author, verified from the code.*
+
+### III.4.12 UC-12 — Manage account
+| | |
+|---|---|
+| **Title** | Manage account |
+| **Actor** | User |
+| **Description** | Change the e-mail address or password, or permanently delete the account. |
+| **Pre-condition** | Signed in; changes require the current password. |
+| **Nominal scenario** | In account settings, `PUT /api/account/email` or `PUT /api/account/password` (each requires the current password); `DELETE /api/account` (confirmed with the password and by typing the e-mail) anonymises and soft-deletes the account, keeping anonymised billing history. |
+| **Alternative scenarios** | Wrong current password → 422; an administrator cannot self-delete → 409 (`admin_account`); a team owner cannot self-delete → 409 (`team_owner`). |
+
+**Table III.15 — UC-12: Manage account.** *Source: author, verified from the code.*
+
+### III.4.13 UC-13 — Submit a testimonial
+| | |
+|---|---|
+| **Title** | Submit a testimonial |
+| **Actor** | User |
+| **Description** | Write a testimonial that is shown publicly once approved. |
+| **Pre-condition** | Signed in. |
+| **Nominal scenario** | `POST /api/testimonials` stores the text as `pending`; it appears on the site after an administrator approves it (UC-18). |
+| **Alternative scenarios** | One pending testimonial per user at a time → 429; an hourly rate-limit applies. |
+
+**Table III.16 — UC-13: Submit a testimonial.** *Source: author, verified from the code.*
+
+The use cases below are performed by the **Administrator** in the back-office console (Figure III.4); the last one is performed by a **team owner**.
+
+### III.4.14 UC-14 — Manage user accounts
+| | |
+|---|---|
+| **Title** | Manage user accounts (incl. delete user) |
+| **Actor** | Administrator |
+| **Description** | Search accounts, change a user's role, and delete an account. |
+| **Pre-condition** | An authenticated administrator. |
+| **Nominal scenario** | `GET /api/admin/users` (search by name/e-mail, filter by role and subscription); `PATCH /api/admin/users/{user}` (name, e-mail, role); `DELETE /api/admin/users/{user}` → the shared `closeAccount` logic anonymises and soft-deletes the user, revokes VPN access and records the action. |
+| **Alternative scenarios** | Cannot delete the last administrator, oneself, or a team owner → 422; cannot remove one's own admin role → 422. |
+
+**Table III.17 — UC-14: Manage user accounts.** *Source: author, verified from the code.*
+
+### III.4.15 UC-15 — Manage offers
+| | |
+|---|---|
+| **Title** | Manage offers |
+| **Actor** | Administrator (Sales) |
+| **Description** | Create, edit, activate/deactivate and delete the plans shown on the pricing page. |
+| **Pre-condition** | An authenticated administrator. |
+| **Nominal scenario** | `GET /api/admin/plans`; `POST /api/admin/plans` (create); `PATCH /api/admin/plans/{plan}` (edit, `is_active`). The pricing cache is flushed so the public page always matches, and each change is audited. |
+| **Alternative scenarios** | A plan referenced by subscriptions cannot be deleted → 409 (deactivate it instead). |
+
+**Table III.18 — UC-15: Manage offers.** *Source: author, verified from the code.*
+
+### III.4.16 UC-16 — Manage payments and refunds
+| | |
+|---|---|
+| **Title** | Manage payments and refunds |
+| **Actor** | Administrator (Billing) |
+| **Description** | Consult payments and issue refunds. |
+| **Pre-condition** | An authenticated administrator. |
+| **Nominal scenario** | `GET /api/admin/payments` (filter by status, search by e-mail); `POST /api/admin/payments/{payment}/refund` (reason, optionally end the subscription) → `recordRefund` marks the payment refunded and audits it. |
+| **Alternative scenarios** | A payment that cannot be refunded → 409. |
+
+**Table III.19 — UC-16: Manage payments and refunds.** *Source: author, verified from the code.*
+
+### III.4.17 UC-17 — Manage subscriptions and provision a team subscription
+| | |
+|---|---|
+| **Title** | Manage subscriptions and provision a team subscription |
+| **Actor** | Administrator |
+| **Description** | Consult subscriptions, cancel one, and provision a team subscription for a customer. |
+| **Pre-condition** | An authenticated administrator. |
+| **Nominal scenario** | `GET /api/admin/subscriptions`; `POST /api/admin/subscriptions/team` (owner e-mail, plan, seats, months) creates the subscription and the team and attaches the owner; `POST /api/admin/subscriptions/{subscription}/cancel` ends a subscription immediately. |
+| **Alternative scenarios** | The owner must have an existing account and no current subscription → 409; cancelling a subscription that is not active → 409. |
+
+**Table III.20 — UC-17: Manage subscriptions and provision a team subscription.** *Source: author, verified from the code.*
+
+### III.4.18 UC-18 — Moderate testimonials
+| | |
+|---|---|
+| **Title** | Moderate testimonials |
+| **Actor** | Administrator (Support) |
+| **Description** | Review submitted testimonials and approve, reject or delete them. |
+| **Pre-condition** | An authenticated administrator. |
+| **Nominal scenario** | `GET /api/admin/testimonials` (filter by status); `PATCH /api/admin/testimonials/{id}` (approved / rejected) records the moderator and date; `DELETE /api/admin/testimonials/{id}` removes one. Each action is audited. |
+| **Alternative scenarios** | — |
+
+**Table III.21 — UC-18: Moderate testimonials.** *Source: author, verified from the code.*
+
+### III.4.19 UC-19 — Handle contact requests
+| | |
+|---|---|
+| **Title** | Handle contact requests |
+| **Actor** | Administrator (Support / Sales) |
+| **Description** | Review sales inquiries and mark them handled. |
+| **Pre-condition** | An authenticated administrator. |
+| **Nominal scenario** | `GET /api/admin/contact-requests` (filter new / handled); `PATCH /api/admin/contact-requests/{id}` (handled) records the handler and date; a team subscription can then be provisioned (UC-17). |
+| **Alternative scenarios** | — |
+
+**Table III.22 — UC-19: Handle contact requests.** *Source: author, verified from the code.*
+
+### III.4.20 UC-20 — Consult the audit log
+| | |
+|---|---|
+| **Title** | Consult the audit log |
+| **Actor** | Administrator (System Administrator) |
+| **Description** | Review the recorded security and billing events. |
+| **Pre-condition** | An authenticated administrator. |
+| **Nominal scenario** | `GET /api/admin/audit-logs` (filter by event) returns a paginated list — date, event, actor, subject and details. |
+| **Alternative scenarios** | — |
+
+**Table III.23 — UC-20: Consult the audit log.** *Source: author, verified from the code.*
+
+### III.4.21 UC-21 — Manage team members
+| | |
+|---|---|
+| **Title** | Manage team members |
+| **Actor** | Team owner |
+| **Description** | Add or remove members of the team within the seat limit, and rename the team. |
+| **Pre-condition** | Signed in as the owner of a team. |
+| **Nominal scenario** | `GET /api/team`; `POST /api/team/members` (add by e-mail, within the seats) gives the member their own VPN access; `DELETE /api/team/members/{member}` revokes it; `PATCH /api/team` renames the team. |
+| **Alternative scenarios** | All seats in use → 409; the member needs a NexusVPN account; the owner cannot be removed → 422. |
+
+**Table III.24 — UC-21: Manage team members.** *Source: author, verified from the code.*
+
 > ⏸️ **Mobile use cases — placeholder.** When the Flutter client is resumed, the same client use cases (UC-01, UC-03, UC-04, UC-07, UC-09) are reached over the token API `/api/mobile/*`; a dedicated mobile use-case diagram will be added then.
 
 ## III.5 Use Case Diagrams
@@ -219,7 +355,7 @@ A **use case** describes a service the system renders to an **actor** (a role in
 The use cases above are organised into three diagrams: a **global** diagram showing all actors and the main use cases, a **client** diagram for the customer side, and an **administration** diagram for the back office. Following gap **G-05**, the separate "support portal" is merged into the administration diagram (contact requests and moderation), so the "support" view (III.5.3 in the supervisor's structure) is covered there rather than as a separate portal.
 
 ### III.5.1 Global Use Case Diagram
-Figure III.2 places the actors — Visitor, User (client), Administrator, the Scheduler and the external Chargily Pay — around the system boundary and shows the «include» relationships (registration and checkout include e-mail verification / payment) and the «extend» relationship (verified e-mail extends checkout).
+Figure III.2 places the actors — Visitor, User (client), Administrator, the Scheduler and the external Chargily Pay — around the system boundary. It shows one «include» relationship, *Subscribe & checkout* «include» *Process payment*, because completing a purchase always involves the payment step (the external Chargily Pay actor participates in that use case). A verified e-mail is a **pre-condition** of checkout and of getting the VPN configuration — stated in the corresponding use-case tables — not an «extend» relationship.
 
 ![Figure III.2 — Global use-case diagram](../figures/use-case-global.png)
 
@@ -326,7 +462,7 @@ Mapping the class model to a relational schema gives the following relations (pr
 
 ## III.9 Data Dictionary
 
-Table III.14 is the data dictionary of the database. Types use the convention: **A** = alphabetic, **N** = numeric, **AN** = alphanumeric, **D** = date/datetime, **B** = boolean, **J** = JSON, **T** = text. (The `created_at` / `updated_at` timestamps present on most tables are omitted for brevity.)
+Table III.25 is the data dictionary of the database. Types use the convention: **A** = alphabetic, **N** = numeric, **AN** = alphanumeric, **D** = date/datetime, **B** = boolean, **J** = JSON, **T** = text. (The `created_at` / `updated_at` timestamps present on most tables are omitted for brevity.)
 
 | Entity | Field | Meaning | Type | Constraint |
 |---|---|---|---|---|
@@ -406,7 +542,7 @@ Table III.14 is the data dictionary of the database. Types use the convention: *
 | AUDIT_LOGS | metadata | Event details | J | nullable |
 | AUDIT_LOGS | ip_address | Source IP | AN | nullable |
 
-**Table III.14 — Data dictionary of the database.** *Source: author, from the real schema.* (The postponed `PERSONAL_ACCESS_TOKENS` table is omitted; see III.8.)
+**Table III.25 — Data dictionary of the database.** *Source: author, from the real schema.* (The postponed `PERSONAL_ACCESS_TOKENS` table is omitted; see III.8.)
 
 ## III.10 Business Logic and Rules
 
@@ -425,7 +561,7 @@ The main business rules enforced by the system — verified in the models and co
 
 ## III.11 Relationships and Cardinalities
 
-Table III.15 lists the relationships between entities, their cardinalities and their on-delete behaviour (also visible in the entity-relationship diagram, Figure III.14). The on-delete rules deliberately protect billing history: subscriptions, payments and VPN credentials use RESTRICT on the user, so a user who has them cannot be hard-deleted (account closure anonymises and soft-deletes instead, rule 8).
+Table III.26 lists the relationships between entities, their cardinalities and their on-delete behaviour (also visible in the entity-relationship diagram, Figure III.14). The on-delete rules deliberately protect billing history: subscriptions, payments and VPN credentials use RESTRICT on the user, so a user who has them cannot be hard-deleted (account closure anonymises and soft-deletes instead, rule 8).
 
 | Relationship | Cardinality | On delete |
 |---|---|---|
@@ -442,7 +578,7 @@ Table III.15 lists the relationships between entities, their cardinalities and t
 | User — ContactRequest (sender / handler) | 0..1 : 0..* | SET NULL |
 | User — AuditLog (actor) | 0..1 : 0..* | SET NULL |
 
-**Table III.15 — Relationships and cardinalities.** *Source: author, from the schema's foreign keys.*
+**Table III.26 — Relationships and cardinalities.** *Source: author, from the schema's foreign keys.*
 
 ## III.12 Project Planning (Gantt Chart)
 
@@ -454,7 +590,7 @@ Table III.15 lists the relationships between entities, their cardinalities and t
 
 ## Conclusion
 
-This chapter analysed and designed the VPN sales portal with UML. It gave an overview of the system and its two-tier architecture, identified the stakeholders and mapped the five business roles onto the implemented `user` / `admin` roles with a permission matrix. It specified the ten use cases in textual form and in use-case diagrams, detailed the main scenarios with eight sequence diagrams, and modelled the structure with a class diagram. It then described the data design — the relational model, a full data dictionary, the business rules and the relationships and cardinalities — and set out the project phases, leaving the Gantt chart as a marked placeholder pending the real dates. Every model was verified against the source code. The next chapter presents the implementation and deployment of this design.
+This chapter analysed and designed the VPN sales portal with UML. It gave an overview of the system and its two-tier architecture, identified the stakeholders and mapped the five business roles onto the implemented `user` / `admin` roles with a permission matrix. It specified the use cases — the ten core client use cases together with the further client, administration and team-management use cases — in textual form and in use-case diagrams, detailed the main scenarios with eight sequence diagrams, and modelled the structure with a class diagram. It then described the data design — the relational model, a full data dictionary, the business rules and the relationships and cardinalities — and set out the project phases, leaving the Gantt chart as a marked placeholder pending the real dates. Every model was verified against the source code. The next chapter presents the implementation and deployment of this design.
 
 ---
 

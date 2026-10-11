@@ -29,6 +29,7 @@ V --> UC2
 V --> UC12
 U --> UC1
 U --> UC3
+U --> UC4
 U --> UC5
 U --> UC7
 U --> UC8
@@ -37,11 +38,8 @@ U --> UC10
 U --> UC11
 TO --> UC13
 
-UC2 ..> UC4 : <<include>>
 UC5 ..> UC6 : <<include>>
 UC6 --> C
-UC5 .> UC4 : <<extend>>\n(verified e-mail)
-UC7 .> UC4 : <<extend>>\n(verified e-mail)
 
 note bottom
   Team owner is a User with extra rights.

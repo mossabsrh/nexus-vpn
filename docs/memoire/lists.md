@@ -47,8 +47,19 @@
 | Table III.11 | UC-08: View payment receipts | III |
 | Table III.12 | UC-09: Manage subscriptions | III |
 | Table III.13 | UC-10: Contact the company | III |
-| Table III.14 | Data dictionary of the database | III |
-| Table III.15 | Relationships and cardinalities | III |
+| Table III.14 | UC-11: Verify e-mail | III |
+| Table III.15 | UC-12: Manage account | III |
+| Table III.16 | UC-13: Submit a testimonial | III |
+| Table III.17 | UC-14: Manage user accounts | III |
+| Table III.18 | UC-15: Manage offers | III |
+| Table III.19 | UC-16: Manage payments and refunds | III |
+| Table III.20 | UC-17: Manage subscriptions and provision a team subscription | III |
+| Table III.21 | UC-18: Moderate testimonials | III |
+| Table III.22 | UC-19: Handle contact requests | III |
+| Table III.23 | UC-20: Consult the audit log | III |
+| Table III.24 | UC-21: Manage team members | III |
+| Table III.25 | Data dictionary of the database | III |
+| Table III.26 | Relationships and cardinalities | III |
 
 ## List of Abbreviations
 
@@ -60,11 +71,9 @@
 | B2B / B2C / C2B / C2C | Business/Consumer-to-Business / Business-to-Consumer / Consumer-to-Business / Consumer-to-Consumer | II |
 | BLAKE2s | Cryptographic hash function (used by WireGuard) | II |
 | CIB | Carte Interbancaire (Algerian interbank card) | II |
-| CRUD | Create, Read, Update, Delete | III |
 | CSRF | Cross-Site Request Forgery | II/III |
 | DZD | Algerian Dinar (ISO currency code) | II |
 | EDAHABIA | Algérie Poste electronic payment card | II |
-| ERD | Entity-Relationship Diagram | III |
 | FK | Foreign Key | III |
 | GDPR | General Data Protection Regulation (EU 2016/679) | II |
 | HMAC | Hash-based Message Authentication Code | II/III |
@@ -78,16 +87,14 @@
 | NIST | National Institute of Standards and Technology | II |
 | OECD | Organisation for Economic Co-operation and Development | II |
 | OMG | Object Management Group | III |
-| OTP | One-Time Password | III |
 | PK | Primary Key | III |
 | RBAC | Role-Based Access Control | II/III |
 | REST | Representational State Transfer | III |
 | RFC | Request for Comments | II |
-| SMTP | Simple Mail Transfer Protocol | III |
 | SSL | Secure Sockets Layer | II |
-| TCP / UDP | Transmission Control Protocol / User Datagram Protocol | II |
 | TLS | Transport Layer Security | II |
 | UC | Use Case | III |
+| UDP | User Datagram Protocol | II |
 | UI / UX | User Interface / User Experience | II |
 | UK | Unique Key | III |
 | UML | Unified Modeling Language | III |

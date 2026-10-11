@@ -29,6 +29,7 @@ V --> UC2
 V --> UC10
 U --> UC1
 U --> UC3
+U --> UC4
 U --> UC5
 U --> UC7
 U --> UC8
@@ -38,10 +39,8 @@ A --> UC3
 A --> UC11
 S --> UC12
 
-UC2 ..> UC4 : <<include>>
 UC5 ..> UC6 : <<include>>
 UC6 --> C
-UC7 .> UC4 : <<extend>>\n(verified e-mail)
 
 note bottom of UC11
   The single Admin role covers the five business
@@ -50,6 +49,7 @@ note bottom of UC11
 end note
 note as NMOB
   Mobile client (Flutter) — POSTPONED:
-  will reach UC3/UC5/UC7/UC8 over the token API.
+  will reach authenticate / subscribe / get VPN
+  config / manage subscription over the token API.
 end note
 @enduml
