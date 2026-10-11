@@ -16,9 +16,28 @@ HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"   # docs/memoire/build
 ROOT="$(cd "$HERE/.." && pwd)"                          # docs/memoire
 cd "$ROOT"
 
-chapters=("$@"); [ ${#chapters[@]} -gt 0 ] || chapters=(ch2 ch3)
-slug=$(IFS=-; echo "${chapters[*]}")
 mkdir -p build/out/pages
+
+# "full" assembles the whole mémoire in the methodology-guide order; otherwise build the given chapters.
+if [ "${1:-}" = "full" ]; then
+  slug="full"
+  # The title page is a copy of the cover, in the same first section, preceded by a blank page.
+  tp="build/out/_title-page.md"
+  {
+    printf '```{=openxml}\n<w:p><w:r><w:br w:type="page"/></w:r></w:p>\n<w:p><w:r><w:br w:type="page"/></w:r></w:p>\n```\n\n'
+    cat chapters/cover.md
+  } > "$tp"
+  src=(chapters/cover.md "$tp" chapters/dedication.md chapters/acknowledgements.md \
+       chapters/list-of-figures.md chapters/list-of-tables.md chapters/list-of-abbreviations.md \
+       chapters/contents.md chapters/introduction.md chapters/problem-statement.md \
+       chapters/ch1.md chapters/ch2.md chapters/ch3.md chapters/ch4.md \
+       chapters/conclusion.md chapters/bibliography.md chapters/annexes.md chapters/toc.md)
+else
+  chapters=("$@"); [ ${#chapters[@]} -gt 0 ] || chapters=(ch2 ch3)
+  slug=$(IFS=-; echo "${chapters[*]}")
+  src=(); for c in "${chapters[@]}"; do src+=("chapters/${c}.md"); done
+fi
+
 combined="build/out/combined.md"
 docx="build/out/memoire-${slug}.docx"
 pdf="build/out/memoire-${slug}.pdf"
@@ -29,8 +48,7 @@ if [ ! -f build/reference-default.docx ]; then
 fi
 python -I build/make_reference.py build/reference-default.docx build/reference.docx
 
-# 2. Preprocess + concatenate the chapter Markdown.
-src=(); for c in "${chapters[@]}"; do src+=("chapters/${c}.md"); done
+# 2. Preprocess + concatenate the Markdown parts.
 python -I build/preprocess.py "$combined" "$ROOT" "${src[@]}"
 
 # 3. Markdown -> Word (footnotes, figures and tables are native; run from docs/memoire so figures/ resolves).

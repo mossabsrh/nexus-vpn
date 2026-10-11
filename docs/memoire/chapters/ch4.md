@@ -110,7 +110,7 @@ The API depends on three external services, each isolated behind a small, replac
 
 ## IV.3 Functional Modules
 
-The portal is organised into nine functional modules. Each one groups a set of API endpoints and the business rules that govern them, and corresponds to the routes declared in `routes/api.php` and their controllers.
+The portal is organised into nine functional modules. Each one groups a set of API endpoints and the business rules that govern them, and corresponds to the routes declared in `routes/api.php` and their controllers; the full list of endpoints is given in Appendix A.
 
 ### IV.3.1 Offers and pricing
 
@@ -527,7 +527,7 @@ The private key is stored with Eloquent's `encrypted` cast and hidden from seria
 
 ### IV.6.1 Automated tests
 
-The back end is covered by an automated test suite of **131 tests (508 assertions)** that runs in about fourteen seconds on an in-memory SQLite database. The tests are feature tests: each one drives the real HTTP endpoints and asserts on the response and the database state. Table IV.3 groups them by area.
+The back end is covered by an automated test suite of **131 tests (508 assertions)** that runs in about fourteen seconds on an in-memory SQLite database. The tests are feature tests: each one drives the real HTTP endpoints and asserts on the response and the database state. Table IV.3 groups them by area; the same breakdown is given in Appendix C.
 
 | Area | Tests | What it verifies |
 |---|---|---|
@@ -569,7 +569,7 @@ On the list endpoints the back end eager-loads related models (for example the a
 
 ### IV.7.1 Production environment
 
-The project is a monorepo designed to deploy as two services. The Next.js front end is configured for **Vercel**; the Laravel API is containerised with **Docker** (base image `php:8.3-apache-bookworm`) and targets **Render** as the `nexus-vpn-api` service, alongside a managed **PostgreSQL** database, both set to Render's Frankfurt region on the free tier. These choices are declared in `render.yaml` and the Dockerfile; the system has not yet been deployed to production. Figure IV.32 shows the intended flow from the repository to production.
+The project is a monorepo designed to deploy as two services. The Next.js front end is configured for **Vercel**; the Laravel API is containerised with **Docker** (base image `php:8.3-apache-bookworm`) and targets **Render** as the `nexus-vpn-api` service, alongside a managed **PostgreSQL** database, both set to Render's Frankfurt region on the free tier. These choices are declared in `render.yaml` and the Dockerfile; the system has not yet been deployed to production. The application is configured entirely through environment variables, whose names are listed in Appendix B. Figure IV.32 shows the intended flow from the repository to production.
 
 ![Deployment architecture](../figures/deployment-en.png){width=14cm}
 

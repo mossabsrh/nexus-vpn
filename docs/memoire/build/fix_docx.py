@@ -20,11 +20,8 @@ DXA = 567  # twips per cm
 TEXT_CM = 16.0  # A4 text width: 21 - 3 (left) - 2 (right)
 NAVY = '1F3864'
 
-# 0. Chapter title pages: each Heading 1 is centred and pushed down its own page by the reference
-# template; add a page break *after* the title so the chapter content begins on the next page.
-for p in doc.paragraphs:
-    if p.style is not None and p.style.name == 'Heading 1':
-        p.add_run().add_break(WD_BREAK.PAGE)
+# (Part layout — chapter title pages, headers and page numbering — is handled per part near the end,
+# after the tables are styled, so each Heading 1 can be treated according to its kind.)
 
 # 1. Code blocks: left-aligned monospace (see module docstring).
 CODE_PT = 8.5  # fits reflowed lines (<= ~80 chars) on one line without breaking tokens
@@ -294,14 +291,22 @@ def _nextpage_sectpr():
     if t is None:
         t = OxmlElement('w:type'); sp.insert(0, t)
     t.set(qn('w:val'), 'nextPage')
+    for tag in ('w:footnotePr', 'w:endnotePr', 'w:pgNumType'):
+        for e in sp.findall(qn(tag)):
+            sp.remove(e)
     return sp
 
 h1s = [p for p in doc.paragraphs if p.style is not None and p.style.name == 'Heading 1']
-for p in h1s[1:]:
+# A section break before every Heading 1 that has content before it (so the cover/title page, which
+# precedes the first Heading 1 in the full build, becomes its own section). A Heading 1 at the very
+# start of the document (chapters-only build) keeps the document's first section.
+for p in h1s:
     el = p._p
     prev = el.getprevious()
+    if prev is None:
+        continue
     sp = _nextpage_sectpr()
-    if prev is not None and prev.tag == qn('w:p'):
+    if prev.tag == qn('w:p'):
         pPr = prev.find(qn('w:pPr'))
         if pPr is None:
             pPr = OxmlElement('w:pPr'); prev.insert(0, pPr)
@@ -353,15 +358,72 @@ def _build_chapter_header(section, title):
     _white_run(p, '\t')
     _page_field(p)
 
-chapter_titles = [h.text.strip() for h in h1s]
-for i, section in enumerate(doc.sections):
-    title = chapter_titles[i] if i < len(chapter_titles) else (chapter_titles[-1] if chapter_titles else '')
-    _build_chapter_header(section, title)
-    section.different_first_page_header_footer = True
-    fph = section.first_page_header  # empty first-page header -> no header/number on the title page
-    for para in fph.paragraphs:
+FRONT = {'Dedication', 'Acknowledgements', 'List of Figures', 'List of Tables',
+         'List of Abbreviations', 'Contents'}
+
+def _classify(title):
+    t = title.strip()
+    if t in FRONT:
+        return 'front'
+    if t.upper().startswith('CHAPTER'):
+        return 'chapter'
+    return 'body'
+
+def _clear_header(section):
+    hdr = section.header
+    hdr.is_linked_to_previous = False
+    for para in hdr.paragraphs:
         for r in list(para.runs):
             r._r.getparent().remove(r._r)
+    section.different_first_page_header_footer = False
+
+def _apply_title_page(p):
+    pf = p.paragraph_format
+    pf.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    pf.space_before = Pt(170); pf.space_after = Pt(0); pf.keep_with_next = False
+    pPr = p._p.get_or_add_pPr()
+    for old in pPr.findall(qn('w:pBdr')):
+        pPr.remove(old)
+    pbdr = OxmlElement('w:pBdr')
+    pbdr.append(_mk('w:top', val='single', sz='24', space='10', color=NAVY))
+    pPr.append(pbdr)
+
+def _restart_numbering(section):
+    sectPr = section._sectPr
+    for old in sectPr.findall(qn('w:pgNumType')):
+        sectPr.remove(old)
+    sectPr.append(_mk('w:pgNumType', start='1'))
+
+titles = [h.text.strip() for h in h1s]
+kinds = [_classify(t) for t in titles]
+has_cover = bool(h1s) and h1s[0]._p.getprevious() is not None
+offset = 1 if has_cover else 0
+
+# The cover / title-page section (everything before the first Heading 1): no header, no page number.
+if has_cover:
+    _clear_header(doc.sections[0])
+
+for idx, p in enumerate(h1s):
+    section = doc.sections[idx + offset]
+    kind, title = kinds[idx], titles[idx]
+    if kind == 'front':
+        _clear_header(section)
+        p.paragraph_format.alignment = WD_ALIGN_PARAGRAPH.CENTER
+        continue
+    _build_chapter_header(section, title)          # navy bar: title + PAGE
+    if title.lower() == 'general introduction':    # page numbering starts here (guide rule)
+        _restart_numbering(section)
+    if kind == 'chapter':
+        section.different_first_page_header_footer = True
+        fph = section.first_page_header            # empty -> no header/number on the title page
+        fph.is_linked_to_previous = False          # own header, not linked (else a previous header leaks in)
+        for para in fph.paragraphs:
+            for r in list(para.runs):
+                r._r.getparent().remove(r._r)
+        _apply_title_page(p)
+        p.add_run().add_break(WD_BREAK.PAGE)        # title alone; the chapter body starts on the next page
+    else:
+        section.different_first_page_header_footer = False
 
 # Footnotes must number continuously across the whole document. The copied section properties carry a
 # <w:footnotePr> that would restart footnote numbering each section (which LibreOffice renders as "0");
@@ -370,7 +432,9 @@ for sectPr in doc.element.body.iter(qn('w:sectPr')):
     for tag in ('w:footnotePr', 'w:endnotePr'):
         for e in sectPr.findall(qn(tag)):
             sectPr.remove(e)
-print('sections (chapters):', len(doc.sections))
+print('sections:', len(doc.sections), '| parts:', len(h1s),
+      '(front=%d, chapter=%d, body=%d%s)' % (kinds.count('front'), kinds.count('chapter'),
+                                             kinds.count('body'), ', +cover' if has_cover else ''))
 
 doc.save(sys.argv[1])
 print('post-processed: code left-aligned, %d captions centred, %d tables styled, %d footnote separators:'

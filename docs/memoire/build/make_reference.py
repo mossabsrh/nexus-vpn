@@ -10,6 +10,7 @@ from docx import Document
 from docx.shared import Pt, Cm, Mm, RGBColor
 from docx.enum.text import WD_ALIGN_PARAGRAPH, WD_LINE_SPACING, WD_TAB_ALIGNMENT
 from docx.enum.section import WD_ORIENT
+from docx.enum.style import WD_STYLE_TYPE
 from docx.oxml.ns import qn
 from docx.oxml import OxmlElement
 
@@ -68,22 +69,10 @@ for hname, size in {'Heading 1': 16, 'Heading 2': 14, 'Heading 3': 12, 'Heading 
         pf.line_spacing_rule = WD_LINE_SPACING.SINGLE
         pf.keep_with_next = True
         pf.alignment = WD_ALIGN_PARAGRAPH.LEFT
-        if hname == 'Heading 1':
-            # The chapter title gets a title page: centred, pushed down, with a navy accent bar above
-            # it. fix_docx.py starts each chapter in its own section (so its title page carries no
-            # running header / page number) and adds a page break after the title so the body follows
-            # on the next page. No page_break_before here: the section break already opens a new page.
-            pf.alignment = WD_ALIGN_PARAGRAPH.CENTER
-            pf.space_before = Pt(170)
-            pf.space_after = Pt(0)
-            pf.keep_with_next = False
-            hpPr = st.element.get_or_add_pPr()
-            pbdr = OxmlElement('w:pBdr')
-            top = OxmlElement('w:top')
-            top.set(qn('w:val'), 'single'); top.set(qn('w:sz'), '24')
-            top.set(qn('w:space'), '10'); top.set(qn('w:color'), NAVY)
-            pbdr.append(top)
-            hpPr.append(pbdr)
+        # Heading 1 is a plain heading here. fix_docx.py decides per part how each Heading 1 is laid out:
+        # chapters get the centred, pushed-down title page with the navy accent bar; the general
+        # introduction/conclusion/bibliography/appendices get a plain top heading; the front-matter
+        # parts (dedication, lists, …) get a centred heading with no running header or page number.
     except KeyError:
         pass
 
@@ -103,6 +92,34 @@ for sname in ['Footnote Text']:
         st.paragraph_format.alignment = WD_ALIGN_PARAGRAPH.JUSTIFY
     except KeyError:
         pass
+
+# Cover / title-page styles (pandoc maps the custom-style divs in cover.md to these). The guide's
+# exact sizes: institute 18 bold, diploma 16 bold, speciality 14 bold, THEME 16 bold, title 20 bold,
+# presented-by / supervised-by 14 bold, promotion 14 bold.
+def cover_style(name, size, bold=True, italic=False, before=0, after=10, color=None):
+    try:
+        st = doc.styles[name]
+    except KeyError:
+        st = doc.styles.add_style(name, WD_STYLE_TYPE.PARAGRAPH)
+    set_font(st, size=size, bold=bold, italic=italic, color=color)
+    pf = st.paragraph_format
+    pf.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    pf.line_spacing_rule = WD_LINE_SPACING.SINGLE
+    pf.space_before = Pt(before); pf.space_after = Pt(after)
+
+cover_style('CoverInstitute', 18, before=6, after=4)
+cover_style('CoverMinistry', 14, before=4, after=2)
+cover_style('CoverInstituteFr', 13, bold=False, before=2, after=0)
+cover_style('CoverCentre', 12, bold=False, italic=True, before=0, after=10)
+cover_style('CoverLogos', 11, bold=False, before=24, after=24, color=RGBColor(0x80, 0x80, 0x80))
+cover_style('CoverDiploma', 16, before=24, after=10)
+cover_style('CoverSpeciality', 14, before=4, after=10)
+cover_style('CoverTheme', 16, before=30, after=8)
+cover_style('CoverTitle', 20, before=6, after=6)
+cover_style('CoverCase', 14, before=2, after=8)
+cover_style('CoverNote', 10, bold=False, italic=True, before=0, after=24, color=RGBColor(0x80, 0x80, 0x80))
+cover_style('CoverPeople', 14, before=18, after=4)
+cover_style('CoverPromotion', 14, before=30, after=0)
 
 # The navy running header is built per chapter in fix_docx.py (plain chapter title + PAGE field),
 # after the per-chapter Word sections are created. We no longer use a STYLEREF "Heading 1" field:
