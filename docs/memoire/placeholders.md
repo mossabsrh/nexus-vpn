@@ -9,7 +9,7 @@ Legend for *Blocked by*: 👤 student · 🏢 EADN visit · 🚀 deployment (Pha
 | # | Chapter · Section | File | What is needed | Blocked by |
 |---|---|---|---|---|
 | P1 | II · II.4.1 | `chapters/ch2.md` | Verbatim text of **Article 6 of Law 18-05** (e-commerce definition); the chapter currently paraphrases it accurately | 👤 |
-| P2 | II–IV · footnotes | `chapters/ch2.md`, `chapters/ch3.md`, `chapters/ch4.md` | **Confirm the exact consultation times** of the website footnotes. The guide format is now applied everywhere — *(consulted on dd/mm/yyyy at hh:mm)* — with the real dates (10–11 Oct 2026) and a plausible per-source time; the student confirms or adjusts the minutes if a precise log is required | 👤 |
+| P2 | II–IV · footnotes | `chapters/ch2.md`, `chapters/ch3.md`, `chapters/ch4.md` | **Before printing: re-check every cited URL and add the real consultation time** (methodology guide format *(consulted on dd/mm/yyyy at hh:mm)*). The footnotes currently carry only the real date *(consulted on dd/mm/yyyy)* — the invented times were removed | 👤 |
 | P3 | II.5.1 · III.4/III.5.4/III.6 · IV.1.1/IV.4.4 | `ch2.md`, `ch3.md`, `ch4.md` | **Native mobile app (Flutter)** — POSTPONED (D-16): add the mobile use-case diagram (III.5.4), mobile sequence diagrams (III.6) and the mobile interface walkthrough (IV.4.4), and remove the postponed marks | 📱 |
 | P4 | III · III.12 | `chapters/ch3.md` | **Gantt chart** (Figure III.16): real project start dates + durations, then draw the chart | 🗓️ 👤 |
 | P5 | I · all | `chapters/ch1.md` (not written) | **Chapter I — Host organisation (EADN)**: visit data (data sheet, org chart, departments, existing system, documents, roles, dates); interview sheet ready (`eadn-interview-sheet.md`) | 🏢 👤 |

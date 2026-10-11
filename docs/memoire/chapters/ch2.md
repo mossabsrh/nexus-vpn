@@ -183,7 +183,7 @@ The consumer VPN market is dominated by a small number of global providers that 
 | Pricing currency | Foreign currencies (USD, EUR, CHF); local currency only in a few listed countries, not Algeria[^protonpay] | **Algerian dinar (DZD)**[^chargily] |
 | VPN protocols | WireGuard, OpenVPN and IKEv2 (NordVPN's NordLynx and Proton VPN's Stealth are WireGuard-based)[^nordvpnproto][^protonproto] | WireGuard[^wgproto] |
 
-**Table II.3 — Comparison with two representative global providers.** *Source: prepared by the authors, from the NordVPN and Proton VPN official pages (consulted on 11/10/2026 at 22:30).*
+**Table II.3 — Comparison with two representative global providers.** *Source: prepared by the authors, from the NordVPN and Proton VPN official pages (consulted on 11/10/2026).*
 
 ### II.6.2 Pros and Cons
 
@@ -197,23 +197,23 @@ This chapter has established the theoretical foundation on which the rest of the
 
 ## Notes
 
-[^nist]: BARKER (Elaine), DANG (Quynh), FRANKEL (Sheila), SCARFONE (Karen), WOUTERS (Paul): *Guide to IPsec VPNs*, NIST Special Publication 800-77 Revision 1, National Institute of Standards and Technology, Gaithersburg (MD), 2020. https://doi.org/10.6028/NIST.SP.800-77r1 (consulted on 10/10/2026 at 19:02).
-[^wireguard]: DONENFELD (Jason A.): *WireGuard: Next Generation Kernel Network Tunnel*, NDSS Symposium 2017, Internet Society, 2017. https://www.wireguard.com/papers/wireguard.pdf (consulted on 10/10/2026 at 20:06).
-[^wgproto]: WireGuard: *Protocol & Cryptography* (official protocol page). https://www.wireguard.com/protocol/ (consulted on 11/10/2026 at 23:06).
-[^openvpn]: OpenVPN Inc.: *OpenVPN — Community Resources (documentation)*. https://openvpn.net/community-resources/ (consulted on 10/10/2026 at 23:39).
-[^rfc1825]: ATKINSON (Randall): *Security Architecture for the Internet Protocol*, Request for Comments (RFC) 1825, Internet Engineering Task Force (IETF), August 1995 (obsoleted by RFC 2401, then by RFC 4301). https://www.rfc-editor.org/rfc/rfc1825 (consulted on 11/10/2026 at 20:32).
-[^rfc4301]: KENT (Stephen), SEO (Karen): *Security Architecture for the Internet Protocol*, Request for Comments (RFC) 4301, Internet Engineering Task Force (IETF), 2005. https://www.rfc-editor.org/rfc/rfc4301 (consulted on 10/10/2026 at 19:28).
-[^rfc8446]: RESCORLA (Eric): *The Transport Layer Security (TLS) Protocol Version 1.3*, Request for Comments (RFC) 8446, Internet Engineering Task Force (IETF), 2018. https://www.rfc-editor.org/rfc/rfc8446 (consulted on 10/10/2026 at 23:20).
-[^iso27001]: International Organization for Standardization: *ISO/IEC 27001 — Information security, cybersecurity and privacy protection — Information security management systems — Requirements*, ISO, Geneva, 2022. https://www.iso.org/standard/27001 (consulted on 10/10/2026 at 23:44).
-[^gdpr]: Regulation (EU) 2016/679 of the European Parliament and of the Council of 27 April 2016 on the protection of natural persons with regard to the processing of personal data (General Data Protection Regulation), *Official Journal of the European Union*, L 119, 4 May 2016. https://eur-lex.europa.eu/eli/reg/2016/679/oj (consulted on 10/10/2026 at 19:15).
+[^nist]: BARKER (Elaine), DANG (Quynh), FRANKEL (Sheila), SCARFONE (Karen), WOUTERS (Paul): *Guide to IPsec VPNs*, NIST Special Publication 800-77 Revision 1, National Institute of Standards and Technology, Gaithersburg (MD), 2020. https://doi.org/10.6028/NIST.SP.800-77r1 (consulted on 10/10/2026).
+[^wireguard]: DONENFELD (Jason A.): *WireGuard: Next Generation Kernel Network Tunnel*, NDSS Symposium 2017, Internet Society, 2017. https://www.wireguard.com/papers/wireguard.pdf (consulted on 10/10/2026).
+[^wgproto]: WireGuard: *Protocol & Cryptography* (official protocol page). https://www.wireguard.com/protocol/ (consulted on 11/10/2026).
+[^openvpn]: OpenVPN Inc.: *OpenVPN — Community Resources (documentation)*. https://openvpn.net/community-resources/ (consulted on 10/10/2026).
+[^rfc1825]: ATKINSON (Randall): *Security Architecture for the Internet Protocol*, Request for Comments (RFC) 1825, Internet Engineering Task Force (IETF), August 1995 (obsoleted by RFC 2401, then by RFC 4301). https://www.rfc-editor.org/rfc/rfc1825 (consulted on 11/10/2026).
+[^rfc4301]: KENT (Stephen), SEO (Karen): *Security Architecture for the Internet Protocol*, Request for Comments (RFC) 4301, Internet Engineering Task Force (IETF), 2005. https://www.rfc-editor.org/rfc/rfc4301 (consulted on 10/10/2026).
+[^rfc8446]: RESCORLA (Eric): *The Transport Layer Security (TLS) Protocol Version 1.3*, Request for Comments (RFC) 8446, Internet Engineering Task Force (IETF), 2018. https://www.rfc-editor.org/rfc/rfc8446 (consulted on 10/10/2026).
+[^iso27001]: International Organization for Standardization: *ISO/IEC 27001 — Information security, cybersecurity and privacy protection — Information security management systems — Requirements*, ISO, Geneva, 2022. https://www.iso.org/standard/27001 (consulted on 10/10/2026).
+[^gdpr]: Regulation (EU) 2016/679 of the European Parliament and of the Council of 27 April 2016 on the protection of natural persons with regard to the processing of personal data (General Data Protection Regulation), *Official Journal of the European Union*, L 119, 4 May 2016. https://eur-lex.europa.eu/eli/reg/2016/679/oj (consulted on 10/10/2026).
 [^law1807]: Loi n° 18-07 du 10 juin 2018 relative à la protection des personnes physiques dans le traitement des données à caractère personnel, *Journal officiel de la République algérienne démocratique et populaire*, n° 34, 10 June 2018 (amended by Loi n° 25-11, *JORADP* n° 48, 24 July 2025).
-[^oecd]: Organisation for Economic Co-operation and Development (OECD): *The 2025 OECD Definition of E-commerce and Guidelines for Interpretation* (reaffirming the 2009 definition), OECD Publishing, Paris, 2025. https://www.oecd.org/en/publications/the-2025-oecd-definition-of-e-commerce-and-guidelines-for-interpretation_2254f1de-en.html (consulted on 10/10/2026 at 22:12).
-[^wto]: World Trade Organization: *Work Programme on Electronic Commerce*, document WT/L/274, WTO, Geneva, 25 September 1998. https://www.wto.org/english/tratop_e/ecom_e/ecom_e.htm (consulted on 10/10/2026 at 22:02).
+[^oecd]: Organisation for Economic Co-operation and Development (OECD): *The 2025 OECD Definition of E-commerce and Guidelines for Interpretation* (reaffirming the 2009 definition), OECD Publishing, Paris, 2025. https://www.oecd.org/en/publications/the-2025-oecd-definition-of-e-commerce-and-guidelines-for-interpretation_2254f1de-en.html (consulted on 10/10/2026).
+[^wto]: World Trade Organization: *Work Programme on Electronic Commerce*, document WT/L/274, WTO, Geneva, 25 September 1998. https://www.wto.org/english/tratop_e/ecom_e/ecom_e.htm (consulted on 10/10/2026).
 [^law1805]: Loi n° 18-05 du 10 mai 2018 relative au commerce électronique, *Journal officiel de la République algérienne démocratique et populaire*, n° 28, 16 May 2018.
-[^chargily]: Chargily: *Chargily Pay — Developer Documentation (v2)*. https://dev.chargily.com/ (consulted on 10/10/2026 at 19:21).
-[^owasptop10]: OWASP Foundation: *OWASP Top 10 — Web Application Security Risks*. https://owasp.org/www-project-top-ten/ (consulted on 10/10/2026 at 19:07).
-[^pcidss]: PCI Security Standards Council: *PCI Data Security Standard (PCI DSS)*, version 4.0, PCI SSC. https://www.pcisecuritystandards.org/ (consulted on 11/10/2026 at 23:02).
-[^nordvpnpay]: Nord Security: *What payment methods do you accept?* (NordVPN support). https://support.nordvpn.com/hc/en-us/articles/19685782821265 (consulted on 11/10/2026 at 23:56).
-[^nordvpnproto]: Nord Security: *The NordLynx protocol — the solution for a fast and secure VPN connection* (NordVPN blog). https://nordvpn.com/blog/nordlynx-protocol-wireguard/ (consulted on 11/10/2026 at 19:47).
-[^protonpay]: Proton AG: *Payment methods* (Proton VPN support). https://protonvpn.com/support/payment-options/ (consulted on 11/10/2026 at 19:55).
-[^protonproto]: Proton AG: *How to change VPN protocols* (Proton VPN support). https://protonvpn.com/support/how-to-change-vpn-protocols/ (consulted on 11/10/2026 at 21:38).
+[^chargily]: Chargily: *Chargily Pay — Developer Documentation (v2)*. https://dev.chargily.com/ (consulted on 10/10/2026).
+[^owasptop10]: OWASP Foundation: *OWASP Top 10 — Web Application Security Risks*. https://owasp.org/www-project-top-ten/ (consulted on 10/10/2026).
+[^pcidss]: PCI Security Standards Council: *PCI Data Security Standard (PCI DSS)*, version 4.0, PCI SSC. https://www.pcisecuritystandards.org/ (consulted on 11/10/2026).
+[^nordvpnpay]: Nord Security: *What payment methods do you accept?* (NordVPN support). https://support.nordvpn.com/hc/en-us/articles/19685782821265 (consulted on 11/10/2026).
+[^nordvpnproto]: Nord Security: *The NordLynx protocol — the solution for a fast and secure VPN connection* (NordVPN blog). https://nordvpn.com/blog/nordlynx-protocol-wireguard/ (consulted on 11/10/2026).
+[^protonpay]: Proton AG: *Payment methods* (Proton VPN support). https://protonvpn.com/support/payment-options/ (consulted on 11/10/2026).
+[^protonproto]: Proton AG: *How to change VPN protocols* (Proton VPN support). https://protonvpn.com/support/how-to-change-vpn-protocols/ (consulted on 11/10/2026).

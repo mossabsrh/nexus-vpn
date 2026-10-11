@@ -33,6 +33,51 @@ def size_attr(path):
     return '{height=20cm}'
 
 
+CAPTION_RE = re.compile(
+    r'^(?P<title>\*\*(?:Figure|Table|Listing)\b.+?\*\*)\s+(?P<rest>\*Source:.*)$')
+
+
+def split_captions(text):
+    """Move each element's caption *title* ABOVE the element (bold, centred) and leave the *source*
+    BELOW it (italic, centred). Input captions are single lines: '**Figure X — title.** *Source: …*'.
+    The element above is a table (lines starting with '|'), an image, or a fenced code block."""
+    lines = text.split('\n')
+    out = []
+    for line in lines:
+        m = CAPTION_RE.match(line.strip())
+        if not m:
+            out.append(line)
+            continue
+        title, rest = m.group('title'), m.group('rest')
+        j = len(out)
+        while j > 0 and out[j - 1].strip() == '':
+            j -= 1
+        if j == 0:
+            out.append(line)                      # nothing above -> leave as-is
+            continue
+        last = out[j - 1].lstrip()
+        if last.startswith('|'):                  # table
+            k = j
+            while k > 0 and out[k - 1].lstrip().startswith('|'):
+                k -= 1
+            start = k
+        elif out[j - 1].rstrip().endswith('```'):  # fenced code block
+            k = j - 2
+            while k > 0 and not out[k].lstrip().startswith('```'):
+                k -= 1
+            start = k
+        elif re.match(r'!\[[^\]]*\]\([^)]+\)', last):  # image
+            start = j - 1
+        else:
+            out.append(line)                      # unknown element -> leave as-is
+            continue
+        out[start:start] = [title, '']            # title + blank above the element
+        if out and out[-1].strip() != '':
+            out.append('')
+        out.append(rest)                          # source (+ any trailing footnote markers) below
+    return '\n'.join(out)
+
+
 def process(text, base_dir):
     text = re.sub(r'<!--.*?-->', '', text, flags=re.DOTALL)
     text = re.sub(r'^## Notes\s*$', '', text, flags=re.MULTILINE)
@@ -53,6 +98,7 @@ def process(text, base_dir):
         return f'![{alt}]({newpath}){attr}'
 
     text = re.sub(r'!\[([^\]]*)\]\(([^)]+)\)(\{[^}]*\})?', repl, text)
+    text = split_captions(text)
     return text.strip() + '\n'
 
 

@@ -14,6 +14,7 @@ Always know which side a change belongs to. Do not mix unrelated frontend and ba
 
 ## Evidence rules
 
+- **Never invent values that must come from reality** (dates, times, numbers, results, sources, quotes). If a value is unknown, say so and ask — never fill it with a plausible-looking guess.
 - Backend routes: use `php artisan route:list --except-vendor` (from `nexus-vpn/`) and the Boost `database-schema` tool.
 - Record test evidence in `docs/pfe/12-testing.md`: test file, what it covers, command, result. Never record results that were not actually run.
 - When `search-docs` or any documentation informs an important decision, add the official page (title + URL) to `docs/pfe/16-sources.md`. Never cite "search-docs" itself.

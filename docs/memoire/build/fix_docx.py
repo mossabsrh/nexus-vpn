@@ -9,15 +9,16 @@ import re
 import sys
 from copy import deepcopy
 from docx import Document
-from docx.enum.text import WD_ALIGN_PARAGRAPH, WD_LINE_SPACING, WD_BREAK
+from docx.enum.text import WD_ALIGN_PARAGRAPH, WD_LINE_SPACING, WD_BREAK, WD_TAB_ALIGNMENT
 from docx.enum.table import WD_TABLE_ALIGNMENT
-from docx.shared import Pt
+from docx.shared import Pt, Cm, RGBColor
 from docx.oxml.ns import qn
 from docx.oxml import OxmlElement
 
 doc = Document(sys.argv[1])
 DXA = 567  # twips per cm
 TEXT_CM = 16.0  # A4 text width: 21 - 3 (left) - 2 (right)
+NAVY = '1F3864'
 
 # 0. Chapter title pages: each Heading 1 is centred and pushed down its own page by the reference
 # template; add a page break *after* the title so the chapter content begins on the next page.
@@ -38,6 +39,7 @@ except KeyError:
 # the size on every run inside a code paragraph too.
 for p in doc.paragraphs:
     if p.style is not None and p.style.name in ('Source Code', 'SourceCode'):
+        p.paragraph_format.keep_with_next = True  # the whole listing + its source stay together
         for run in p.runs:
             run.font.size = Pt(CODE_PT)
 
@@ -45,13 +47,21 @@ for p in doc.paragraphs:
 # would otherwise inherit the justified body alignment, which spreads short caption lines). The
 # pattern requires the "N.N —" after the keyword, so in-text references ("Figure III.5 shows ...")
 # are not matched.
-caption = re.compile(r'^(Figure|Table|Listing)\s+[IVXLCDM]+\.\d+\s+[—\-]')
+# Captions are split (preprocess.py) into a bold TITLE above the element and an italic SOURCE below it.
+# Centre both; keep the title with its element, and keep each image with the source line beneath it.
+caption = re.compile(r'^(Figure|Table|Listing)\s+[IVXLCDM]+\.[0-9]+[a-z]?\s+[—\-]')
+DRAWING = './/' + qn('w:drawing')
 n = 0
 for p in doc.paragraphs:
-    if caption.match(p.text):
-        # Centered captions, as in the 19/20 reference (the guide only requires the source below).
+    txt = p.text.strip()
+    if caption.match(txt):
         p.paragraph_format.alignment = WD_ALIGN_PARAGRAPH.CENTER
+        p.paragraph_format.keep_with_next = True
         n += 1
+    elif txt.startswith('Source:'):
+        p.paragraph_format.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    elif p._p.findall(DRAWING):
+        p.paragraph_format.keep_with_next = True
 
 # 3. Separate consecutive footnote markers: pandoc renders adjacent references ([^a][^b]) as jammed
 # superscripts ("1213"); the guide wants them separated. Insert a superscript comma between two
@@ -128,6 +138,12 @@ def _valign_center(cell):
     if v is None:
         v = OxmlElement('w:vAlign'); tcPr.append(v)
     v.set(qn('w:val'), 'center')
+
+def _cell_fill(cell, color):
+    tcPr = cell._tc.get_or_add_tcPr()
+    for old in tcPr.findall(qn('w:shd')):
+        tcPr.remove(old)
+    tcPr.append(_mk('w:shd', val='clear', color='auto', fill=color))
 
 def _cantsplit(row):
     trPr = row._tr.get_or_add_trPr()
@@ -242,8 +258,11 @@ for tbl in doc.tables:
         is_header = (i == 0 and not is_usecase)
         if is_header:
             _tblheader(row)
+        body_index = i if is_usecase else i - 1  # 0-based index among the body rows
         for j, cell in enumerate(row.cells):
             _valign_center(cell)
+            # colour: header light blue; body rows alternate white / very light blue. Text stays black.
+            _cell_fill(cell, 'BDD7EE' if is_header else ('EAF2FB' if body_index % 2 == 1 else 'FFFFFF'))
             txt = cell.text.strip()
             if is_header:
                 _cell_style(cell, size, True, WD_ALIGN_PARAGRAPH.CENTER)
@@ -253,6 +272,10 @@ for tbl in doc.tables:
                 short = len(txt) <= 14 and '\n' not in txt
                 _cell_style(cell, size, None,
                             WD_ALIGN_PARAGRAPH.CENTER if short else WD_ALIGN_PARAGRAPH.LEFT)
+    # keep the last row with the source line beneath the table
+    for cell in rows[-1].cells:
+        for para in cell.paragraphs:
+            para.paragraph_format.keep_with_next = True
     if is_dict:
         _vmerge_first_col(tbl)
     tbl_n += 1
@@ -291,9 +314,51 @@ for p in h1s[1:]:
         pPr = OxmlElement('w:pPr'); newp.append(pPr); pPr.append(sp)
         el.addprevious(newp)
 
-for section in doc.sections:
+def _white_run(p, text=''):
+    run = p.add_run(text)
+    run.font.size = Pt(10); run.font.bold = True
+    run.font.color.rgb = RGBColor(0xFF, 0xFF, 0xFF)
+    rpr = run._r.get_or_add_rPr()
+    rf = rpr.find(qn('w:rFonts'))
+    if rf is None:
+        rf = OxmlElement('w:rFonts'); rpr.append(rf)
+    for a in ('w:ascii', 'w:hAnsi', 'w:cs'):
+        rf.set(qn(a), 'Times New Roman')
+    return run
+
+def _page_field(p):
+    run = _white_run(p)
+    begin = OxmlElement('w:fldChar'); begin.set(qn('w:fldCharType'), 'begin')
+    it = OxmlElement('w:instrText'); it.set(qn('xml:space'), 'preserve'); it.text = ' PAGE '
+    end = OxmlElement('w:fldChar'); end.set(qn('w:fldCharType'), 'end')
+    run._r.append(begin); run._r.append(it); run._r.append(end)
+
+def _build_chapter_header(section, title):
+    """Navy header bar: the chapter title as PLAIN TEXT on the left and the PAGE field on the right.
+    No STYLEREF field (French Word localises 'Heading 1' to 'Titre 1' and renders a STYLEREF error)."""
+    hdr = section.header
+    hdr.is_linked_to_previous = False
+    p = hdr.paragraphs[0] if hdr.paragraphs else hdr.add_paragraph()
+    for r in list(p.runs):
+        r._r.getparent().remove(r._r)
+    pf = p.paragraph_format
+    pf.space_before = Pt(3); pf.space_after = Pt(3)
+    pf.tab_stops.add_tab_stop(Cm(16), WD_TAB_ALIGNMENT.RIGHT)  # page number top-right (guide rule)
+    pPr = p._p.get_or_add_pPr()
+    for old in pPr.findall(qn('w:shd')):
+        pPr.remove(old)
+    shd = OxmlElement('w:shd'); shd.set(qn('w:val'), 'clear'); shd.set(qn('w:color'), 'auto'); shd.set(qn('w:fill'), NAVY)
+    pPr.append(shd)
+    _white_run(p, title)
+    _white_run(p, '\t')
+    _page_field(p)
+
+chapter_titles = [h.text.strip() for h in h1s]
+for i, section in enumerate(doc.sections):
+    title = chapter_titles[i] if i < len(chapter_titles) else (chapter_titles[-1] if chapter_titles else '')
+    _build_chapter_header(section, title)
     section.different_first_page_header_footer = True
-    fph = section.first_page_header  # creates an empty first-page header part + reference
+    fph = section.first_page_header  # empty first-page header -> no header/number on the title page
     for para in fph.paragraphs:
         for r in list(para.runs):
             r._r.getparent().remove(r._r)

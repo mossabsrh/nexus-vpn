@@ -601,20 +601,20 @@ The chapter has also been explicit about the system's boundaries: the parts that
 
 ## Notes
 
-[^php]: The PHP Group: *PHP Manual*. https://www.php.net/docs.php (consulted on 11/10/2026 at 21:11).
-[^laravel]: Laravel: *Laravel 12.x Documentation*. https://laravel.com/docs/12.x (consulted on 11/10/2026 at 22:39).
-[^nextjs]: Vercel: *Next.js Documentation*. https://nextjs.org/docs (consulted on 11/10/2026 at 20:33).
-[^react]: Meta Open Source: *React Documentation*. https://react.dev/ (consulted on 11/10/2026 at 23:21).
-[^typescript]: Microsoft: *TypeScript Documentation*. https://www.typescriptlang.org/docs/ (consulted on 11/10/2026 at 23:53).
-[^tailwind]: Tailwind Labs: *Tailwind CSS Documentation*. https://tailwindcss.com/docs (consulted on 11/10/2026 at 22:51).
-[^sqlite]: SQLite: *About SQLite*. https://www.sqlite.org/about.html (consulted on 11/10/2026 at 21:11).
-[^postgresql]: The PostgreSQL Global Development Group: *PostgreSQL Documentation*. https://www.postgresql.org/docs/ (consulted on 11/10/2026 at 23:20).
-[^sanctum]: Laravel: *Laravel Sanctum Documentation*. https://laravel.com/docs/12.x/sanctum (consulted on 11/10/2026 at 23:10).
-[^chargily4]: Chargily: *Chargily Pay — Developer Documentation (v2)*. https://dev.chargily.com/ (consulted on 10/10/2026 at 21:44).
-[^wgproto4]: WireGuard: *Protocol & Cryptography* (official protocol page). https://www.wireguard.com/protocol/ (consulted on 11/10/2026 at 22:38).
-[^wgquick]: WireGuard: *Quick Start* (`wg genkey` / `wg pubkey`). https://www.wireguard.com/quickstart/ (consulted on 11/10/2026 at 20:47).
-[^phpunit]: BERGMANN (Sebastian): *PHPUnit Documentation*. https://docs.phpunit.de/ (consulted on 11/10/2026 at 21:28).
-[^playwright]: Microsoft: *Playwright Documentation*. https://playwright.dev/ (consulted on 11/10/2026 at 23:54).
-[^plantuml]: PlantUML: *PlantUML Language Reference Guide*. https://plantuml.com/ (consulted on 11/10/2026 at 20:05).
-[^mermaid]: Mermaid: *Mermaid Documentation*. https://mermaid.js.org/ (consulted on 11/10/2026 at 19:05).
-[^githubactions]: GitHub: *GitHub Actions Documentation*. https://docs.github.com/actions (consulted on 11/10/2026 at 21:31).
+[^php]: The PHP Group: *PHP Manual*. https://www.php.net/docs.php (consulted on 11/10/2026).
+[^laravel]: Laravel: *Laravel 12.x Documentation*. https://laravel.com/docs/12.x (consulted on 11/10/2026).
+[^nextjs]: Vercel: *Next.js Documentation*. https://nextjs.org/docs (consulted on 11/10/2026).
+[^react]: Meta Open Source: *React Documentation*. https://react.dev/ (consulted on 11/10/2026).
+[^typescript]: Microsoft: *TypeScript Documentation*. https://www.typescriptlang.org/docs/ (consulted on 11/10/2026).
+[^tailwind]: Tailwind Labs: *Tailwind CSS Documentation*. https://tailwindcss.com/docs (consulted on 11/10/2026).
+[^sqlite]: SQLite: *About SQLite*. https://www.sqlite.org/about.html (consulted on 11/10/2026).
+[^postgresql]: The PostgreSQL Global Development Group: *PostgreSQL Documentation*. https://www.postgresql.org/docs/ (consulted on 11/10/2026).
+[^sanctum]: Laravel: *Laravel Sanctum Documentation*. https://laravel.com/docs/12.x/sanctum (consulted on 11/10/2026).
+[^chargily4]: Chargily: *Chargily Pay — Developer Documentation (v2)*. https://dev.chargily.com/ (consulted on 10/10/2026).
+[^wgproto4]: WireGuard: *Protocol & Cryptography* (official protocol page). https://www.wireguard.com/protocol/ (consulted on 11/10/2026).
+[^wgquick]: WireGuard: *Quick Start* (`wg genkey` / `wg pubkey`). https://www.wireguard.com/quickstart/ (consulted on 11/10/2026).
+[^phpunit]: BERGMANN (Sebastian): *PHPUnit Documentation*. https://docs.phpunit.de/ (consulted on 11/10/2026).
+[^playwright]: Microsoft: *Playwright Documentation*. https://playwright.dev/ (consulted on 11/10/2026).
+[^plantuml]: PlantUML: *PlantUML Language Reference Guide*. https://plantuml.com/ (consulted on 11/10/2026).
+[^mermaid]: Mermaid: *Mermaid Documentation*. https://mermaid.js.org/ (consulted on 11/10/2026).
+[^githubactions]: GitHub: *GitHub Actions Documentation*. https://docs.github.com/actions (consulted on 11/10/2026).

@@ -104,45 +104,10 @@ for sname in ['Footnote Text']:
     except KeyError:
         pass
 
-def _white_run(p, size=10, bold=True):
-    run = p.add_run()
-    run.font.size = Pt(size); run.font.bold = bold
-    run.font.color.rgb = RGBColor(0xFF, 0xFF, 0xFF)
-    rpr = run._r.get_or_add_rPr()
-    rf = rpr.find(qn('w:rFonts'))
-    if rf is None:
-        rf = OxmlElement('w:rFonts'); rpr.append(rf)
-    for a in ('w:ascii', 'w:hAnsi', 'w:cs'):
-        rf.set(qn(a), 'Times New Roman')
-    return run
-
-def _field(run, instr):
-    begin = OxmlElement('w:fldChar'); begin.set(qn('w:fldCharType'), 'begin')
-    it = OxmlElement('w:instrText'); it.set(qn('xml:space'), 'preserve'); it.text = instr
-    end = OxmlElement('w:fldChar'); end.set(qn('w:fldCharType'), 'end')
-    run._r.append(begin); run._r.append(it); run._r.append(end)
-
-def add_running_header(section):
-    """A navy header bar: the chapter name (STYLEREF of Heading 1) on the left, the page number on
-    the right — so the page number stays top-right (guide rule) while the bar carries the chapter name."""
-    header = section.header
-    header.is_linked_to_previous = False
-    p = header.paragraphs[0] if header.paragraphs else header.add_paragraph()
-    for r in list(p.runs):
-        r._r.getparent().remove(r._r)
-    pf = p.paragraph_format
-    pf.space_before = Pt(3); pf.space_after = Pt(3)
-    # text area width on A4 = 21 - 3(left) - 2(right) = 16 cm -> right tab for the page number
-    pf.tab_stops.add_tab_stop(Cm(16), WD_TAB_ALIGNMENT.RIGHT)
-    pPr = p._p.get_or_add_pPr()
-    shd = OxmlElement('w:shd'); shd.set(qn('w:val'), 'clear'); shd.set(qn('w:color'), 'auto'); shd.set(qn('w:fill'), NAVY)
-    pPr.append(shd)
-    _field(_white_run(p), ' STYLEREF "Heading 1" \\* MERGEFORMAT ')
-    _white_run(p).add_text('\t')
-    _field(_white_run(p), ' PAGE ')
-
-for section in doc.sections:
-    add_running_header(section)
+# The navy running header is built per chapter in fix_docx.py (plain chapter title + PAGE field),
+# after the per-chapter Word sections are created. We no longer use a STYLEREF "Heading 1" field:
+# French Word localises the style name to "Titre 1", so STYLEREF "Heading 1" renders an error in the
+# header. Writing the title as plain text avoids that entirely.
 
 doc.save(sys.argv[2])
 print('reference.docx written:', sys.argv[2])

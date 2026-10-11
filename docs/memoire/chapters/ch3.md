@@ -619,4 +619,4 @@ This chapter analysed and designed the VPN sales portal with UML. It gave an ove
 
 ## Notes
 
-[^uml]: Object Management Group (OMG): *OMG Unified Modeling Language (OMG UML), Version 2.5.1*, document formal/2017-12-05, OMG, December 2017. https://www.omg.org/spec/UML/2.5.1/ (consulted on 11/10/2026 at 23:29).
+[^uml]: Object Management Group (OMG): *OMG Unified Modeling Language (OMG UML), Version 2.5.1*, document formal/2017-12-05, OMG, December 2017. https://www.omg.org/spec/UML/2.5.1/ (consulted on 11/10/2026).
