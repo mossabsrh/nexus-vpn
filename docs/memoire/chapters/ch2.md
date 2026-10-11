@@ -9,7 +9,7 @@ Figures II.1–II.3 are rendered (docs/memoire/figures/) and inserted.
 Mobile elements are marked as POSTPONED (decision D-16).
 -->
 
-# CHAPTER II — Overview of VPN Services and E-commerce
+# CHAPTER II — Overview of VPN Services and E‑commerce
 
 ## Introduction
 

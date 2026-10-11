@@ -1,0 +1,101 @@
+"""Build the mémoire reference.docx from pandoc's default, applying the methodology-guide formatting:
+margins 3cm L / 2cm R / 2.5cm T&B, Times New Roman 12 justified single-spaced body, headings 16/14/12 bold,
+footnotes Times New Roman 10, page number top-right. Run: python -I make_reference.py <in.docx> <out.docx>
+
+Heading style (Q-12): the guide's rule text says "bold underlined" while its example shows "bold italic".
+We default to clean BOLD (no underline/italic). To switch, change set_font(..., underline=True) or italic=True
+for Heading 1/2/3 below."""
+import sys
+from docx import Document
+from docx.shared import Pt, Cm, RGBColor
+from docx.enum.text import WD_ALIGN_PARAGRAPH, WD_LINE_SPACING
+from docx.oxml.ns import qn
+from docx.oxml import OxmlElement
+
+doc = Document(sys.argv[1])
+
+for section in doc.sections:
+    section.left_margin = Cm(3)
+    section.right_margin = Cm(2)
+    section.top_margin = Cm(2.5)
+    section.bottom_margin = Cm(2.5)
+
+def set_font(style, size=None, bold=None, italic=None, underline=None, color=None, name='Times New Roman'):
+    f = style.font
+    f.name = name
+    rpr = style.element.get_or_add_rPr()
+    rfonts = rpr.find(qn('w:rFonts'))
+    if rfonts is None:
+        rfonts = OxmlElement('w:rFonts'); rpr.append(rfonts)
+    for attr in ('w:ascii', 'w:hAnsi', 'w:cs', 'w:eastAsia'):
+        rfonts.set(qn(attr), name)
+    if size is not None: f.size = Pt(size)
+    if bold is not None: f.bold = bold
+    if italic is not None: f.italic = italic
+    if underline is not None: f.underline = underline
+    if color is not None: f.color.rgb = color
+
+styles = doc.styles
+
+for sname in ['Normal', 'Body Text', 'First Paragraph', 'Compact']:
+    try:
+        st = styles[sname]
+        set_font(st, size=12)
+        pf = st.paragraph_format
+        pf.line_spacing_rule = WD_LINE_SPACING.SINGLE
+        pf.space_after = Pt(6); pf.space_before = Pt(0)
+        if sname in ('Normal', 'Body Text', 'First Paragraph'):
+            pf.alignment = WD_ALIGN_PARAGRAPH.JUSTIFY
+    except KeyError:
+        pass
+
+for hname, size in {'Heading 1': 16, 'Heading 2': 14, 'Heading 3': 12, 'Heading 4': 12}.items():
+    try:
+        st = styles[hname]
+        set_font(st, size=size, bold=True, italic=False, underline=False, color=RGBColor(0, 0, 0))
+        pf = st.paragraph_format
+        pf.space_before = Pt(12); pf.space_after = Pt(6)
+        pf.line_spacing_rule = WD_LINE_SPACING.SINGLE
+        pf.keep_with_next = True
+        pf.alignment = WD_ALIGN_PARAGRAPH.LEFT
+        if hname == 'Heading 1':
+            pf.page_break_before = True
+    except KeyError:
+        pass
+
+for cname in ['Caption', 'Image Caption', 'Table Caption']:
+    try:
+        st = styles[cname]
+        set_font(st, size=11, bold=False, italic=True)
+        st.paragraph_format.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    except KeyError:
+        pass
+
+for sname in ['Footnote Text']:
+    try:
+        st = styles[sname]
+        set_font(st, size=10)
+        st.paragraph_format.line_spacing_rule = WD_LINE_SPACING.SINGLE
+        st.paragraph_format.alignment = WD_ALIGN_PARAGRAPH.JUSTIFY
+    except KeyError:
+        pass
+
+def add_page_number(section):
+    header = section.header
+    header.is_linked_to_previous = False
+    p = header.paragraphs[0] if header.paragraphs else header.add_paragraph()
+    for r in list(p.runs):
+        r._r.getparent().remove(r._r)
+    p.alignment = WD_ALIGN_PARAGRAPH.RIGHT
+    run = p.add_run()
+    run.font.name = 'Times New Roman'; run.font.size = Pt(12)
+    begin = OxmlElement('w:fldChar'); begin.set(qn('w:fldCharType'), 'begin')
+    instr = OxmlElement('w:instrText'); instr.set(qn('xml:space'), 'preserve'); instr.text = ' PAGE '
+    end = OxmlElement('w:fldChar'); end.set(qn('w:fldCharType'), 'end')
+    run._r.append(begin); run._r.append(instr); run._r.append(end)
+
+for section in doc.sections:
+    add_page_number(section)
+
+doc.save(sys.argv[2])
+print('reference.docx written:', sys.argv[2])

@@ -1,0 +1,4 @@
+# Generated build artifacts (reproducible from the scripts + chapter Markdown).
+out/
+# reference.docx is regenerated from reference-default.docx by make_reference.py on every build.
+reference.docx

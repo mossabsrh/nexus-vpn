@@ -348,7 +348,7 @@ The use cases below are performed by the **Administrator** in the back-office co
 
 **Table III.24 — UC-21: Manage team members.** *Source: author, verified from the code.*
 
-> ⏸️ **Mobile use cases — placeholder.** When the Flutter client is resumed, the same client use cases (UC-01, UC-03, UC-04, UC-07, UC-09) are reached over the token API `/api/mobile/*`; a dedicated mobile use-case diagram will be added then.
+> **Mobile use cases — placeholder.** When the Flutter client is resumed, the same client use cases (UC-01, UC-03, UC-04, UC-07, UC-09) are reached over the token API `/api/mobile/*`; a dedicated mobile use-case diagram will be added then.
 
 ## III.5 Use Case Diagrams
 
@@ -376,7 +376,7 @@ Figure III.4 shows the administrator's use cases in the back office, including t
 **Figure III.4 — Administration use-case diagram (support merged, gap G-05).** *Source: author (UML, PlantUML).*
 
 ### III.5.4 Mobile Diagram — placeholder
-> ⏸️ **Mobile use-case diagram — placeholder (decision D-16).** The native client is postponed; its use-case diagram (the client subset reached over `/api/mobile/*`) will be added when the Flutter app is resumed.
+> **Mobile use-case diagram — placeholder (decision D-16).** The native client is postponed; its use-case diagram (the client subset reached over `/api/mobile/*`) will be added when the Flutter app is resumed.
 
 ## III.6 Sequence Diagrams
 
@@ -430,7 +430,7 @@ The following sequence diagrams detail the dynamic behaviour of the main use cas
 
 **Figure III.12 — Sequence diagram: an administrator deletes a user.** *Source: author (UML).*
 
-> ⏸️ **Mobile sequence diagrams — placeholder (decision D-16).** Token-based login and checkout over `/api/mobile/*` will be added when the Flutter client is resumed.
+> **Mobile sequence diagrams — placeholder (decision D-16).** Token-based login and checkout over `/api/mobile/*` will be added when the Flutter client is resumed.
 
 ## III.7 Class Diagram
 
@@ -454,7 +454,7 @@ Mapping the class model to a relational schema gives the following relations (pr
 - **TESTIMONIALS**(<u>id</u>, #user_id→USERS, content, status, #moderated_by?→USERS, moderated_at?, created_at, updated_at)
 - **CONTACT_REQUESTS**(<u>id</u>, #user_id?→USERS, name, email, company?, seats?, message, status, #handled_by?→USERS, handled_at?, ip_address?, created_at, updated_at)
 - **AUDIT_LOGS**(<u>id</u>, #actor_id?→USERS, action, subject_type?, subject_id?, metadata?, ip_address?, created_at)
-- ⏸️ **PERSONAL_ACCESS_TOKENS**(<u>id</u>, tokenable_type, tokenable_id, name, token *UK*, abilities?, last_used_at?, expires_at?, created_at, updated_at) — *Sanctum, mobile client — postponed*
+- **PERSONAL_ACCESS_TOKENS**(<u>id</u>, tokenable_type, tokenable_id, name, token *UK*, abilities?, last_used_at?, expires_at?, created_at, updated_at) — *Sanctum, mobile client — postponed*
 
 ![Figure III.14 — Entity-relationship diagram](../figures/erd-en.png)
 
@@ -582,7 +582,7 @@ Table III.26 lists the relationships between entities, their cardinalities and t
 
 ## III.12 Project Planning (Gantt Chart)
 
-> ⏸️ **Gantt chart — placeholder (real dates pending, Q-18).** The project was carried out in the phases listed below; the **start dates and durations are to be provided by the student** and the Gantt chart inserted here (Figure III.15). The chart is intentionally left out rather than drawn with invented dates.
+> **Gantt chart — placeholder (real dates pending, Q-18).** The project was carried out in the phases listed below; the **start dates and durations are to be provided by the student** and the Gantt chart inserted here (Figure III.15). The chart is intentionally left out rather than drawn with invented dates.
 >
 > Planned phases: (1) analysis and requirements; (2) design (UML models, database); (3) backend development (Laravel API, payment and VPN provisioning); (4) frontend development (Next.js); (5) security hardening; (6) testing; (7) documentation (mémoire); (8) deployment.
 
