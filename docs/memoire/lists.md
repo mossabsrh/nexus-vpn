@@ -1,6 +1,6 @@
 # Running lists — figures, tables, abbreviations
 
-> Accumulated while the chapters are written, so the mémoire's **List of Figures**, **List of Tables** and **List of Abbreviations** are easy to build at the end (methodology order: these lists come after the acknowledgements/abstracts, before the general introduction). Page numbers are added when the Word document is assembled. Updated through **Chapter III** (2026-10-11).
+> Accumulated while the chapters are written, so the mémoire's **List of Figures**, **List of Tables** and **List of Abbreviations** are easy to build at the end (methodology order: these lists come after the acknowledgements/abstracts, before the general introduction). Page numbers are added when the Word document is assembled. Updated through **Chapter IV** (2026-10-11).
 
 ## List of Figures
 
@@ -23,9 +23,40 @@
 | Figure III.12 | Sequence: an administrator deletes a user | III | `figures/seq-admin-delete-user-en.png` |
 | Figure III.13 | Class diagram of the domain model | III | `figures/class-diagram-en.png` |
 | Figure III.14 | Entity-relationship diagram of the database | III | `figures/erd-en.png` |
-| Figure III.15 | Gantt chart of the project | III | ⏸️ placeholder (real dates pending, Q-18) |
+| Figure III.15 | Gantt chart of the project | III | placeholder (real dates pending, Q-18) |
+| Figure IV.1 | Main technologies of the portal | IV | `figures/tech-stack.png` |
+| Figure IV.2 | Public home page: navigation bar and hero | IV | `screenshots/memoire/01-home-navbar-hero.png` |
+| Figure IV.3 | Home page: features section | IV | `screenshots/memoire/02-features.png` |
+| Figure IV.4 | Home page: server-coverage map and statistics | IV | `screenshots/memoire/03-map-stats.png` |
+| Figure IV.5 | Home page: approved customer testimonials | IV | `screenshots/memoire/04-testimonials.png` |
+| Figure IV.6 | Home page: pricing plans | IV | `screenshots/memoire/05-pricing-cards.png` |
+| Figure IV.7 | Home page: Team-plan contact form | IV | `screenshots/memoire/06-contact-form.png` |
+| Figure IV.8 | Home page: footer | IV | `screenshots/memoire/07-footer.png` |
+| Figure IV.9 | Authentication: sign-in dialog | IV | `screenshots/memoire/08-auth-signin.png` |
+| Figure IV.10 | Authentication: sign-up dialog | IV | `screenshots/memoire/09-auth-signup.png` |
+| Figure IV.11 | Authentication: server-side validation error | IV | `screenshots/memoire/10-auth-validation-error.png` |
+| Figure IV.12 | Authentication: forgotten-password request | IV | `screenshots/memoire/11-auth-forgot-password.png` |
+| Figure IV.13 | Authentication: confirmation message | IV | `screenshots/memoire/27-auth-success-message.png` |
+| Figure IV.14 | Client dashboard: subscription status and VPN access | IV | `screenshots/memoire/12-dashboard-subscription-vpn.png` |
+| Figure IV.15 | Client dashboard: empty state | IV | `screenshots/memoire/25-dashboard-empty-state.png` |
+| Figure IV.16 | Client dashboard: failed-payment state | IV | `screenshots/memoire/26-dashboard-failed-payment.png` |
+| Figure IV.17 | Checkout: payment dialog | IV | `screenshots/memoire/16-payment-dialog.png` |
+| Figure IV.18 | Billing: payment receipt dialog | IV | `screenshots/memoire/14-receipt-dialog.png` |
+| Figure IV.19 | Account settings | IV | `screenshots/memoire/15-account-settings.png` |
+| Figure IV.20 | Client dashboard: team-member management | IV | `screenshots/memoire/13-dashboard-team-management.png` |
+| Figure IV.21 | Administration: overview | IV | `screenshots/memoire/17-admin-overview.png` |
+| Figure IV.22 | Administration: user accounts | IV | `screenshots/memoire/18-admin-accounts.png` |
+| Figure IV.23 | Administration: offers management | IV | `screenshots/memoire/19-admin-offers.png` |
+| Figure IV.24 | Administration: subscriptions | IV | `screenshots/memoire/20-admin-subscriptions.png` |
+| Figure IV.25 | Administration: payments and refunds | IV | `screenshots/memoire/21-admin-payments.png` |
+| Figure IV.26 | Administration: analytics | IV | `screenshots/memoire/22-admin-analytics.png` |
+| Figure IV.27 | Administration: audit log | IV | `screenshots/memoire/24-admin-audit-log.png` |
+| Figure IV.28 | Support: testimonial moderation | IV | `screenshots/memoire/23-admin-comments.png` |
+| Figure IV.29 | Responsive web: home page at phone width | IV | `screenshots/memoire/90-mobile-home.png` |
+| Figure IV.30 | Responsive web: dashboard at phone width | IV | `screenshots/memoire/91-mobile-dashboard.png` |
+| Figure IV.31 | Deployment architecture | IV | `figures/deployment-en.png` |
 
-*(Chapter IV figures — screenshots and the deployment diagram — are tracked in `docs/pfe/memoire-assets/screenshots/README.md` and `figures/deployment-en.png`; they will be added here when Chapter IV is written.)*
+*(Screenshots are in `docs/pfe/memoire-assets/screenshots/memoire/`.)*
 
 ## List of Tables
 
@@ -60,6 +91,24 @@
 | Table III.24 | UC-21: Manage team members | III |
 | Table III.25 | Data dictionary of the database | III |
 | Table III.26 | Relationships and cardinalities | III |
+| Table IV.1 | Languages and frameworks | IV |
+| Table IV.2 | Development and operations tools | IV |
+| Table IV.3 | Logical layers of the system | IV |
+| Table IV.4 | Functional modules and their main endpoints | IV |
+| Table IV.5 | Backend automated test suite | IV |
+| Table IV.6 | Manual security checks | IV |
+
+## List of Code Listings
+
+| № | Title | Chapter | Source file |
+|---|---|---|---|
+| Listing IV.1 | Response security headers | IV | `app/Http/Middleware/SecurityHeaders.php` |
+| Listing IV.2 | Named rate limiters (excerpt) | IV | `app/Providers/AppServiceProvider.php` |
+| Listing IV.3 | Production configuration guard | IV | `app/Providers/AppServiceProvider.php` |
+| Listing IV.4 | Sanctum token routes for the mobile client | IV | `routes/api.php` |
+| Listing IV.5 | Webhook signature verification | IV | `app/Services/ChargilyGateway.php` |
+| Listing IV.6 | Exactly-once payment activation | IV | `app/Models/Payment.php` |
+| Listing IV.7 | WireGuard Curve25519 key generation | IV | `app/Models/VpnCredential.php` |
 
 ## List of Abbreviations
 
@@ -70,6 +119,7 @@
 | API | Application Programming Interface | II/III |
 | B2B / B2C / C2B / C2C | Business/Consumer-to-Business / Business-to-Consumer / Consumer-to-Business / Consumer-to-Consumer | II |
 | BLAKE2s | Cryptographic hash function (used by WireGuard) | II |
+| CI/CD | Continuous Integration / Continuous Deployment | IV |
 | CIB | Carte Interbancaire (Algerian interbank card) | II |
 | CSRF | Cross-Site Request Forgery | II/III |
 | DZD | Algerian Dinar (ISO currency code) | II |
@@ -77,6 +127,7 @@
 | FK | Foreign Key | III |
 | GDPR | General Data Protection Regulation (EU 2016/679) | II |
 | HMAC | Hash-based Message Authentication Code | II/III |
+| HSTS | HTTP Strict Transport Security | IV |
 | HTTP / HTTPS | HyperText Transfer Protocol (Secure) | II/III |
 | IKE | Internet Key Exchange | II |
 | IP | Internet Protocol | II |
@@ -87,10 +138,13 @@
 | NIST | National Institute of Standards and Technology | II |
 | OECD | Organisation for Economic Co-operation and Development | II |
 | OMG | Object Management Group | III |
+| ORM | Object-Relational Mapping | IV |
 | PK | Primary Key | III |
 | RBAC | Role-Based Access Control | II/III |
 | REST | Representational State Transfer | III |
 | RFC | Request for Comments | II |
+| SMTP | Simple Mail Transfer Protocol | IV |
+| SQLi | SQL Injection | IV |
 | SSL | Secure Sockets Layer | II |
 | TLS | Transport Layer Security | II |
 | UC | Use Case | III |
@@ -100,3 +154,4 @@
 | UML | Unified Modeling Language | III |
 | VPN | Virtual Private Network | II |
 | WTO | World Trade Organization | II |
+| XSS | Cross-Site Scripting | IV |

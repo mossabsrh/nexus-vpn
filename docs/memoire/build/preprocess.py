@@ -45,12 +45,14 @@ def process(text, base_dir):
     text = re.sub(r'<u>(.*?)</u>', r'[\1]{.underline}', text, flags=re.DOTALL)
 
     def repl(m):
-        alt, path = m.group(1), m.group(2)
+        alt, path, given = m.group(1), m.group(2), m.group(3)
         newpath = path.replace('../figures/', 'figures/')
-        attr = size_attr(os.path.join(base_dir, newpath))
+        # Keep an explicit size the author wrote (e.g. {width=13cm} for a screenshot); otherwise
+        # auto-fit to the text area based on the PNG's own dimensions.
+        attr = given if given else size_attr(os.path.join(base_dir, newpath))
         return f'![{alt}]({newpath}){attr}'
 
-    text = re.sub(r'!\[([^\]]*)\]\(([^)]+)\)', repl, text)
+    text = re.sub(r'!\[([^\]]*)\]\(([^)]+)\)(\{[^}]*\})?', repl, text)
     return text.strip() + '\n'
 
 

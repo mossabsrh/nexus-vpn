@@ -38,6 +38,7 @@ python -I build/preprocess.py "$combined" "$ROOT" "${src[@]}"
 # auto-caption (from the alt text) to avoid a duplicate caption under every figure.
 "$PANDOC" "$combined" --reference-doc=build/reference.docx \
   --from=markdown-implicit_figures --to=docx --resource-path="$ROOT" -o "$docx"
+python -I build/fix_docx.py "$docx"
 echo "docx written: $docx"
 
 # 4. Word -> PDF.

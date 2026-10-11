@@ -1,38 +1,38 @@
-﻿
+
    PASS  Tests\Unit\ExampleTest
   ✓ that true is true                                                                                            0.68s  
 
    PASS  Tests\Feature\Api\AccountDeletionTest
-  ✓ it anonymises the user and keeps billing history                                                             0.31s  
-  ✓ the deleted user can no longer authenticate                                                                  0.06s  
+  ✓ it anonymises the user and keeps billing history                                                             0.32s  
+  ✓ the deleted user can no longer authenticate                                                                  0.07s  
   ✓ it requires the correct current password                                                                     0.05s  
   ✓ admins cannot delete their account from here                                                                 0.05s  
   ✓ team owners cannot delete their account from here                                                            0.05s  
 
    PASS  Tests\Feature\Api\AccountSecurityTest
-  ✓ login locks the account after five failed attempts                                                           1.09s  
-  ✓ successful login clears failed attempts                                                                      0.88s  
-  ✓ registration failure does not leak internal errors                                                           0.11s  
+  ✓ login locks the account after five failed attempts                                                           1.10s  
+  ✓ successful login clears failed attempts                                                                      0.85s  
+  ✓ registration failure does not leak internal errors                                                           0.10s  
   ✓ registration rejects sales assisted plans explicitly                                                         0.05s  
-  ✓ registration sends verification and welcome emails                                                           0.10s  
-  ✓ email change returns fresh data and requires reverification                                                  0.06s  
+  ✓ registration sends verification and welcome emails                                                           0.11s  
+  ✓ email change returns fresh data and requires reverification                                                  0.05s  
   ✓ signed verification link verifies the email                                                                  0.06s  
-  ✓ an unverified user can resend the verification link                                                          0.05s  
+  ✓ an unverified user can resend the verification link                                                          0.06s  
   ✓ resending does nothing once the email is verified                                                            0.05s  
-  ✓ forgot password does not reveal whether an account exists                                                    0.48s  
+  ✓ forgot password does not reveal whether an account exists                                                    0.47s  
   ✓ password can be reset with a valid token only                                                                0.28s  
-  ✓ api responses carry security headers and pricing has no wildcard cors                                        0.07s  
+  ✓ api responses carry security headers and pricing has no wildcard cors                                        0.05s  
 
    PASS  Tests\Feature\Api\AdminBillingTest
-  ✓ billing endpoints are admin only                                                                             0.16s  
-  ✓ stats are computed from real billing data                                                                    0.19s  
-  ✓ users list is paginated searchable and filterable                                                            0.11s  
-  ✓ admin refund records the refund ends the subscription and revokes vpn                                        0.09s  
-  ✓ payments and subscriptions lists support filters                                                             0.06s  
-  ✓ plans with history are deactivated not deleted and pricing updates immediately                               0.09s  
+  ✓ billing endpoints are admin only                                                                             0.13s  
+  ✓ stats are computed from real billing data                                                                    0.12s  
+  ✓ users list is paginated searchable and filterable                                                            0.13s  
+  ✓ admin refund records the refund ends the subscription and revokes vpn                                        0.08s  
+  ✓ payments and subscriptions lists support filters                                                             0.07s  
+  ✓ plans with history are deactivated not deleted and pricing updates immediately                               0.08s  
   ✓ testimonials require moderation before they are public                                                       0.09s  
-  ✓ admin actions appear in the audit log                                                                        0.05s  
-  ✓ team subscription flow with seat limits                                                                      0.14s  
+  ✓ admin actions appear in the audit log                                                                        0.06s  
+  ✓ team subscription flow with seat limits                                                                      0.15s  
 
    PASS  Tests\Feature\Api\AdminTest
   ✓ regular users cannot access admin api                                                                        0.07s  
@@ -41,14 +41,14 @@
    PASS  Tests\Feature\Api\AdminUserDeletionTest
   ✓ an admin anonymises a user and keeps billing history                                                         0.07s  
   ✓ an admin can delete another admin when one remains                                                           0.06s  
-  ✓ an admin cannot delete themselves                                                                            0.04s  
-  ✓ the last admin cannot be deleted                                                                             0.04s  
+  ✓ an admin cannot delete themselves                                                                            0.05s  
+  ✓ the last admin cannot be deleted                                                                             0.05s  
   ✓ a team owner cannot be deleted from the admin panel                                                          0.05s  
-  ✓ non admins cannot delete users                                                                               0.04s  
+  ✓ non admins cannot delete users                                                                               0.05s  
 
    PASS  Tests\Feature\Api\AuthenticationTest
-  ✓ user can register and is authenticated                                                                       0.32s  
-  ✓ user can update email and password                                                                           0.11s  
+  ✓ user can register and is authenticated                                                                       0.43s  
+  ✓ user can update email and password                                                                           0.12s  
   ✓ user can login and read session user                                                                         0.06s  
   ✓ user can logout and session is invalidated                                                                   0.05s  
 
@@ -63,38 +63,38 @@
 
    PASS  Tests\Feature\Api\MobileAuthTest
   ✓ register returns a token and starts a trial                                                                  0.12s  
-  ✓ login returns a token                                                                                        0.05s  
+  ✓ login returns a token                                                                                        0.06s  
   ✓ login rejects an invalid password                                                                            0.05s  
   ✓ login locks the account after five failed attempts                                                           0.08s  
   ✓ protected routes require a token                                                                             0.05s  
   ✓ a token grants access to protected routes                                                                    0.07s  
-  ✓ logout revokes the current token                                                                             0.06s  
+  ✓ logout revokes the current token                                                                             0.07s  
   ✓ mobile token does not authenticate web session routes                                                        0.06s  
   ✓ password update via token revokes other tokens                                                               0.07s  
 
    PASS  Tests\Feature\Api\PaymentFlowTest
-  ✓ checkout records the payment first and returns to the frontend result page                                   0.12s  
+  ✓ checkout records the payment first and returns to the frontend result page                                   0.13s  
   ✓ checkout requires a verified email                                                                           0.05s  
   ✓ sales assisted and inactive plans cannot be bought online                                                    0.06s  
   ✓ provider errors are not echoed and the payment is marked failed                                              0.05s  
-  ✓ replayed webhook and later verify apply the payment only once                                                0.08s  
-  ✓ a payment that is no longer pending cannot be claimed again                                                  0.05s  
+  ✓ replayed webhook and later verify apply the payment only once                                                0.09s  
+  ✓ a payment that is no longer pending cannot be claimed again                                                  0.07s  
   ✓ paying during a trial converts the trial                                                                     0.06s  
   ✓ renewal extends from the end of the current period                                                           0.06s  
-  ✓ resubscribing after a cancellation keeps the days already paid for                                           0.05s  
-  ✓ resubscribing after a cancelled period ended starts from now                                                 0.05s  
-  ✓ paying for another plan ends the current one and starts a new one                                            0.08s  
+  ✓ resubscribing after a cancellation keeps the days already paid for                                           0.06s  
+  ✓ resubscribing after a cancelled period ended starts from now                                                 0.06s  
+  ✓ paying for another plan ends the current one and starts a new one                                            0.06s  
   ✓ the database refuses a second current subscription                                                           0.05s  
-  ✓ webhook for unknown checkout returns 404 so chargily retries                                                 0.05s  
-  ✓ webhook failed event records the failure reason                                                              0.06s  
-  ✓ webhook with a different amount does not activate                                                            0.07s  
-  ✓ webhook without an amount does not activate                                                                  0.07s  
-  ✓ paid checkout in another currency does not activate                                                          0.08s  
-  ✓ paid webhook for a failed payment is flagged for the admin                                                   0.08s  
-  ✓ duplicate paid webhook for a succeeded payment is not flagged                                                0.08s  
+  ✓ webhook for unknown checkout returns 404 so chargily retries                                                 0.04s  
+  ✓ webhook failed event records the failure reason                                                              0.05s  
+  ✓ webhook with a different amount does not activate                                                            0.05s  
+  ✓ webhook without an amount does not activate                                                                  0.05s  
+  ✓ paid checkout in another currency does not activate                                                          0.06s  
+  ✓ paid webhook for a failed payment is flagged for the admin                                                   0.06s  
+  ✓ duplicate paid webhook for a succeeded payment is not flagged                                                0.07s  
   ✓ checkout sends the configured webhook endpoint                                                               0.05s  
   ✓ checkout omits the webhook endpoint when not configured                                                      0.05s  
-  ✓ users cannot verify someone elses payment                                                                    0.06s  
+  ✓ users cannot verify someone elses payment                                                                    0.05s  
   ✓ users can list their payment history and receipts only                                                       0.08s  
 
    PASS  Tests\Feature\Api\SubscriptionLifecycleTest
@@ -108,13 +108,13 @@
   ✓ reminders are sent once per period                                                                           0.06s  
   ✓ vpn config download issues a valid wireguard peer                                                            0.08s  
   ✓ vpn config requires a verified email and a configured server                                                 0.06s  
-  ✓ peers get distinct tunnel addresses                                                                          0.08s  
+  ✓ peers get distinct tunnel addresses                                                                          0.06s  
 
    PASS  Tests\Feature\Auth\AuthenticationTest
-  ✓ login screen can be rendered                                                                                 0.14s  
+  ✓ login screen can be rendered                                                                                 0.10s  
   ✓ users can authenticate using the login screen                                                                0.08s  
-  ✓ users can not authenticate with invalid password                                                             0.27s  
-  ✓ users can logout                                                                                             0.05s  
+  ✓ users can not authenticate with invalid password                                                             0.28s  
+  ✓ users can logout                                                                                             0.04s  
 
    PASS  Tests\Feature\Auth\EmailVerificationTest
   ✓ email verification screen can be rendered                                                                    0.06s  
@@ -122,24 +122,24 @@
   ✓ email is not verified with invalid hash                                                                      0.05s  
 
    PASS  Tests\Feature\Auth\PasswordConfirmationTest
-  ✓ confirm password screen can be rendered                                                                      0.05s  
+  ✓ confirm password screen can be rendered                                                                      0.06s  
   ✓ password can be confirmed                                                                                    0.05s  
-  ✓ password is not confirmed with invalid password                                                              0.26s  
+  ✓ password is not confirmed with invalid password                                                              0.27s  
 
    PASS  Tests\Feature\Auth\PasswordResetTest
-  ✓ reset password link screen can be rendered                                                                   0.05s  
+  ✓ reset password link screen can be rendered                                                                   0.06s  
   ✓ reset password link can be requested                                                                         0.24s  
-  ✓ reset password screen can be rendered                                                                        0.24s  
-  ✓ password can be reset with valid token                                                                       0.27s  
+  ✓ reset password screen can be rendered                                                                        0.25s  
+  ✓ password can be reset with valid token                                                                       0.26s  
 
    PASS  Tests\Feature\Auth\RegistrationTest
   ✓ registration screen can be rendered                                                                          0.05s  
   ✓ new users can register                                                                                       0.08s  
 
    PASS  Tests\Feature\ChargilyPaymentTest
-  ✓ user can create a chargily checkout                                                                          0.06s  
-  ✓ database seeders are idempotent when run twice                                                               0.06s  
-  ✓ reseeding does not overwrite plans edited by admins                                                          0.07s  
+  ✓ user can create a chargily checkout                                                                          0.05s  
+  ✓ database seeders are idempotent when run twice                                                               0.08s  
+  ✓ reseeding does not overwrite plans edited by admins                                                          0.06s  
   ✓ reseeding does not restore plans deleted by admins                                                           0.06s  
   ✓ registration starts a trial for the selected plan                                                            0.11s  
   ✓ legacy payment return pages redirect to the frontend result page                                             0.05s  
@@ -147,32 +147,35 @@
   ✓ paid checkout creates a new subscription instead of reviving a canceled one                                  0.10s  
   ✓ user can start a seven day trial once                                                                        0.07s  
   ✓ authenticated user payload includes active subscription plan                                                 0.05s  
-  ✓ webhook rejects invalid signature                                                                            0.04s  
-  ✓ checkout ignores client supplied amount                                                                      0.15s  
-  ✓ user cannot verify another users checkout                                                                    0.07s  
+  ✓ webhook rejects invalid signature                                                                            0.05s  
+  ✓ checkout ignores client supplied amount                                                                      0.05s  
+  ✓ user cannot verify another users checkout                                                                    0.05s  
 
    PASS  Tests\Feature\DashboardTest
   ✓ guests are redirected to the login page                                                                      0.07s  
-  ✓ authenticated users can visit the dashboard                                                                  0.04s  
+  ✓ authenticated users can visit the dashboard                                                                  0.05s  
+
+   PASS  Tests\Feature\DemoDataSeederTest
+  ✓ demo team owner is a member and sees their team                                                              0.16s  
 
    PASS  Tests\Feature\ReconcilePaymentsTest
   ✓ it activates a stale payment that was paid at chargily                                                       0.07s  
   ✓ it leaves a still pending recent checkout untouched                                                          0.05s  
   ✓ it expires a checkout abandoned past the deadline                                                            0.05s  
   ✓ it ignores payments still within the grace period                                                            0.05s  
-  ✓ it does nothing without a secret key                                                                         0.05s  
+  ✓ it does nothing without a secret key                                                                         0.06s  
 
    PASS  Tests\Feature\Settings\PasswordUpdateTest
   ✓ password can be updated                                                                                      0.06s  
-  ✓ correct password must be provided to update password                                                         0.06s  
+  ✓ correct password must be provided to update password                                                         0.05s  
 
    PASS  Tests\Feature\Settings\ProfileUpdateTest
-  ✓ profile page is displayed                                                                                    0.16s  
-  ✓ profile information can be updated                                                                           0.07s  
+  ✓ profile page is displayed                                                                                    0.05s  
+  ✓ profile information can be updated                                                                           0.05s  
   ✓ email verification status is unchanged when the email address is unchanged                                   0.05s  
   ✓ user can delete their account                                                                                0.05s  
   ✓ correct password must be provided to delete account                                                          0.05s  
 
-  Tests:    130 passed (502 assertions)
-  Duration: 14.49s
+  Tests:    131 passed (508 assertions)
+  Duration: 14.30s
 

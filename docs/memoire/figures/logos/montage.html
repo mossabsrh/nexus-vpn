@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: #ffffff; font-family: "Segoe UI", Arial, sans-serif; color: #1f2937; }
+  #stack { width: 1000px; padding: 28px 32px; background: #ffffff; }
+  .group { margin-bottom: 22px; }
+  .group:last-child { margin-bottom: 4px; }
+  .label {
+    font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase;
+    color: #0d9488; border-bottom: 1px solid #e5e7eb; padding-bottom: 6px; margin-bottom: 16px;
+  }
+  .row { display: flex; gap: 20px; flex-wrap: wrap; }
+  .item {
+    width: 150px; height: 118px; border: 1px solid #e5e7eb; border-radius: 12px; background: #f9fafb;
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px;
+  }
+  .item img { max-height: 56px; max-width: 110px; width: auto; height: auto; object-fit: contain; }
+  .item .name { font-size: 14px; font-weight: 600; color: #111827; text-align: center; }
+  .badge {
+    height: 56px; display: flex; align-items: center; justify-content: center;
+    font-size: 19px; font-weight: 800; letter-spacing: -.01em;
+  }
+</style>
+</head>
+<body>
+  <div id="stack">
+    <div class="group">
+      <div class="label">Front end</div>
+      <div class="row">
+        <div class="item"><img src="src/nextjs.svg"><div class="name">Next.js</div></div>
+        <div class="item"><img src="src/react.svg"><div class="name">React</div></div>
+        <div class="item"><img src="src/typescript.svg"><div class="name">TypeScript</div></div>
+        <div class="item"><img src="src/tailwindcss.svg"><div class="name">Tailwind CSS</div></div>
+      </div>
+    </div>
+    <div class="group">
+      <div class="label">Back end &amp; data</div>
+      <div class="row">
+        <div class="item"><img src="src/php.svg"><div class="name">PHP</div></div>
+        <div class="item"><img src="src/laravel.svg"><div class="name">Laravel</div></div>
+        <div class="item"><img src="src/postgresql.svg"><div class="name">PostgreSQL</div></div>
+        <div class="item"><img src="src/sqlite.svg"><div class="name">SQLite</div></div>
+      </div>
+    </div>
+    <div class="group">
+      <div class="label">VPN, payment &amp; delivery</div>
+      <div class="row">
+        <div class="item"><div class="badge" style="color:#88171a">WireGuard</div><div class="name">VPN protocol</div></div>
+        <div class="item"><div class="badge" style="color:#0ea5e9">Chargily&nbsp;Pay</div><div class="name">Payment (DZD)</div></div>
+        <div class="item"><img src="src/docker.svg"><div class="name">Docker</div></div>
+        <div class="item"><img src="src/github.svg"><div class="name">Git / GitHub</div></div>
+      </div>
+    </div>
+    <div class="group">
+      <div class="label">Mobile &mdash; postponed</div>
+      <div class="row">
+        <div class="item"><img src="src/flutter.svg"><div class="name">Flutter</div></div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
