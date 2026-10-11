@@ -91,12 +91,10 @@
 | Table III.24 | UC-21: Manage team members | III |
 | Table III.25 | Data dictionary of the database | III |
 | Table III.26 | Relationships and cardinalities | III |
-| Table IV.1 | Languages and frameworks | IV |
-| Table IV.2 | Development and operations tools | IV |
-| Table IV.3 | Logical layers of the system | IV |
-| Table IV.4 | Functional modules and their main endpoints | IV |
-| Table IV.5 | Backend automated test suite | IV |
-| Table IV.6 | Manual security checks | IV |
+| Table IV.1 | Logical layers of the system | IV |
+| Table IV.2 | Functional modules and their main endpoints | IV |
+| Table IV.3 | Backend automated test suite | IV |
+| Table IV.4 | Manual security checks | IV |
 
 ## List of Code Listings
 

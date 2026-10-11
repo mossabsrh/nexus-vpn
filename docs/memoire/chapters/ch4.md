@@ -19,63 +19,69 @@ The guiding principle throughout is honesty about the state of the system. The p
 
 ## IV.1 Technologies and Tools
 
-The portal is built as two applications — a **Next.js** front end and a **Laravel** REST API — supported by a small, deliberately conventional set of tools. This section introduces each technology with its role and the exact version in use, grouped by purpose. The versions were read from `nexus-vpn/composer.lock` and the frontend `package.json` / `pnpm-lock.yaml`.
+The portal is built as two applications — a **Next.js** front end and a **Laravel** REST API — supported by a small, deliberately conventional set of tools. This section presents each technology with its logo, its role and the exact version in use, grouped by purpose; Figure IV.1 gathers the main ones in a single view. The versions were read from `nexus-vpn/composer.lock` and the frontend `package.json` / `pnpm-lock.yaml`.
 
 ### IV.1.1 Languages and frameworks
 
-The back end is written in **PHP 8.2**[^php] and built on **Laravel 12**,[^laravel] a mature PHP framework that provides routing, the Eloquent ORM, request validation, sessions and CSRF protection, rate limiting, a task scheduler, an HTTP client (used to call Chargily) and an encryption layer (used to encrypt the stored VPN private keys). The API exposes JSON only; it renders no HTML for the real application.
+![](../figures/logos/png/php.png){height=0.6cm} **PHP 8.2** (8.3 in the production image)[^php] — the back-end language.
 
-The front end is a **Next.js 16**[^nextjs] application written in **TypeScript 5.7**[^typescript] on top of **React 19**.[^react] It uses the App Router, server-side rendering and Next.js middleware (`proxy.ts`) to gate the private areas and to rewrite API calls to the Laravel service on the same origin. The user interface is styled with **Tailwind CSS 4**[^tailwind] and composed from accessible **shadcn/ui** components built on the Radix UI primitives.
+![](../figures/logos/png/laravel.png){height=0.6cm} **Laravel 12.60.2**[^laravel] — the back-end framework: routing, the Eloquent ORM, request validation, sessions and CSRF protection, rate limiting, a task scheduler, an HTTP client (used to call Chargily) and an encryption layer (used to encrypt the stored VPN private keys). The API exposes JSON only; it renders no HTML for the real application.
 
-A native mobile client in **Flutter** is planned but **postponed** (decision D-16): the backend token API and the Flutter authentication scaffolding (in the repository's `mobile/` directory) already exist, but the application itself is future work and appears in this chapter only as marked placeholders.
+![](../figures/logos/png/nextjs.png){height=0.6cm} **Next.js 16.2.6**[^nextjs] — the front-end framework. It uses the App Router, server-side rendering and middleware (`proxy.ts`) to gate the private areas and to rewrite API calls to the Laravel service on the same origin.
 
-| Technology | Version | Role |
-|---|---|---|
-| PHP | 8.2 (local); 8.3 in the production image | Backend language |
-| Laravel | 12.60.2 | Backend REST framework (ORM, validation, auth, scheduler) |
-| Next.js | 16.2.6 | Frontend framework (App Router, middleware, same-origin rewrite) |
-| React | 19.2.4 | User-interface library |
-| TypeScript | 5.7.3 | Static typing (`strict` mode) |
-| Tailwind CSS | 4.2.0 | Utility-first CSS framework |
-| shadcn/ui · Radix UI | — | Accessible UI component library |
-| Flutter | *(mobile — postponed, D-16)* | Native mobile client (future work) |
+![](../figures/logos/png/react.png){height=0.6cm} **React 19.2.4**[^react] — the user-interface library the front end is built on.
 
-**Table IV.1 — Languages and frameworks.** *Source: author, from `composer.lock` and `package.json`.*
+![](../figures/logos/png/typescript.png){height=0.6cm} **TypeScript 5.7.3**[^typescript] — static typing (`strict` mode) across the whole front end.
+
+![](../figures/logos/png/tailwindcss.png){height=0.6cm} **Tailwind CSS 4.2.0**[^tailwind] — the utility-first CSS framework; the interface is composed from accessible **shadcn/ui** components built on the Radix UI primitives.
+
+![](../figures/logos/png/flutter.png){height=0.6cm} **Flutter** — the planned native mobile client, **postponed** (decision D-16): the backend token API and the Flutter authentication scaffolding (in `mobile/`) already exist, but the application itself is future work and appears here only as marked placeholders.
 
 ### IV.1.2 Database management systems
 
-Data is stored in a relational database accessed exclusively through Laravel's **Eloquent ORM**, so the same code runs on two engines. Development and the automated tests use **SQLite**[^sqlite] (an in-memory database for the tests, which keeps them fast and isolated), while production uses **PostgreSQL**[^postgresql] hosted on Render. The schema is created and evolved by Laravel migrations, and no raw SQL is written by hand in the application.
+Data is stored in a relational database accessed exclusively through Laravel's **Eloquent ORM**, so the same code runs on two engines.
+
+![](../figures/logos/png/sqlite.png){height=0.6cm} **SQLite**[^sqlite] — the development database; the automated tests run on an in-memory SQLite database, which keeps them fast and isolated.
+
+![](../figures/logos/png/postgresql.png){height=0.6cm} **PostgreSQL**[^postgresql] — the production database, hosted on Render. The schema is created and evolved by Laravel migrations, and no raw SQL is written by hand.
 
 ### IV.1.3 Security and payment technologies
 
-Several technologies address security and payment specifically:
+![](../figures/logos/png/laravel.png){height=0.6cm} **Laravel Sanctum 4.3.3**[^sanctum] — issues personal access tokens for the (postponed) mobile client, on routes kept outside the session/CSRF web group (IV.5.2).
 
-- **Laravel Sanctum 4.3**[^sanctum] issues personal access tokens for the (postponed) mobile client, on routes kept outside the session/CSRF web group.
-- **Chargily Pay v2**[^chargily4] is the payment gateway for the Algerian market: it accepts EDAHABIA and CIB cards in Algerian dinars through a hosted checkout and a signed webhook. No Chargily SDK is used — the integration goes through Laravel's HTTP client against the Chargily REST API.
-- The PHP **`sodium`** extension generates the Curve25519 key pairs used for WireGuard provisioning, and Laravel's encrypter protects the private keys at rest.
+![](../figures/logos/png/chargily.png){height=0.6cm} **Chargily Pay v2**[^chargily4] — the payment gateway for the Algerian market: it accepts EDAHABIA and CIB cards in Algerian dinars through a hosted checkout and a signed webhook. No SDK is used — the integration goes through Laravel's HTTP client against the Chargily REST API.
+
+![](../figures/logos/png/wireguard-icon.png){height=0.6cm} **WireGuard**[^wgproto4] — the VPN protocol. The PHP `sodium` extension generates its Curve25519 key pairs and Laravel's encrypter protects the private keys at rest (IV.1.6, IV.5.4).
 
 Multi-factor authentication is **not** implemented and is listed as future work (gap G-06); the account-security measures actually in place — e-mail verification, account lockout after repeated failures, named rate limiters and bcrypt password hashing — are described in IV.5.
 
 ### IV.1.4 Development and operations tools
 
-| Tool | Version / detail | Role |
-|---|---|---|
-| Git · GitHub | — | Version control and repository hosting (CI, IV.7.2) |
-| Composer | 2 | PHP dependency manager |
-| Node.js · pnpm | Node 22.15 · pnpm 10 | JavaScript runtime and package manager (frontend) |
-| Docker | `php:8.3-apache-bookworm` base | Containerisation of the backend for Render |
-| Render | — | Backend (Docker) and PostgreSQL hosting |
-| Vercel | — | Frontend (Next.js) hosting |
-| Brevo | HTTP e-mail API | Production transactional e-mail (Gmail SMTP in development) |
-| PHPUnit | 11.5.55 | Backend automated testing (IV.6)[^phpunit] |
-| Laravel Pint · ESLint | Pint 1.29 · ESLint 9.39 | Code style and static analysis |
-| Playwright | 1.63 | Headless-browser capture of the interface screenshots[^playwright] |
+![](../figures/logos/png/git.png){height=0.6cm} **Git** · ![](../figures/logos/png/github.png){height=0.6cm} **GitHub** — version control and repository hosting, where the continuous-integration workflows run (IV.7.2).
 
-**Table IV.2 — Development and operations tools.** *Source: author.*
+![](../figures/logos/png/composer.png){height=0.6cm} **Composer 2** — the PHP dependency manager.
+
+![](../figures/logos/png/nodejs.png){height=0.6cm} **Node.js 22** with **pnpm 10** — the JavaScript runtime and package manager used to build the front end.
+
+![](../figures/logos/png/docker.png){height=0.6cm} **Docker** — containerises the back end (base image `php:8.3-apache-bookworm`) for deployment on Render.
+
+![](../figures/logos/png/vercel.png){height=0.6cm} **Vercel** — hosts the Next.js front end. **Render** hosts the backend container and the managed PostgreSQL database, and **Brevo** sends the production transactional e-mail over its HTTP API (Gmail SMTP in development).
+
+![](../figures/logos/png/phpunit.png){height=0.6cm} **PHPUnit 11.5.55**[^phpunit] — the back-end test framework (131 tests, IV.6).
+
+![](../figures/logos/png/eslint.png){height=0.6cm} **ESLint 9.39** with **Laravel Pint 1.29** — static analysis and code style for the front end and the back end.
+
+![](../figures/logos/png/playwright.png){height=0.6cm} **Playwright 1.63**[^playwright] — drives a headless browser to capture the interface screenshots of this chapter.
 
 ### IV.1.5 Modelling tools
 
-The UML and architecture diagrams of Chapter III were produced as **diagram-as-code**, so they live in the repository next to the chapters and are regenerated from text. Use-case diagrams use **PlantUML**[^plantuml] (laid out with the **Graphviz** engine); sequence, class, architecture and entity-relationship diagrams use **Mermaid**.[^mermaid] This choice is the project's equivalent of the dedicated UML tool used by the reference work: it keeps every diagram versioned, reviewable and reproducible.
+The UML and architecture diagrams of Chapter III were produced as **diagram-as-code**, so they live in the repository next to the chapters and are regenerated from text.
+
+![](../figures/logos/png/plantuml.png){height=0.6cm} **PlantUML**[^plantuml] — the use-case diagrams, laid out with the **Graphviz** engine.
+
+![](../figures/logos/png/mermaid.png){height=0.6cm} **Mermaid**[^mermaid] — the sequence, class, architecture and entity-relationship diagrams.
+
+This diagram-as-code approach is the project's equivalent of the dedicated UML tool used by the reference work: it keeps every diagram versioned, reviewable and reproducible.
 
 ### IV.1.6 Focus on a key technology: WireGuard provisioning
 
@@ -105,7 +111,7 @@ Inside each application the code is organised in three layers:
 | Business logic | client-side form handling and view state | controllers, services (e.g. `ChargilyGateway`), domain methods on the models |
 | Data | API client (`lib/api.ts`) over the same-origin rewrite | Eloquent models, migrations, SQLite / PostgreSQL |
 
-**Table IV.3 — Logical layers of the system.** *Source: author.*
+**Table IV.1 — Logical layers of the system.** *Source: author.*
 
 ### IV.2.3 Third-party services
 
@@ -162,7 +168,7 @@ Covers the back-office console and the merged support activity (gap G-05: a dedi
 | Authentication and access control | `POST /api/auth/register`, `POST /api/auth/login`, `/api/mobile/*` |
 | Support and administration | `GET /api/admin/*` (users, plans, subscriptions, payments, testimonials, contact-requests, audit-logs) |
 
-**Table IV.4 — Functional modules and their main endpoints.** *Source: author, from `routes/api.php`.*
+**Table IV.2 — Functional modules and their main endpoints.** *Source: author, from `routes/api.php`.*
 
 ## IV.4 User Interface Walkthrough
 
@@ -443,7 +449,7 @@ The private key is stored with Eloquent's `encrypted` cast and hidden from seria
 
 ### IV.6.1 Automated tests
 
-The back end is covered by an automated test suite of **131 tests (508 assertions)** that runs in about fourteen seconds on an in-memory SQLite database. The tests are feature tests: each one drives the real HTTP endpoints and asserts on the response and the database state. Table IV.5 groups them by area.
+The back end is covered by an automated test suite of **131 tests (508 assertions)** that runs in about fourteen seconds on an in-memory SQLite database. The tests are feature tests: each one drives the real HTTP endpoints and asserts on the response and the database state. Table IV.3 groups them by area.
 
 | Area | Tests | What it verifies |
 |---|---|---|
@@ -455,13 +461,13 @@ The back end is covered by an automated test suite of **131 tests (508 assertion
 | Platform and data integrity | 4 | Dashboard access control, seeder idempotency, scaffold test |
 | **Total** | **131** | 508 assertions, ~14 s |
 
-**Table IV.5 — Backend automated test suite.** *Source: author, from `php artisan test`.*
+**Table IV.3 — Backend automated test suite.** *Source: author, from `php artisan test`.*
 
 Automated **frontend** testing is not yet in place and is listed as future work; Playwright is currently used to capture the interface screenshots rather than to assert on behaviour.
 
 ### IV.6.2 Security testing
 
-The security measures of IV.5 were checked manually against the running application during development. Table IV.6 records the checks that can be made without the deployed site.
+The security measures of IV.5 were checked manually against the running application during development. Table IV.4 records the checks that can be made without the deployed site.
 
 | Check | Expected result |
 |---|---|
@@ -471,7 +477,7 @@ The security measures of IV.5 were checked manually against the running applicat
 | Webhook with an invalid signature | 403, IP logged |
 | Requesting another user's payment or checkout | 404 (existence not revealed) |
 
-**Table IV.6 — Manual security checks.** *Source: author.*
+**Table IV.4 — Manual security checks.** *Source: author.*
 
 > **Live security scan — placeholder (gap G-10).** Online scans of the deployed site (security-header grade, TLS configuration, and a re-check of the 419/429/403 behaviours against the public URL) will be run and reported here once the site is deployed.
 
