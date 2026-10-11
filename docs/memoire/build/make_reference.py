@@ -8,11 +8,13 @@ for Heading 1/2/3 below."""
 import sys
 from docx import Document
 from docx.shared import Pt, Cm, RGBColor
-from docx.enum.text import WD_ALIGN_PARAGRAPH, WD_LINE_SPACING
+from docx.enum.text import WD_ALIGN_PARAGRAPH, WD_LINE_SPACING, WD_TAB_ALIGNMENT
 from docx.oxml.ns import qn
 from docx.oxml import OxmlElement
 
 doc = Document(sys.argv[1])
+
+NAVY = '1F3864'  # dark navy for the running-header bar and the chapter-title accent
 
 for section in doc.sections:
     section.left_margin = Cm(3)
@@ -62,7 +64,20 @@ for hname, size in {'Heading 1': 16, 'Heading 2': 14, 'Heading 3': 12, 'Heading 
         pf.keep_with_next = True
         pf.alignment = WD_ALIGN_PARAGRAPH.LEFT
         if hname == 'Heading 1':
+            # The chapter title gets a title page: centred, pushed down, with a navy accent bar above
+            # it (a page break after the title is added in fix_docx.py so the content starts fresh).
             pf.page_break_before = True
+            pf.alignment = WD_ALIGN_PARAGRAPH.CENTER
+            pf.space_before = Pt(170)
+            pf.space_after = Pt(0)
+            pf.keep_with_next = False
+            hpPr = st.element.get_or_add_pPr()
+            pbdr = OxmlElement('w:pBdr')
+            top = OxmlElement('w:top')
+            top.set(qn('w:val'), 'single'); top.set(qn('w:sz'), '24')
+            top.set(qn('w:space'), '10'); top.set(qn('w:color'), NAVY)
+            pbdr.append(top)
+            hpPr.append(pbdr)
     except KeyError:
         pass
 
@@ -83,22 +98,45 @@ for sname in ['Footnote Text']:
     except KeyError:
         pass
 
-def add_page_number(section):
+def _white_run(p, size=10, bold=True):
+    run = p.add_run()
+    run.font.size = Pt(size); run.font.bold = bold
+    run.font.color.rgb = RGBColor(0xFF, 0xFF, 0xFF)
+    rpr = run._r.get_or_add_rPr()
+    rf = rpr.find(qn('w:rFonts'))
+    if rf is None:
+        rf = OxmlElement('w:rFonts'); rpr.append(rf)
+    for a in ('w:ascii', 'w:hAnsi', 'w:cs'):
+        rf.set(qn(a), 'Times New Roman')
+    return run
+
+def _field(run, instr):
+    begin = OxmlElement('w:fldChar'); begin.set(qn('w:fldCharType'), 'begin')
+    it = OxmlElement('w:instrText'); it.set(qn('xml:space'), 'preserve'); it.text = instr
+    end = OxmlElement('w:fldChar'); end.set(qn('w:fldCharType'), 'end')
+    run._r.append(begin); run._r.append(it); run._r.append(end)
+
+def add_running_header(section):
+    """A navy header bar: the chapter name (STYLEREF of Heading 1) on the left, the page number on
+    the right — so the page number stays top-right (guide rule) while the bar carries the chapter name."""
     header = section.header
     header.is_linked_to_previous = False
     p = header.paragraphs[0] if header.paragraphs else header.add_paragraph()
     for r in list(p.runs):
         r._r.getparent().remove(r._r)
-    p.alignment = WD_ALIGN_PARAGRAPH.RIGHT
-    run = p.add_run()
-    run.font.name = 'Times New Roman'; run.font.size = Pt(12)
-    begin = OxmlElement('w:fldChar'); begin.set(qn('w:fldCharType'), 'begin')
-    instr = OxmlElement('w:instrText'); instr.set(qn('xml:space'), 'preserve'); instr.text = ' PAGE '
-    end = OxmlElement('w:fldChar'); end.set(qn('w:fldCharType'), 'end')
-    run._r.append(begin); run._r.append(instr); run._r.append(end)
+    pf = p.paragraph_format
+    pf.space_before = Pt(3); pf.space_after = Pt(3)
+    # text area width on A4 = 21 - 3(left) - 2(right) = 16 cm -> right tab for the page number
+    pf.tab_stops.add_tab_stop(Cm(16), WD_TAB_ALIGNMENT.RIGHT)
+    pPr = p._p.get_or_add_pPr()
+    shd = OxmlElement('w:shd'); shd.set(qn('w:val'), 'clear'); shd.set(qn('w:color'), 'auto'); shd.set(qn('w:fill'), NAVY)
+    pPr.append(shd)
+    _field(_white_run(p), ' STYLEREF "Heading 1" \\* MERGEFORMAT ')
+    _white_run(p).add_text('\t')
+    _field(_white_run(p), ' PAGE ')
 
 for section in doc.sections:
-    add_page_number(section)
+    add_running_header(section)
 
 doc.save(sys.argv[2])
 print('reference.docx written:', sys.argv[2])

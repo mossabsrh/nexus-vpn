@@ -8,10 +8,16 @@ reference template. Run: python -I fix_docx.py <docx>
 import re
 import sys
 from docx import Document
-from docx.enum.text import WD_ALIGN_PARAGRAPH, WD_LINE_SPACING
+from docx.enum.text import WD_ALIGN_PARAGRAPH, WD_LINE_SPACING, WD_BREAK
 from docx.shared import Pt
 
 doc = Document(sys.argv[1])
+
+# 0. Chapter title pages: each Heading 1 is centred and pushed down its own page by the reference
+# template; add a page break *after* the title so the chapter content begins on the next page.
+for p in doc.paragraphs:
+    if p.style is not None and p.style.name == 'Heading 1':
+        p.add_run().add_break(WD_BREAK.PAGE)
 
 # 1. Code blocks: left-aligned monospace (see module docstring).
 try:

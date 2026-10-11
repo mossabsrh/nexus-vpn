@@ -46,8 +46,8 @@
 
 ## D. Decisions for the student
 
-- **D1 — Heading style (Q-12).** The guide's **rule** (p6) says chapter/section/sub-section titles are **bold + underlined**; I applied that. But the guide's own **example** (p8) shows **bold + italic**, and the **19/20 reference** uses **bold + navy colour, no underline** (which looks more modern). All three are defensible. → **Confirm bold + underlined, or switch to one of the others.**
-- **D2 — Reference polish (optional).** The reference gives each chapter a **decorative title page** (banner + "Chapitre N : title") and a **coloured running header** with the chapter name on every page. The guide requires neither. → **Add them, or keep the plainer current layout?**
+- **D1 — Heading style (Q-12).** ✅ **Resolved (student: bold + underlined).** Applied via `make_reference.py` (Heading 1/2/3/4 = 16/14/12/12, bold + underlined). The guide's own example (p8, bold-italic) and the reference (bold + navy, no underline) were the alternatives.
+- **D2 — Reference polish.** ✅ **Resolved (student: add them).** Each chapter now opens on a **decorative title page** (navy accent bar + centred, underlined chapter title mid-page; content starts on the next page) and every page carries a **navy running-header bar** with the chapter name (a `STYLEREF` field, so it follows the chapter automatically) on the left and the page number on the right — keeping the page number top-right per the guide. *(Minor: the running header also shows on the title page, i.e. the chapter name appears twice there; suppressing it would need per-chapter Word sections — left as-is.)*
 - **D3 — Chapter-title separator.** We use "CHAPTER II — Title" (em-dash); the reference uses a colon. Kept the em-dash as the English norm. → change to a colon if preferred.
 
 ## Summary
