@@ -1,6 +1,6 @@
 # Mémoire — work plan (task-based)
 
-> **Status: DRAFT — waiting for the student's approval.**
+> **Status (2026-10-12):** Phases 3, 5–7 and 11–13 are mostly done (Markdown + automated Word/PDF build; see the ◐ items); Chapter I (Phases 9–10), deployment (Phases 1–2) and the mobile app (Phase 4, ⏸️) remain. The live list of what is missing is `placeholders.md`.
 > Task-based, not date-based: follow it in order whatever the pace. Hard deadline still: **submit on 15/10/2026**.
 > Decisions and open questions live in [`decisions.md`](decisions.md). Read both at the start of every mémoire session.
 > Assumes proposals **P-01** (gap handling), **P-03** (Markdown drafts → Word at the end) and **P-04** (diagram tools) are accepted. If not, the tasks that use them change.
@@ -42,12 +42,12 @@ Output folders (created when needed):
 
 | ✓ | # | Task | Who | Needs | Produces |
 |---|---|---|---|---|---|
-| ☐ | 0.1 | 🔴 Decide gap handling G-01…G-13 (decisions.md §5, P-01) | Student | — | decisions.md §5 final |
-| ☐ | 0.2 | 🔴 Decide writing workflow (P-03) | Student | — | decisions.md |
-| ☐ | 0.3 | Decide diagram tools (P-04) | Student | — | decisions.md |
-| ☐ | 0.4 | Decide P-05 (git-ignore `docs/memoire-ref/` + `docs/memoire/eadn/`) and P-06 (new private GitHub repo) | Student | — | decisions.md |
-| ☐ | 0.5 | Confirm parts order (P-07), footnote citations (P-08), title style (Q-12) — ask the methodology teacher if unsure | Student | — | decisions.md |
-| ☐ | 0.6 | Final theme title + case-study wording (Q-13); keep product name "NexusVPN"? (Q-17) | Student + Supervisor | — | decisions.md |
+| ☑ | 0.1 | 🔴 Decide gap handling G-01…G-13 (decisions.md §5, P-01) | Student | — | decisions.md §5 final |
+| ☑ | 0.2 | 🔴 Decide writing workflow (P-03) | Student | — | decisions.md |
+| ☑ | 0.3 | Decide diagram tools (P-04) | Student | — | decisions.md |
+| ☑ | 0.4 | Decide P-05 (git-ignore `docs/memoire-ref/` + `docs/memoire/eadn/`) and P-06 (new private GitHub repo) | Student | — | decisions.md |
+| ☑ | 0.5 | Confirm parts order (P-07), footnote citations (P-08), title style (Q-12) — ask the methodology teacher if unsure | Student | — | decisions.md |
+| ☑ | 0.6 | Final theme title + case-study wording (Q-13); keep product name "NexusVPN"? (Q-17) | Student + Supervisor | — | decisions.md |
 | ☐ | 0.7 | Collect cover facts: speciality, promotion, academic year, supervisor name + grade, exact spelling of both names (Q-16) | Student | — | decisions.md §8 |
 | ☐ | 0.8 | Ask the institute: number of copies, binding, PDF required, where/whom to submit, English OK (Q-15, Q-19) | Student + Institute | — | decisions.md |
 | ☐ | 0.9 | Ask the supervisor: how they want drafts (format) and how long a review takes (Q-20) | Student + Supervisor | — | decisions.md |
@@ -61,11 +61,11 @@ Output folders (created when needed):
 
 | ✓ | # | Task | Who | Needs | Produces |
 |---|---|---|---|---|---|
-| ☐ | 1.1 | Apply P-05: git-ignore reference + EADN folders | Claude | 0.4 | `.gitignore` |
+| ☑ | 1.1 | Apply P-05: git-ignore reference + EADN folders | Claude | 0.4 | `.gitignore` |
 | ☐ | 1.2 | Baseline check: backend tests, lint, types, build all green | Claude | — | fresh test count |
 | ☐ | 1.3 | 🔴 Implement the e-mail choice from 0.14 (if HTTP API: package, config, tests, docs + changelog; student creates the API key) | Claude + Student | 0.14 | working mailer config |
 | ☐ | 1.4 | 🔴 Create the private GitHub repo and push | Student (Claude guides) | 0.4, 1.1, 1.2 | repo URL |
-| ☐ | 1.5 | Add CI workflow (backend tests + frontend lint/types/build) + docs 12/13 + changelog | Claude | 1.4 | `.github/workflows/ci.yml`, green run |
+| ◐ | 1.5 | Add CI workflow (backend tests + frontend lint/types/build) + docs 12/13 + changelog | Claude | 1.4 | `.github/workflows/ci.yml`, green run |
 | ☐ | 1.6 | 🔴 Render: Blueprint from `render.yaml`; service healthy on `/up` | Student (Claude guides) | 1.3, 1.4 | API URL |
 | ☐ | 1.7 | 🔴 Render: enter secrets (Chargily test key, mail credentials/API key, VPN test gateway values if G-13 = adapt) | Student only | 1.6 | configured service |
 | ☐ | 1.8 | 🔴 Vercel: import repo, set `NEXT_PUBLIC_API_URL`, deploy | Student (Claude guides) | 1.6 | site URL |
@@ -96,14 +96,14 @@ Output folders (created when needed):
 | ☑ | 3.4 | Class diagram in English, checked against the models (**`class-diagram-en.mmd` + PNG**; incl. `PersonalAccessToken` ⏸️) | Claude | 3.1 | `figures/` |
 | ☑ | 3.5 | Relational model (text form) + data dictionary (name, meaning, type, size, constraint) — in `ch3-design-material.md` (EN) | Claude | — | `ch3-design-material.md` |
 | ☑ | 3.6 | Role/permission matrix (G-01) — in `ch3-design-material.md` | Claude | 0.1 | table |
-| ☐ | 3.7 | Business rules list + relationships and cardinalities list | Claude | 3.4 | lists |
+| ☑ | 3.7 | Business rules list + relationships and cardinalities list | Claude | 3.4 | lists |
 | ☐ | 3.8 | Gantt chart | Claude | 0.12 | `figures/` |
 | ☑ | 3.9 | Missing web screenshots **captured**: checkout dialog, team management, account settings, contact form, validation error, **success message, empty state, failed payment** (`screenshots/memoire/`) | Claude (capture script) | — | screenshots |
 | ◐ | 3.10 | **29 print-usable screenshots** selected + **EN captions + mémoire section** in `screenshots/README.md` (desktop 1440×900 light @2×, a few mobile-responsive); **test/junk data removed + 4 figures re-captured clean (2026-10-10)** — only student's final approval of the selection remains | Claude proposes, Student approves | 3.9 | selection list |
-| ☐ | 3.11 | Tool logos (frameworks, DBMS, Docker, Git/GitHub, IDE, Vercel, Render, Chargily, WireGuard, modelling tools) | Claude (Student if download blocked) | — | `figures/logos/` |
-| ☐ | 3.12 | Short, commented code excerpts in English | Claude | — | snippets |
+| ☑ | 3.11 | Tool logos (frameworks, DBMS, Docker, Git/GitHub, IDE, Vercel, Render, Chargily, WireGuard, modelling tools) | Claude (Student if download blocked) | — | `figures/logos/` |
+| ☑ | 3.12 | Short, commented code excerpts in English | Claude | — | snippets |
 | ◐ | 3.13 | Deployment diagram (English) **done + rendered** (`deployment-en.mmd` + PNG, planned hosts Render/Vercel); update with **real URLs** after deploy | Claude | 1.13 | `figures/` |
-| ☐ | 3.14 | Architecture figure: web frontend + Laravel backend (English; **mark where the mobile client will be added later**) | Claude | 3.1 | `figures/` |
+| ☑ | 3.14 | Architecture figure: web frontend + Laravel backend (English; **mark where the mobile client will be added later**) | Claude | 3.1 | `figures/` |
 
 ## Phase 4 — Mobile app: Flutter client (Lane C) — ⏸️ POSTPONED (2026-10-09)
 
@@ -194,37 +194,37 @@ Output folders (created when needed):
 
 | ✓ | # | Task | Who | Needs | Produces |
 |---|---|---|---|---|---|
-| ☐ | 7.1 | Intro + IV.1.1 Frameworks (backend, frontend; **mobile → marked placeholder, postponed**) | Claude | 3.11 | ch4 |
-| ☐ | 7.2 | IV.1.2 DBMS (PostgreSQL, SQLite) | Claude | 3.11 | ch4 |
-| ☐ | 7.3 | IV.1.3 Security and payment technologies (hashing, sessions, CSRF, HMAC, Chargily, WireGuard crypto; MFA → future work) | Claude | 0.1 | ch4 |
-| ☐ | 7.4 | IV.1.4 Dev tools (IDE, Git/GitHub, Docker, pnpm/Composer, CI) | Claude | 0.13, 1.5 | ch4 |
-| ☐ | 7.5 | IV.1.5 Modelling tools | Claude | 0.3 | ch4 |
-| ☐ | 7.6 | IV.2.1 Architectural pattern (separate frontend + monolithic API; why not microservices) | Claude | — | ch4 |
-| ☐ | 7.7 | IV.2.2 Presentation, business and data layers | Claude | — | ch4 |
-| ☐ | 7.8 | IV.2.3 Third-party integrations (Chargily, e-mail service, WireGuard gateway) | Claude | 0.14 | ch4 |
-| ☐ | 7.9 | IV.3.1–IV.3.4 Modules: offers and pricing · order (checkout) management · billing and payment · subscription management | Claude | 0.1 | ch4 |
-| ☐ | 7.10 | IV.3.5–IV.3.8 Modules: VPN provisioning (WireGuard) · user profile · authentication and access control · contact and moderation | Claude | 0.1 | ch4 |
-| ☐ | 7.11 | IV.4.1 Client interface walkthrough (screenshots + captions) | Claude | 3.10 | ch4 |
-| ☐ | 7.12 | IV.4.2 Administrator interface | Claude | 3.10 | ch4 |
-| ☐ | 7.13 | IV.4.3 Support side (contact requests, moderation) | Claude | 0.1, 3.10 | ch4 |
+| ☑ | 7.1 | Intro + IV.1.1 Frameworks (backend, frontend; **mobile → marked placeholder, postponed**) | Claude | 3.11 | ch4 |
+| ☑ | 7.2 | IV.1.2 DBMS (PostgreSQL, SQLite) | Claude | 3.11 | ch4 |
+| ☑ | 7.3 | IV.1.3 Security and payment technologies (hashing, sessions, CSRF, HMAC, Chargily, WireGuard crypto; MFA → future work) | Claude | 0.1 | ch4 |
+| ☑ | 7.4 | IV.1.4 Dev tools (IDE, Git/GitHub, Docker, pnpm/Composer, CI) | Claude | 0.13, 1.5 | ch4 |
+| ☑ | 7.5 | IV.1.5 Modelling tools | Claude | 0.3 | ch4 |
+| ☑ | 7.6 | IV.2.1 Architectural pattern (separate frontend + monolithic API; why not microservices) | Claude | — | ch4 |
+| ☑ | 7.7 | IV.2.2 Presentation, business and data layers | Claude | — | ch4 |
+| ☑ | 7.8 | IV.2.3 Third-party integrations (Chargily, e-mail service, WireGuard gateway) | Claude | 0.14 | ch4 |
+| ☑ | 7.9 | IV.3.1–IV.3.4 Modules: offers and pricing · order (checkout) management · billing and payment · subscription management | Claude | 0.1 | ch4 |
+| ☑ | 7.10 | IV.3.5–IV.3.8 Modules: VPN provisioning (WireGuard) · user profile · authentication and access control · contact and moderation | Claude | 0.1 | ch4 |
+| ☑ | 7.11 | IV.4.1 Client interface walkthrough (screenshots + captions) | Claude | 3.10 | ch4 |
+| ☑ | 7.12 | IV.4.2 Administrator interface | Claude | 3.10 | ch4 |
+| ☑ | 7.13 | IV.4.3 Support side (contact requests, moderation) | Claude | 0.1, 3.10 | ch4 |
 | ⏸️ | 7.14 | IV.4.4 Mobile interface — **POSTPONED**; leave a marked placeholder in ch4 | Claude | — | ch4 placeholder |
-| ☐ | 7.15 | IV.5.1 Security hardening (SQLi/XSS, CSRF, rate limits, headers) + code excerpt | Claude | 3.12 | ch4 |
-| ☐ | 7.16 | IV.5.2 Payment gateway integration (flow, HMAC webhook, idempotency) + code excerpt | Claude | 3.12 | ch4 |
-| ☐ | 7.17 | IV.5.3 Notification system (e-mails + scheduled tasks) | Claude | 0.1, 0.14 | ch4 |
-| ☐ | 7.18 | IV.5.4 Reporting and analytics | Claude | — | ch4 |
-| ☐ | 7.19 | IV.6.1 Unit and integration tests | Claude | 1.2 | ch4 |
-| ☐ | 7.20 | 🔴 IV.6.2 Security and penetration testing | Claude | 2.5 | ch4 |
-| ☐ | 7.21 | 🔴 IV.6.3 Performance and load testing | Claude | 2.5 | ch4 |
-| ☐ | 7.22 | 🔴 IV.7.1 Production environment | Claude | 1.13, 3.13 | ch4 |
-| ☐ | 7.23 | IV.7.2 CI/CD pipeline | Claude | 1.5, 2.1 | ch4 |
-| ☐ | 7.24 | IV.7.3 Monitoring and logging + conclusion | Claude | 2.1 | ch4 |
-| ☐ | 7.25 | 🔴 Review Ch IV → fixes | Student | 7.1–7.24 | ch4 approved |
+| ☑ | 7.15 | IV.5.1 Security hardening (SQLi/XSS, CSRF, rate limits, headers) + code excerpt | Claude | 3.12 | ch4 |
+| ☑ | 7.16 | IV.5.2 Payment gateway integration (flow, HMAC webhook, idempotency) + code excerpt | Claude | 3.12 | ch4 |
+| ☑ | 7.17 | IV.5.3 Notification system (e-mails + scheduled tasks) | Claude | 0.1, 0.14 | ch4 |
+| ☑ | 7.18 | IV.5.4 Reporting and analytics | Claude | — | ch4 |
+| ☑ | 7.19 | IV.6.1 Unit and integration tests | Claude | 1.2 | ch4 |
+| ◐ | 7.20 | 🔴 IV.6.2 Security and penetration testing | Claude | 2.5 | ch4 |
+| ◐ | 7.21 | 🔴 IV.6.3 Performance and load testing | Claude | 2.5 | ch4 |
+| ◐ | 7.22 | 🔴 IV.7.1 Production environment | Claude | 1.13, 3.13 | ch4 |
+| ◐ | 7.23 | IV.7.2 CI/CD pipeline | Claude | 1.5, 2.1 | ch4 |
+| ◐ | 7.24 | IV.7.3 Monitoring and logging + conclusion | Claude | 2.1 | ch4 |
+| ◐ | 7.25 | 🔴 Review Ch IV → fixes | Student | 7.1–7.24 | ch4 approved |
 
 ## Phase 8 — Supervisor review of Chapters II–IV
 
 | ✓ | # | Task | Who | Needs | Produces |
 |---|---|---|---|---|---|
-| ☐ | 8.1 | 🔴 Build a review copy (Word or PDF) of Ch II–IV with figures | Claude | 5.8, 6.14, 7.25 | `output/review-ch2-4.docx` |
+| ☑ | 8.1 | 🔴 Build a review copy (Word or PDF) of Ch II–IV with figures | Claude | 5.8, 6.14, 7.25 | `output/review-ch2-4.docx` |
 | ☐ | 8.2 | 🔴 Send it to the supervisor | Student | 8.1, 0.9 | sent |
 | ☐ | 8.3 | Review and return comments (runs while Phases 9–10 go on) | Supervisor | 8.2 | comments |
 | ☐ | 8.4 | Apply the supervisor's comments to Ch II–IV | Claude + Student | 8.3 | ch2–ch4 updated |
@@ -233,7 +233,7 @@ Output folders (created when needed):
 
 | ✓ | # | Task | Who | Needs | Produces |
 |---|---|---|---|---|---|
-| ☐ | 9.1 | Printable interview sheet + document checklist (decisions.md §9) | Claude | — | `eadn/interview-sheet` |
+| ☑ | 9.1 | Printable interview sheet + document checklist (decisions.md §9) | Claude | — | `eadn/interview-sheet` |
 | ☐ | 9.2 | Confirm the appointment | Student + EADN | 0.11, 8.2 | date confirmed |
 | ☐ | 9.3 | 🔴 Visit EADN: interviews, documents, org chart, data sheet, photos, internship facts, permissions | Student (+ Mossab) + EADN | 9.1, 9.2 | notes, copies, photos |
 | ☐ | 9.4 | 🔴 Type up the material (anonymized): notes, document fields, photo list | Student (Claude formats) | 9.3 | `docs/memoire/eadn/` |
@@ -256,31 +256,31 @@ Output folders (created when needed):
 
 | ✓ | # | Task | Who | Needs | Produces |
 |---|---|---|---|---|---|
-| ☐ | 11.1 | 🔴 Problem statement: main question, sub-questions, hypotheses (Q-10) | Claude drafts options, Student chooses | 10.8 | `chapters/intro.md` |
-| ☐ | 11.2 | 🔴 General introduction (context, problem, objectives, method, chapter outline) | Claude | 11.1 | `chapters/intro.md` |
-| ☐ | 11.3 | 🔴 General conclusion: the guide's 6 points; hypotheses confirmed or not; limits + future work (§5 gaps) | Claude | 11.1 | `chapters/conclusion.md` |
-| ☐ | 11.4 | Abstract (English) + keywords | Claude | 11.2, 11.3 | `chapters/abstracts.md` |
-| ☐ | 11.5 | Résumé (French) + mots-clés | Claude | 11.4 | `chapters/abstracts.md` |
-| ☐ | 11.6 | ملخص (Arabic) draft + native check | Claude drafts, Student checks | 11.4 | `chapters/abstracts.md` |
+| ☑ | 11.1 | 🔴 Problem statement: main question, sub-questions, hypotheses (Q-10) | Claude drafts options, Student chooses | 10.8 | `chapters/intro.md` |
+| ☑ | 11.2 | 🔴 General introduction (context, problem, objectives, method, chapter outline) | Claude | 11.1 | `chapters/intro.md` |
+| ◐ | 11.3 | 🔴 General conclusion: the guide's 6 points; hypotheses confirmed or not; limits + future work (§5 gaps) | Claude | 11.1 | `chapters/conclusion.md` |
+| ☑ | 11.4 | Abstract (English) + keywords | Claude | 11.2, 11.3 | `chapters/abstracts.md` |
+| ☑ | 11.5 | Résumé (French) + mots-clés | Claude | 11.4 | `chapters/abstracts.md` |
+| ◐ | 11.6 | ملخص (Arabic) draft + native check | Claude drafts, Student checks | 11.4 | `chapters/abstracts.md` |
 | ☐ | 11.7 | Dedications (one per student) — any time | Student, Mossab | — | `chapters/front.md` |
 | ☐ | 11.8 | Acknowledgements — any time | Student (+ Mossab) | — | `chapters/front.md` |
-| ☐ | 11.9 | List of abbreviations (all chapters) | Claude | 8.4, 10.8 | `chapters/front.md` |
+| ☑ | 11.9 | List of abbreviations (all chapters) | Claude | 8.4, 10.8 | `chapters/front.md` |
 
 ## Phase 12 — Bibliography and annexes
 
 | ✓ | # | Task | Who | Needs | Produces |
 |---|---|---|---|---|---|
-| ☐ | 12.1 | Final bibliography: grouped as the guide says, alphabetical, access dates; every footnote matches an entry | Claude; Student checks links | 5.1, 10.8, 11.3 | `chapters/bibliography.md` |
-| ☐ | 12.2 | Annexes: interview guide, anonymized EADN documents, API endpoint list, env var names (no values), test summary, extra screenshots | Claude + Student (scans) | 2.5, 9.4 | `chapters/annexes.md` |
+| ☑ | 12.1 | Final bibliography: grouped as the guide says, alphabetical, access dates; every footnote matches an entry | Claude; Student checks links | 5.1, 10.8, 11.3 | `chapters/bibliography.md` |
+| ◐ | 12.2 | Annexes: interview guide, anonymized EADN documents, API endpoint list, env var names (no values), test summary, extra screenshots | Claude + Student (scans) | 2.5, 9.4 | `chapters/annexes.md` |
 
 ## Phase 13 — Word assembly and formatting
 
 | ✓ | # | Task | Who | Needs | Produces |
 |---|---|---|---|---|---|
-| ☐ | 13.1 | Word template per the guide: margins, Times New Roman 12, title styles, page numbers top-right from the introduction, caption and footnote styles (can be done early) | Claude | 0.5 | template |
-| ☐ | 13.2 | Cover + title page (logos, wording, font sizes from the guide) | Claude; Student checks | 0.6, 0.7, 13.1 | cover |
-| ☐ | 13.3 | 🔴 Insert all parts in the guide's order; figures/tables with numbered captions + source | Claude | 8.4, 10.8, 11.1–11.9, 12.1, 12.2, 13.2 | `output/memoire.docx` |
-| ☐ | 13.4 | Lists of figures and tables, short contents at the front, detailed table of contents at the end (Word fields) | Claude | 13.3 | docx |
+| ☑ | 13.1 | Word template per the guide: margins, Times New Roman 12, title styles, page numbers top-right from the introduction, caption and footnote styles (can be done early) | Claude | 0.5 | template |
+| ☑ | 13.2 | Cover + title page (logos, wording, font sizes from the guide) | Claude; Student checks | 0.6, 0.7, 13.1 | cover |
+| ☑ | 13.3 | 🔴 Insert all parts in the guide's order; figures/tables with numbered captions + source | Claude | 8.4, 10.8, 11.1–11.9, 12.1, 12.2, 13.2 | `output/memoire.docx` |
+| ☑ | 13.4 | Lists of figures and tables, short contents at the front, detailed table of contents at the end (Word fields) | Claude | 13.3 | docx |
 | ☐ | 13.5 | 🔴 Open in Word: update fields, fix page breaks and image sizes, check numbering | Student | 13.4 | docx |
 | ☐ | 13.6 | English spelling and grammar pass; consistent terms | Claude + Student (Word spell check) | 13.3 | docx |
 
@@ -387,3 +387,4 @@ Three things can stop the whole chain (the mobile app is POSTPONED, so it no lon
 | 2026-10-11 | **Tools + Chapter II approved + Chapter III drafted.** (1) Permanent "best tool per task" rule → `CLAUDE.md` + memory; **Graphviz installed** (use-case diagrams unchanged — Smetana ≈ dot). (2) **Chapter II approved**: Table II.3 verified from NordVPN + Proton VPN official pages; jury-fix pass (law 18-05 art. 6, IPsec 1995/RFC 1825, footnote format, BLAKE2s source, traffic-log wording, code re-verified) + 3 figures rendered. (3) **Chapter III drafted** (`chapters/ch3.md`): full III.1–III.12 per supervisor structure + UML intro; role/permission matrix, actor table, 10 use-case tables, 3 use-case diagrams, **8 sequence diagrams** (added cancel/contact/browse, rendered + verified), class diagram, relational model + ERD, data dictionary, business rules, cardinalities, Gantt placeholder (Q-18). 15 figures + 15 tables, all captioned; running lists in `lists.md`. Every fact re-verified against the code (routes, controllers, models, schema, rate limits, VPN pool). Mobile = placeholders (D-16). Tasks 6.1–6.13 ☑; 6.14 pending student review. **No app code changed.** |
 | 2026-10-10 | **Data cleanup + Chapter II draft.** (1) Student-approved removal of test/junk data (FK-safe transaction; backup first): inappropriate testimonial, junk offer/plan "b"+chain, junk plan "dgdtgy", whole `nexusvpn.pfe` test account, junk contact request — admin + 11 demo + audit log preserved; figs 04/19/20/21 re-captured clean (commit 5d65c74); `mobile.7z` gitignored. (2) **Chapter II drafted** (`chapters/ch2.md`, P-01/P-03 approved): full II.1–II.6 per the supervisor's structure, expanding the student's own draft; 3 comparison tables, 13 sourced footnotes (access dates), claims matched to the real code; mobile marked POSTPONED (D-16); e-commerce defs = Law 18-05 + OECD/WTO. Tasks 5.2–5.7 ◐ (drafted); pending: student review (5.8) + 3 conceptual figures (II.1–II.3). **No app code changed.** |
 | 2026-10-10 | **Step-5 finish done.** Re-read both PDFs page by page (content-spec/decisions §2 confirmed). Diagrams: **5 sequences + deployment translated to EN**; **use-cases redrawn in real UML (PlantUML global/client/admin, support merged G-05)**; **all 11 EN diagrams rendered to PNG and checked readable** → ticked 3.1, 3.2, 3.4; 3.3/3.13 ◐. Screenshots: **29 print-usable captures** (`screenshots/memoire/`, 1440×900 light @2×, one per component, missing states incl. team mgmt/success/empty/failed) + EN captions & mémoire section in README → ticked 3.9; 3.10 ◐ (student approves + 4 re-captures after data cleanup). E-commerce definition source **resolved** (Law 18-05 art. 2 + OECD). **Fixed a demo-data bug** (`DemoDataSeeder` didn't attach the team owner to the pivot → owner couldn't see their team): seeder fixed + `DemoDataSeederTest` → **131/131 tests**; dev DB patched surgically (backup taken). ⚠ Flagged for student: inappropriate testimonial (`04`) + junk offer/plans/payments (`19`/`20`/`21`) to clean before printing. |
+| 2026-10-12 | Plan brought up to the real state. ☑: decisions 0.1–0.6 (gaps adapted per §5, P-03/P-04/P-05 applied, title style D1, title D-18), 1.1, 3.7/3.11/3.12/3.14, 7.1–7.19, 8.1 (review builds), 9.1 (interview sheet), 11.1/11.2/11.4/11.5/11.9, 12.1, 13.1–13.4 (automated Word/PDF build, list page numbers filled automatically). ◐: 1.5 (CI written, no live run), 6.14/7.25 (student approval), 7.20–7.24 (written; live evidence = P6–P8/P12), 11.3 (hypotheses answered; live/EADN parts + difficulties pending), 11.6 (native Arabic check), 12.2 (Appendix E). Remaining: Phases 1–2 (deployment), 9–10 (EADN, Ch I), 4 (⏸️), 8.2–8.4, 13.5–15. |

@@ -27,7 +27,7 @@ if [ "${1:-}" = "full" ]; then
     printf '```{=openxml}\n<w:p><w:r><w:br w:type="page"/></w:r></w:p>\n<w:p><w:r><w:br w:type="page"/></w:r></w:p>\n```\n\n'
     cat chapters/cover.md
   } > "$tp"
-  src=(chapters/cover.md "$tp" chapters/dedication.md chapters/acknowledgements.md \
+  src=(chapters/cover.md "$tp" chapters/dedication.md chapters/acknowledgements.md chapters/abstracts.md\
        chapters/list-of-figures.md chapters/list-of-tables.md chapters/list-of-abbreviations.md \
        chapters/contents.md chapters/introduction.md chapters/problem-statement.md \
        chapters/ch1.md chapters/ch2.md chapters/ch3.md chapters/ch4.md \
@@ -48,22 +48,34 @@ if [ ! -f build/reference-default.docx ]; then
 fi
 python -I build/make_reference.py build/reference-default.docx build/reference.docx
 
-# 2. Preprocess + concatenate the Markdown parts.
-python -I build/preprocess.py "$combined" "$ROOT" "${src[@]}"
+build_once() {
+  # 2. Preprocess + concatenate the Markdown parts.
+  python -I build/preprocess.py "$combined" "$ROOT" "${src[@]}"
 
-# 3. Markdown -> Word (footnotes, figures and tables are native; run from docs/memoire so figures/ resolves).
-# -implicit_figures: we write our own bold caption line under each image, so disable pandoc's
-# auto-caption (from the alt text) to avoid a duplicate caption under every figure.
-"$PANDOC" "$combined" --reference-doc=build/reference.docx \
-  --from=markdown-implicit_figures --to=docx --resource-path="$ROOT" -o "$docx"
-python -I build/fix_docx.py "$docx"
-echo "docx written: $docx"
+  # 3. Markdown -> Word (footnotes, figures and tables are native; run from docs/memoire so figures/ resolves).
+  # -implicit_figures: we write our own bold caption line under each image, so disable pandoc's
+  # auto-caption (from the alt text) to avoid a duplicate caption under every figure.
+  "$PANDOC" "$combined" --reference-doc=build/reference.docx --from=markdown-implicit_figures --to=docx --resource-path="$ROOT" -o "$docx"
+  python -I build/fix_docx.py "$docx"
+  echo "docx written: $docx"
 
-# 4. Word -> PDF.
-"$SOFFICE" --headless --convert-to pdf --outdir build/out "$docx" >/dev/null 2>&1 || true
-[ -f "$pdf" ] && echo "pdf written:  $pdf"
+  # 4. Word -> PDF.
+  rm -f "$pdf"
+  "$SOFFICE" --headless --convert-to pdf --outdir build/out "$docx" >/dev/null 2>&1 || true
+  [ -f "$pdf" ] && echo "pdf written:  $pdf"
+}
+
+build_once
+
+# 4b. Full build only: read the printed page numbers of every caption / part heading from the PDF,
+# write them into the lists of figures / tables and the short contents, then rebuild once.
+if [ "$slug" = "full" ]; then
+  python -I build/fill_lists.py "$pdf" chapters
+  build_once
+fi
 
 # 5. PDF -> one PNG per page (for visual review).
+rm -f build/out/pages/*.png
 python -I - "$pdf" build/out/pages <<'PY'
 import sys, pymupdf
 doc = pymupdf.open(sys.argv[1]); out = sys.argv[2]

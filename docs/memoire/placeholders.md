@@ -1,6 +1,6 @@
 # Master placeholder list — mémoire
 
-> Every placeholder in the whole mémoire in one place, so nothing is forgotten when we come back to deployment, the mobile app, Chapter I and the final pages. **Update this file whenever a placeholder is added or filled.** Line numbers are approximate (they shift as the chapters are edited) — the *Placeholder* column gives a searchable description. Last updated: **2026-10-11** (after drafting the cover, front matter, introduction, problem statement, conclusion, bibliography and appendices, and assembling the full document).
+> Every placeholder in the whole mémoire in one place, so nothing is forgotten when we come back to deployment, the mobile app, Chapter I and the final pages. **Update this file whenever a placeholder is added or filled.** Line numbers are approximate (they shift as the chapters are edited) — the *Placeholder* column gives a searchable description. Last updated: **2026-10-12** (title + problem statement chosen, hypotheses answered, abstracts written, list page numbers automated).
 
 Legend for *Blocked by*: 👤 student · 🏢 EADN visit · 🚀 deployment (Phases 1–2) · 📱 mobile app resume (D-16) · 🗓️ real project dates (Q-18).
 
@@ -16,19 +16,21 @@ Legend for *Blocked by*: 👤 student · 🏢 EADN visit · 🚀 deployment (Pha
 | P6 | IV · IV.6.2 | `chapters/ch4.md` | **Live security scan** of the deployed site (header grade, TLS, re-check of 419/429/403 on the public URL); code-side security + manual checks are written now | 🚀 |
 | P7 | IV · IV.6.3 | `chapters/ch4.md` | **Live performance / load test** (Lighthouse + small load test + cold-start note) on the deployed site | 🚀 |
 | P8 | IV · IV.7.1 / IV.7.3 | `chapters/ch4.md` | **Live deployment evidence**: Render/Vercel dashboards, live `/up`, Chargily-webhook config, end-to-end run (payment + verification e-mail + `.conf` import); the deployment itself (render.yaml, Dockerfile, Brevo wiring D-17) is described now | 🚀 👤 |
-| P10 | Cover / title page | `chapters/cover.md` | The cover is **drafted**; fill the cover facts: **author 1 full name** (SURNAME First), **speciality**, **supervisor full name + grade**, **promotion**, **academic year**, and the **institute + EADN logos**. The **theme title** is a placeholder — pick one of the three options (see the report). | 👤 |
-| P11 | Front matter / end | `chapters/*`, final Word | **Page numbers**: fill the «—» in the lists of figures / tables and the short contents, and update the detailed **Table of Contents** field in Word (**F9**) — done at final Word assembly | (end) |
+| P10 | Cover / title page | `chapters/cover.md` | Cover facts still to fill: **speciality**, **supervisor full name + grade**, **promotion**, **academic year**, and the **institute + EADN logos**. (Theme title chosen 2026-10-12.) | 👤 |
+| P11 | End | final Word | Detailed **Table of Contents** field at the end: press **F9** in Word. (The lists of figures/tables and the short contents are now filled automatically by the build.) | (end) |
 | P12 | IV · IV.7.2 | `chapters/ch4.md` | **Live CI/CD evidence**: a green GitHub Actions run and the automatic Render/Vercel deployments — after the repo is pushed to GitHub (the workflows themselves are done, see P9) | 🚀 |
-| P14 | Problem statement | `chapters/problem-statement.md`, `cover.md` | **Choose one of the three problem-statement options** (A, B or C) and remove the other two; the chosen main question / sub-questions / hypotheses then drive the conclusion. Likewise **choose one of the three theme-title options** for the cover. | 👤 |
-| P15 | General Conclusion | `chapters/conclusion.md` | **Answer to the problem statement** (confirm / partially confirm / not confirm each hypothesis of the chosen option) and the **difficulties met** (written by the authors). | 👤 |
+| P15 | General Conclusion | `chapters/conclusion.md` | Hypotheses answered (all three **partially confirmed**, with evidence). Still open: the **live-site results** (test payment, `.conf` import, security scan), the **comparison with EADN's current process** (after Ch I), and the **difficulties met** (written by the authors). | 🚀 🏢 👤 |
 | P16 | Dedication / Acknowledgements | `chapters/dedication.md`, `acknowledgements.md` | **Written by the authors** from the drafted templates (one dedication per author; thanks to the supervisor, EADN, the institute and the jury). | 👤 |
-| P17 | Abstracts | (after the conclusion is final) | **Abstracts EN / FR / AR** (each ~5–6 lines + keywords), placed after the acknowledgements; the Arabic one checked by a native speaker. Not written yet, as agreed. | 👤 |
+| P17 | Abstracts | `chapters/abstracts.md` | Written 2026-10-12 (AR/FR/EN, one page). Still needed: a **native Arabic reader's check**, and a refresh if the conclusion changes after deployment / EADN. | 👤 |
 | P18 | Appendices · E | `chapters/annexes.md` | **Appendix E — EADN documents**: anonymised samples collected during the internship. | 🏢 👤 |
 
 > **Style decisions** raised by the full review are settled (see `review-report.md` §D): **D1** headings are bold + underlined (16/14/12, guide rule); **D2** each chapter opens with a title page (centred title, navy accent bar) and the body pages carry a navy running header with the chapter name and the page number; the chapter title pages themselves carry no header or page number.
 
 ## Filled / resolved
 *(moved here as completed, with the date.)*
+
+- **P14 — Title + problem statement.** Done 2026-10-12: theme title = option 2 (*Design and Implementation of a Web Platform for Selling and Provisioning a VPN Service: the NexusVPN Portal — Case study: EADN*); problem statement = Option A only (B and C deleted); hypothesis 3 reworded to "the portal stores no VPN connection or traffic data".
+- **List page numbers (part of P11).** Done 2026-10-12: `build/fill_lists.py` runs inside `build.sh full` (build → read the printed page of every caption / part heading with PyMuPDF → write it into the lists → rebuild once). Checked by hand: Figure II.1 = p. 9, Table III.1 = p. 22, Figure IV.32 = p. 79, Chapter IV = p. 48.
 
 - **P9 — CI workflows at the repository root (G-11).** Done 2026-10-11: created `.github/workflows/backend-tests.yml` (PHPUnit on PHP 8.2 & 8.3) and `.github/workflows/frontend.yml` (pnpm lint + `tsc --noEmit` + build); removed the old inert copies under `nexus-vpn/.github/workflows/`. The **live run** evidence is now tracked as P12.
 - **Test count refreshed.** 2026-10-11: the backend suite is **131 tests / 508 assertions** (was 130 before this session's `DemoDataSeederTest`); `docs/pfe/memoire-assets/tests/test-output.txt` regenerated and the test table built from it.

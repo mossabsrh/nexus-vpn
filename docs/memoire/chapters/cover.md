@@ -35,15 +35,11 @@ THEME
 :::
 
 ::: {custom-style="CoverTitle"}
-Design and Development of a VPN Service Sales and Provisioning Portal
+Design and Implementation of a Web Platform for Selling and Provisioning a VPN Service: the NexusVPN Portal
 :::
 
 ::: {custom-style="CoverCase"}
 Case study: Entreprise d'Appui au Développement du Numérique (EADN)
-:::
-
-::: {custom-style="CoverNote"}
-«Theme title — PLACEHOLDER: the default above is option 1; choose one of the three options proposed in the report / placeholders.md»
 :::
 
 ::: {custom-style="CoverPeople"}

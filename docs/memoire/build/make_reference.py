@@ -121,9 +121,33 @@ cover_style('CoverNote', 10, bold=False, italic=True, before=0, after=24, color=
 cover_style('CoverPeople', 14, before=18, after=4)
 cover_style('CoverPromotion', 14, before=30, after=0)
 
+# Abstracts page (ملخص / Résumé / Abstract on one page, as in the reference): centred bold titles,
+# justified paragraphs; the Arabic styles are right-to-left (paragraph bidi + run rtl). Complex-script
+# size/bold (szCs/bCs) are set too, since Word and LibreOffice size Arabic text from them.
+def cs_props(st, size, bold=False, rtl=False):
+    rpr = st.element.get_or_add_rPr()
+    for tag in ('w:bCs', 'w:szCs', 'w:rtl'):
+        for old in rpr.findall(qn(tag)):
+            rpr.remove(old)
+    if bold:
+        rpr.append(OxmlElement('w:bCs'))
+    sz = OxmlElement('w:szCs'); sz.set(qn('w:val'), str(size * 2)); rpr.append(sz)
+    if rtl:
+        rpr.append(OxmlElement('w:rtl'))
+        pPr = st.element.get_or_add_pPr()
+        if pPr.find(qn('w:bidi')) is None:
+            pPr.insert(0, OxmlElement('w:bidi'))
+
+cover_style('AbstractTitle', 14, before=14, after=8)
+cs_props(doc.styles['AbstractTitle'], 16, bold=True)
+for name, rtl in (('AbstractBody', False), ('AbstractKeywords', False),
+                  ('AbstractBodyAr', True), ('AbstractKeywordsAr', True)):
+    cover_style(name, 12, bold=False, before=0, after=6)
+    doc.styles[name].paragraph_format.alignment = WD_ALIGN_PARAGRAPH.JUSTIFY
+    cs_props(doc.styles[name], 14 if rtl else 12, rtl=rtl)
+
 # Reference look: the theme title sits in a light-blue box with a navy border, and the promotion in
-# its own box (colours/borders only — fonts and sizes are unchanged). CoverTitle draws the top + sides
-# and CoverCase the sides + bottom, so together they form one continuous box.
+# its own box (colours/borders only — fonts and sizes are unchanged). Title and case line share one box.
 def box_style(name, fill='EAF2FB', edges=('top', 'left', 'bottom', 'right'), sz='18'):
     st = doc.styles[name]
     pPr = st.element.get_or_add_pPr()
@@ -140,8 +164,10 @@ def box_style(name, fill='EAF2FB', edges=('top', 'left', 'bottom', 'right'), sz=
         pbdr.append(e)
     pPr.append(pbdr)
 
-box_style('CoverTitle', edges=('top', 'left', 'right'))
-box_style('CoverCase', edges=('left', 'right', 'bottom'))
+# Identical borders on both paragraphs, so Word/LibreOffice merge them into one continuous box
+# (different edge sets left a gap in the side borders between the two paragraphs).
+box_style('CoverTitle')
+box_style('CoverCase')
 box_style('CoverPromotion', edges=('top', 'left', 'bottom', 'right'))
 
 # The navy running header is built per chapter in fix_docx.py (plain chapter title + PAGE field),

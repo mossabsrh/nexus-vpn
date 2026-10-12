@@ -471,3 +471,56 @@ print('sections:', len(doc.sections), '| parts:', len(h1s),
 doc.save(sys.argv[1])
 print('post-processed: code left-aligned, %d captions centred, %d tables styled, %d footnote separators:'
       % (n, tbl_n, seps), sys.argv[1])
+
+# 6. Schema order. The edits above append properties (shd, pBdr, bidi, jc, tblCellMar …) at the end of
+# their parent, but OOXML fixes the order of the children of pPr / rPr / tblPr / tcPr / sectPr; Word can
+# reject a file that breaks it. Re-sort those children in every XML part (document, headers, styles).
+import zipfile, shutil, os
+from lxml import etree
+
+_ORDER = {
+    'pPr': 'pStyle keepNext keepLines pageBreakBefore framePr widowControl numPr suppressLineNumbers pBdr '
+           'shd tabs suppressAutoHyphens kinsoku wordWrap overflowPunct topLinePunct autoSpaceDE autoSpaceDN '
+           'bidi adjustRightInd snapToGrid spacing ind contextualSpacing mirrorIndents suppressOverlap jc '
+           'textDirection textAlignment textboxTightWrap outlineLvl divId cnfStyle rPr sectPr pPrChange',
+    'rPr': 'rStyle rFonts b bCs i iCs caps smallCaps strike dstrike outline shadow emboss imprint noProof '
+           'snapToGrid vanish webHidden color spacing w kern position sz szCs highlight u effect bdr shd '
+           'fitText vertAlign rtl cs em lang eastAsianLayout specVanish oMath',
+    'tblPr': 'tblStyle tblpPr tblOverlap bidiVisual tblStyleRowBandSize tblStyleColBandSize tblW jc '
+             'tblCellSpacing tblInd tblBorders shd tblLayout tblCellMar tblLook tblCaption tblDescription',
+    'tcPr': 'cnfStyle tcW gridSpan hMerge vMerge tcBorders shd noWrap tcMar textDirection tcFitText vAlign hideMark',
+    'sectPr': 'headerReference footerReference footnotePr endnotePr type pgSz pgMar paperSrc pgBorders '
+              'lnNumType pgNumType cols formProt vAlign noEndnote titlePg textDirection bidi rtlGutter docGrid '
+              'printerSettings sectPrChange',
+}
+for _b in ('pBdr', 'tblBorders', 'tcBorders', 'tblCellMar', 'tcMar'):
+    _ORDER[_b] = 'top left start bottom right end insideH insideV between bar tl2br tr2bl'
+_W = '{http://schemas.openxmlformats.org/wordprocessingml/2006/main}'
+_RANK = {k: {n: i for i, n in enumerate(v.split())} for k, v in _ORDER.items()}
+
+def _sort_xml(data):
+    root = etree.fromstring(data)
+    for tag, rank in _RANK.items():
+        for el in root.iter(_W + tag):
+            kids = list(el)
+            key = lambda c: rank.get(etree.QName(c).localname, len(rank)) if etree.QName(c).namespace == _W[1:-1] else len(rank)
+            srt = sorted(kids, key=key)        # stable: repeated children keep their order
+            if srt != kids:
+                for c in kids:
+                    el.remove(c)
+                el.extend(srt)
+    for pm in root.iter(_W + 'pgMar'):
+        for attr, default in (('gutter', '0'), ('header', '708'), ('footer', '708')):
+            if pm.get(_W + attr) is None:
+                pm.set(_W + attr, default)
+    return etree.tostring(root, xml_declaration=True, encoding='UTF-8', standalone=True)
+
+_tmp = sys.argv[1] + '.tmp'
+with zipfile.ZipFile(sys.argv[1]) as zin, zipfile.ZipFile(_tmp, 'w', zipfile.ZIP_DEFLATED) as zout:
+    for item in zin.infolist():
+        data = zin.read(item.filename)
+        if re.match(r'word/(document|styles|header\d*|footer\d*|footnotes)\.xml$', item.filename):
+            data = _sort_xml(data)
+        zout.writestr(item, data)
+shutil.move(_tmp, sys.argv[1])
+print('schema order normalised:', sys.argv[1])

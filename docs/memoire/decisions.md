@@ -3,20 +3,20 @@
 > **Read this file first** at the start of every mémoire session (rule also in `CLAUDE.md`).
 > Work plan: [`plan.md`](plan.md) (task-based). Mobile app analysis: [`mobile-facts.md`](mobile-facts.md).
 > Language of this file: simple English (our discussion language). Project docs in `docs/pfe/` stay in French.
-> Updated after every decision. Last update: 2026-10-07 (session 1, part 3 — project folder renamed to `E:\PFE\nexus-vpn`; mobile app analysed).
+> Updated after every decision. Last update: 2026-10-12 (title + problem statement chosen, hypotheses answered, abstracts, automatic list page numbers).
 
 ## 0. Status in one look
 
 | Item | Status |
 |---|---|
-| Phase | Discussion / planning. **No chapter is written yet** (student's request). |
+| Phase | **Writing / assembly.** Ch II–IV written and revised (Ch II approved); cover, front matter, abstracts (AR/FR/EN), introduction, problem statement (Option A), conclusion (hypotheses answered, all *partially confirmed*), bibliography and appendices A–E drafted. Full build: `bash docs/memoire/build/build.sh full` (103 pages; list page numbers filled automatically). **Chapter I** waits for the EADN visit. Open items: `placeholders.md`. |
 | Deadline | **Submit the mémoire on 15/10/2026.** Defense date: unknown. |
-| Website | Finished and audited (0 functional bugs; 121 backend tests pass; lint/tsc/build pass) — `docs/pfe/18-audit-final.md`. |
-| Deployment | **NOT deployed yet.** Still to do (plan §7). |
+| Website | Finished and audited; **131 backend tests / 508 assertions** pass; lint/tsc/build pass; CI workflows written (not yet run on GitHub). |
+| Deployment | **NOT deployed yet** — future work (P6–P8, P12 in `placeholders.md`). |
 | Mobile app | ⏸️ **POSTPONED (D-16, 2026-10-09)** — we build the Flutter app from our own project **later** (Q-23 re-opened). Not dropped. Backend Sanctum token auth is **done, tested, committed** and stays; the Flutter **auth** code is written and committed in `mobile/`. Chapters are written web-first with marked mobile placeholders. |
 | Host organization | EADN (Entreprise d'Appui au Développement du Numérique). Chapter I information still to collect (§9). |
 | Language | English. |
-| Final structure | Supervisor's structure, adapted to the real app (supervisor agreed). Gap handling proposed in §5, waiting for the student's choice. |
+| Final structure | Supervisor's structure, adapted to the real app (gaps handled as proposed in §5). **Title** (D-18): *Design and Implementation of a Web Platform for Selling and Provisioning a VPN Service: the NexusVPN Portal — Case study: EADN*. |
 
 ## 1. Reference material
 
@@ -190,6 +190,7 @@ Ask for **permission** to use each item; hide personal data (names, phone number
 | D-14 | 2026-10-07 | Applied P-05: `docs/memoire-ref/` and `docs/memoire/eadn/` added to the main `.gitignore` so the other student's mémoire is never pushed. |
 | D-15 | 2026-10-07 | **Q-23 answered: build a real Flutter client app** based on our own project (`E:\PFE\nexus-vpn`), **not** Mossab's web prototype (which has a fake payment). Scope = client only (admin stays on the web). Backend gets **token auth (Laravel Sanctum)** for mobile, added **without changing the website's session+CSRF login**. Flutter SDK 3.35.6 confirmed working. Plan in `plan.md` Phase 4; build waits for the student's approval of the Step-1 proposal. *(Superseded by D-16: postponed.)* |
 | D-17 | 2026-10-10 | **Production e-mail = Brevo HTTP API** (resolves Q-22/0.14; Render Free blocks outbound SMTP). Chosen over Resend/paid-Render because Brevo works with a **verified single sender, no domain needed**. **Wire it at deployment time, not now**; local dev keeps Gmail SMTP. Implementation = a small mailer/config change + an API key the student creates. |
+| D-18 | 2026-10-12 | **Theme title = option 2** (*Design and Implementation of a Web Platform for Selling and Provisioning a VPN Service: the NexusVPN Portal — Case study: EADN*); **problem statement = Option A** (B and C deleted); hypotheses answered in the conclusion with evidence (live-site and EADN parts stay placeholders); abstracts AR/FR/EN on one page after the acknowledgements. Resolves Q-10, Q-13. |
 | D-16 | 2026-10-09 | **Mobile app POSTPONED — we come back later (not dropped).** Reason: focus the remaining days (deadline 15/10) on the web mémoire + deployment + EADN. **Kept:** backend Sanctum token auth (done, tested 130/130, committed) stays in the code; the Flutter auth code already written stays committed in `mobile/`. **Q-23 re-opened** (we will build the Flutter app from our own project later). **No other task depends on the mobile app**: Phase 4 is marked ⏸️ in `plan.md`; chapters are written web-first with clearly-marked placeholders for the mobile parts (use-case diagram, sequence diagram, technologies, screenshots). D-08 stands: both authors built the website and the mobile app together. |
 
 ## 11. Proposals waiting for a decision
@@ -219,10 +220,10 @@ Ask for **permission** to use each item; hide personal data (names, phone number
 | Q-07 | Defense date | 🟡 Unknown; deadline 15/10 known (D-10) |
 | Q-08 | Diagram tool | Open → P-04 |
 | Q-09 | Real WireGuard server for the demo? | Open → G-13 proposal |
-| Q-10 | Problem statement wording + hypotheses | Open (planned 12/10) |
+| Q-10 | Problem statement wording + hypotheses | ✅ Resolved (D-18): Option A |
 | Q-11 | Mention of AI assistance in the mémoire? Check the institute's rule. | Open |
 | Q-12 | Title style: bold underlined (rule text) vs bold italic (guide's example page) | Open — suggest the rule text; confirm with the methodology teacher |
-| Q-13 | Exact theme title — proposal: "Design and Development of a VPN Service Sales Portal — Case Study: EADN" | Open |
+| Q-13 | Exact theme title | ✅ Resolved (D-18): option 2 |
 | Q-14 | Does EADN sell/provide VPN or secure-access services? If not, which sales process do we study? | Open (ask EADN) |
 | Q-15 | Has the institute approved writing in English? | Open (low risk) |
 | Q-16 | Speciality, promotion, academic year, supervisor name + grade, EADN internship supervisor | Open |
@@ -252,3 +253,4 @@ Ask for **permission** to use each item; hide personal data (names, phone number
 | 2026-10-09 | **Mobile app POSTPONED (D-16).** Q-23 re-opened (deferred). Backend tokens + Flutter auth code kept/committed. `plan.md` Phase 4 marked ⏸️ and removed from everything's dependencies; chapters go web-first with mobile placeholders. Focus shifts to deployment + web chapters + EADN visit prep (visit 11–12/10, deadline 15/10). |
 | 2026-10-10 | Pre-chapter verification underway. **Step 1** done ([`ground-truth.md`](ground-truth.md), committed). **Step 2** done ([`docs-audit.md`](docs-audit.md)): existing docs ~95% accurate; fixes listed for Step 5 (test counts 110/121→130, add Sanctum to 06/09/18-glossary, Brevo note, `payments:reconcile` in 13, realign 20-mapping, diagrams FR→EN). **Brevo e-mail recorded (D-17/Q-22).** |
 | 2026-10-10 | **Steps 3–6 done (verification complete).** Added `content-spec.md`, `gap-report.md`, `ch3-design-material.md` (role matrix, 10 use-case tables, data dictionary EN, relational model, business rules), `ch2-sources.md` (theory sources + verified Algerian laws 18-05/18-07), English diagrams `figures/*`. Corrected `docs/pfe` (130 tests, Sanctum, Brevo). Servers stopped, **dev DB intact (13 users/1 admin/11 demo)**, **no app code changed**. Remaining = write chapters (web-first), Chapter I (EADN visit), deployment + live evidence, render diagrams. **Ready to start Chapter II on the student's go.** |
+| 2026-10-12 | §0 status brought up to date. D-18 (title option 2, problem statement Option A); Q-10/Q-13 resolved. Abstracts written; list page numbers automated in the build. |
