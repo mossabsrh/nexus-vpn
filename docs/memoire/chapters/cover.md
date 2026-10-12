@@ -48,7 +48,7 @@ Case study: Entreprise d'Appui au Développement du Numérique (EADN)
 
 ::: {custom-style="CoverPeople"}
 Presented by:
-«Author 1 — your full name, SURNAME First — PLACEHOLDER» · SERRAH Mossab
+BELKACEMI Mohamed Zakaria · SERRAH Mossab
 :::
 
 ::: {custom-style="CoverPeople"}

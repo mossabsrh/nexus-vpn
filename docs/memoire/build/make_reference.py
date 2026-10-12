@@ -121,6 +121,29 @@ cover_style('CoverNote', 10, bold=False, italic=True, before=0, after=24, color=
 cover_style('CoverPeople', 14, before=18, after=4)
 cover_style('CoverPromotion', 14, before=30, after=0)
 
+# Reference look: the theme title sits in a light-blue box with a navy border, and the promotion in
+# its own box (colours/borders only — fonts and sizes are unchanged). CoverTitle draws the top + sides
+# and CoverCase the sides + bottom, so together they form one continuous box.
+def box_style(name, fill='EAF2FB', edges=('top', 'left', 'bottom', 'right'), sz='18'):
+    st = doc.styles[name]
+    pPr = st.element.get_or_add_pPr()
+    for old in pPr.findall(qn('w:shd')):
+        pPr.remove(old)
+    shd = OxmlElement('w:shd'); shd.set(qn('w:val'), 'clear'); shd.set(qn('w:color'), 'auto'); shd.set(qn('w:fill'), fill)
+    pPr.append(shd)
+    for old in pPr.findall(qn('w:pBdr')):
+        pPr.remove(old)
+    pbdr = OxmlElement('w:pBdr')
+    for edge in edges:
+        e = OxmlElement('w:' + edge)
+        e.set(qn('w:val'), 'single'); e.set(qn('w:sz'), sz); e.set(qn('w:space'), '8'); e.set(qn('w:color'), NAVY)
+        pbdr.append(e)
+    pPr.append(pbdr)
+
+box_style('CoverTitle', edges=('top', 'left', 'right'))
+box_style('CoverCase', edges=('left', 'right', 'bottom'))
+box_style('CoverPromotion', edges=('top', 'left', 'bottom', 'right'))
+
 # The navy running header is built per chapter in fix_docx.py (plain chapter title + PAGE field),
 # after the per-chapter Word sections are created. We no longer use a STYLEREF "Heading 1" field:
 # French Word localises the style name to "Titre 1", so STYLEREF "Heading 1" renders an error in the

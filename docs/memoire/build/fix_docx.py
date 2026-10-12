@@ -239,6 +239,27 @@ for tbl in doc.tables:
     hdr = [rows[0].cells[j].text.strip() for j in range(ncol)]
     is_dict = hdr[:6] == ['Entity', 'Field', 'Meaning', 'Type', 'Size', 'Constraint']
     is_usecase = (ncol == 2 and hdr[0] == '' and hdr[1] == '')
+    # Front-matter lists (figures / tables / contents) look like the reference: no borders, no fill,
+    # title on the left, page number on the right (a plain list rather than a coloured table).
+    if hdr and hdr[-1] == 'Page':
+        _fixed_layout(tbl); _cell_margins(tbl)
+        tbl.alignment = WD_TABLE_ALIGNMENT.CENTER
+        _set_widths(tbl, [2.0, 12.0, 2.0] if ncol == 3 else [13.5, 2.5])
+        for i, row in enumerate(rows):
+            _cantsplit(row)
+            for j, cell in enumerate(row.cells):
+                _valign_center(cell)
+                _cell_style(cell, 11, (i == 0) or None,
+                            WD_ALIGN_PARAGRAPH.RIGHT if j == ncol - 1 else WD_ALIGN_PARAGRAPH.LEFT)
+        tblPr = tbl._tbl.tblPr
+        for old in tblPr.findall(qn('w:tblBorders')):
+            tblPr.remove(old)
+        nb = OxmlElement('w:tblBorders')
+        for edge in ('top', 'left', 'bottom', 'right', 'insideH', 'insideV'):
+            nb.append(_mk('w:' + edge, val='none'))
+        tblPr.append(nb)
+        tbl_n += 1
+        continue
     _tbl_borders(tbl)
     _fixed_layout(tbl)
     _cell_margins(tbl)
@@ -399,9 +420,20 @@ kinds = [_classify(t) for t in titles]
 has_cover = bool(h1s) and h1s[0]._p.getprevious() is not None
 offset = 1 if has_cover else 0
 
-# The cover / title-page section (everything before the first Heading 1): no header, no page number.
+def _page_border(section):
+    sectPr = section._sectPr
+    for old in sectPr.findall(qn('w:pgBorders')):
+        sectPr.remove(old)
+    pgb = OxmlElement('w:pgBorders'); pgb.set(qn('w:offsetFrom'), 'page')
+    for edge in ('top', 'left', 'bottom', 'right'):
+        pgb.append(_mk('w:' + edge, val='double', sz='18', space='24', color=NAVY))
+    sectPr.append(pgb)
+
+# The cover / title-page section (everything before the first Heading 1): no header, no page number,
+# with a navy double-border page frame, as in the reference.
 if has_cover:
     _clear_header(doc.sections[0])
+    _page_border(doc.sections[0])
 
 for idx, p in enumerate(h1s):
     section = doc.sections[idx + offset]
