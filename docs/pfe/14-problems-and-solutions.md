@@ -166,4 +166,13 @@
 * **Vérification** : `tests/Feature/Api/AccountDeletionTest.php` (5 cas) ; `pnpm lint`, `tsc --noEmit`, `pnpm build` réussis.
 * **Hors périmètre** : la route web héritée `DELETE /settings/profile` (R-03) n'a pas été modifiée.
 
-**Total : 23 problèmes documentés.**
+## P-24 — Rechargement en boucle de `/dashboard` et `/admin` en développement
+
+* **Symptôme** (2026-10-12) : en local (`pnpm dev`), `/dashboard` et `/admin` se rechargeaient sans fin et ne s'affichaient jamais ; l'accueil fonctionnait.
+* **Investigation** : sauvegarde de la base SQLite, puis reproduction Playwright (utilisateur de démo + administrateur) avec journalisation réseau. **Aucune redirection** : `proxy.ts` laissait passer la requête (`GET /dashboard` → `200`, `/api/me` → `200`) et la page recommençait une navigation complète vers elle-même. Le compte administrateur existait, était vérifié et avait le rôle `admin` ; aucun commit récent ne touchait `proxy.ts`, l'authentification, les sessions, les cookies, CORS ou `.env`. Le journal du serveur de développement montrait à chaque chargement un **panic Turbopack** : `Failed to write app endpoint /dashboard/page — Next.js package not found` (dans `hmr_version_state`).
+* **Cause** : le cache persistant de Turbopack (`.next/dev/cache`, ≈ 558 Mo, créé le 2026-10-04) était périmé/corrompu. La compilation HMR de ces routes échouait, et le client Next.js réagit à l'échec HMR par un rechargement complet — d'où la boucle. Aucun défaut dans le code applicatif.
+* **Solution** : arrêt du serveur, mise à l'écart de `.next/dev/cache` (cache régénérable), redémarrage de `pnpm dev`. **Aucun fichier source modifié.**
+* **Vérification** : Playwright — `/dashboard` (démo) et `/admin` (admin) chargés en une seule navigation, y compris après un second redémarrage ; 0 panic dans le journal ; `pnpm lint`, `tsc --noEmit`, `pnpm build` réussis ; `php artisan test --compact` : 131 réussis.
+* **Leçon** : un rechargement en boucle sans redirection HTTP oriente vers l'outillage de développement (HMR) plutôt que vers l'authentification ; lire d'abord le journal du serveur `next dev`. Remède : supprimer `.next/dev/cache` (ou `.next`) puis relancer.
+
+**Total : 24 problèmes documentés.**

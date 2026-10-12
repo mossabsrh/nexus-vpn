@@ -181,3 +181,11 @@ Audit complet avant soutenance (rapport : `18-audit-final.md`). Base de dévelop
 Le seul contrôle non concluant (« offres présentes immédiatement ») est une **limite du scénario de test** (offres chargées paresseusement + animées à l'apparition), pas un bug : les offres s'affichent bien après défilement.
 
 **Bugs trouvés : 0.** Deux observations mineures ajoutées au registre des risques : **R-26** (`401` attendu sur `/me` journalisé dans la console pour les visiteurs), **R-27** (N+1 borné et négligeable à la sérialisation des paiements). Aucune ne requiert de correction.
+
+## 6. Vérification du correctif P-24 (2026-10-12)
+
+| Contrôle | Commande / outil | Résultat |
+|---|---|---|
+| `/dashboard` (utilisateur de démo) et `/admin` (administrateur) se chargent sans boucle | Script Playwright ad hoc (journal réseau + navigations), serveur `pnpm dev`, avant puis après redémarrage | ✅ une seule navigation par page ; 0 panic Turbopack |
+| Lint / types / build | `pnpm lint`, `pnpm exec tsc --noEmit`, `pnpm build` | ✅ |
+| Backend | `php artisan test --compact` | ✅ 131 réussis (508 assertions) |
