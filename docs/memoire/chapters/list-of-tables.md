@@ -31,7 +31,8 @@
 | Table III.24 : UC-21: Manage team members | 30 |
 | Table III.25 : Data dictionary of the database | 42 |
 | Table III.26 : Relationships and cardinalities | 47 |
-| Table IV.1 : Logical layers of the system | 54 |
-| Table IV.2 : Functional modules and their main endpoints | 55 |
-| Table IV.3 : Backend automated test suite | 77 |
-| Table IV.4 : Security checks and their evidence | 78 |
+| Table III.27 : Phases whose dates are to be confirmed | 48 |
+| Table IV.1 : Logical layers of the system | 56 |
+| Table IV.2 : Functional modules and their main endpoints | 57 |
+| Table IV.3 : Backend automated test suite | 79 |
+| Table IV.4 : Security checks and their evidence | 80 |

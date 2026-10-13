@@ -1,6 +1,6 @@
 # Master placeholder list — mémoire
 
-> Every placeholder in the whole mémoire in one place, so nothing is forgotten when we come back to deployment, the mobile app, Chapter I and the final pages. **Update this file whenever a placeholder is added or filled.** Line numbers are approximate (they shift as the chapters are edited) — the *Placeholder* column gives a searchable description. Last updated: **2026-10-12** (title + problem statement chosen, hypotheses answered, abstracts written, list page numbers automated).
+> Every placeholder in the whole mémoire in one place, so nothing is forgotten when we come back to deployment, the mobile app, Chapter I and the final pages. **Update this file whenever a placeholder is added or filled.** Line numbers are approximate (they shift as the chapters are edited) — the *Placeholder* column gives a searchable description. Last updated: **2026-10-13** (dedications, acknowledgements, difficulties met and the Gantt chart written).
 
 Legend for *Blocked by*: 👤 student · 🏢 EADN visit · 🚀 deployment (Phases 1–2) · 📱 mobile app resume (D-16) · 🗓️ real project dates (Q-18).
 
@@ -11,7 +11,7 @@ Legend for *Blocked by*: 👤 student · 🏢 EADN visit · 🚀 deployment (Pha
 | P1 | II · II.4.1 | `chapters/ch2.md` | Verbatim text of **Article 6 of Law 18-05** (e-commerce definition); the chapter currently paraphrases it accurately | 👤 |
 | P2 | II–IV · footnotes | `chapters/ch2.md`, `chapters/ch3.md`, `chapters/ch4.md` | **Before printing: re-check every cited URL and add the real consultation time** (methodology guide format *(consulted on dd/mm/yyyy at hh:mm)*). The footnotes currently carry only the real date *(consulted on dd/mm/yyyy)* — the invented times were removed | 👤 |
 | P3 | II.5.1 · III.4/III.5.4/III.6 · IV.1.1/IV.4.4 | `ch2.md`, `ch3.md`, `ch4.md` | **Native mobile app (Flutter)** — POSTPONED (D-16): add the mobile use-case diagram (III.5.4), mobile sequence diagrams (III.6) and the mobile interface walkthrough (IV.4.4), and remove the postponed marks | 📱 |
-| P4 | III · III.12 | `chapters/ch3.md` | **Gantt chart** (Figure III.16): real project start dates + durations, then draw the chart | 🗓️ 👤 |
+| P4 | III · III.12 | `chapters/ch3.md`, `build/render-gantt.py` | Gantt drawn from the Git history (04/10–13/10/2026). **Dates to confirm** (Table III.27): analysis and requirements; design; back-end development before Git (migration names 18/06, 15/09, 01/10/2026 are only indicative); front-end (Next.js) development; VPN provisioning; internship at EADN. Add them as rows in `render-gantt.py` once known. | 🗓️ 👤 |
 | P5 | I · all | `chapters/ch1.md` | **Chapter I — Host organisation (EADN)**: fill the drafted skeleton with the visit data (overview, data sheet, org chart, departments, existing system, document field tables, positions, critique, internship dates); interview guide ready (Appendix D / `eadn-interview-sheet.md`) | 🏢 👤 |
 | P6 | IV · IV.6.2 | `chapters/ch4.md` | **Live security scan** of the deployed site (header grade, TLS, re-check of 419/429/403 on the public URL); code-side security + manual checks are written now | 🚀 |
 | P7 | IV · IV.6.3 | `chapters/ch4.md` | **Live performance / load test** (Lighthouse + small load test + cold-start note) on the deployed site | 🚀 |
@@ -19,8 +19,8 @@ Legend for *Blocked by*: 👤 student · 🏢 EADN visit · 🚀 deployment (Pha
 | P10 | Cover / title page | `chapters/cover.md` | Cover facts still to fill: **speciality**, **supervisor full name + grade**, **promotion**, **academic year**, and the **institute + EADN logos**. (Theme title chosen 2026-10-12.) | 👤 |
 | P11 | End | final Word | Detailed **Table of Contents** field at the end: press **F9** in Word. (The lists of figures/tables and the short contents are now filled automatically by the build.) | (end) |
 | P12 | IV · IV.7.2 | `chapters/ch4.md` | **Live CI/CD evidence**: a green GitHub Actions run and the automatic Render/Vercel deployments — after the repo is pushed to GitHub (the workflows themselves are done, see P9) | 🚀 |
-| P15 | General Conclusion | `chapters/conclusion.md` | Hypotheses answered (all three **partially confirmed**, with evidence). Still open: the **live-site results** (test payment, `.conf` import, security scan), the **comparison with EADN's current process** (after Ch I), and the **difficulties met** (written by the authors). | 🚀 🏢 👤 |
-| P16 | Dedication / Acknowledgements | `chapters/dedication.md`, `acknowledgements.md` | **Written by the authors** from the drafted templates (one dedication per author; thanks to the supervisor, EADN, the institute and the jury). | 👤 |
+| P15 | General Conclusion | `chapters/conclusion.md` | Hypotheses answered; difficulties met written (2026-10-13, from the project history). Still open: the **live-site results** (test payment, `.conf` import, security scan) and the **comparison with EADN's current process** (after Ch I). | 🚀 🏢 |
+| P16 | Dedication / Acknowledgements | `chapters/dedication.md`, `acknowledgements.md` | Written 2026-10-13 (one dedication per author + joint acknowledgements). **Each author to read and approve their own dedication.** Fill «supervisor full name + grade» and «internship supervisor — name + title». | 👤 |
 | P17 | Abstracts | `chapters/abstracts.md` | Written 2026-10-12 (AR/FR/EN, one page). Still needed: a **native Arabic reader's check**, and a refresh if the conclusion changes after deployment / EADN. | 👤 |
 | P18 | Appendices · E | `chapters/annexes.md` | **Appendix E — EADN documents**: anonymised samples collected during the internship. | 🏢 👤 |
 

@@ -146,6 +146,19 @@ for name, rtl in (('AbstractBody', False), ('AbstractKeywords', False),
     doc.styles[name].paragraph_format.alignment = WD_ALIGN_PARAGRAPH.JUSTIFY
     cs_props(doc.styles[name], 14 if rtl else 12, rtl=rtl)
 
+# Dedication and acknowledgements pages: italic dedication text with the author's name bold-italic at
+# the bottom right (as in the reference); acknowledgements in a slightly larger, airy justified body.
+cover_style('DedicationBody', 13, bold=False, italic=True, before=0, after=10)
+doc.styles['DedicationBody'].paragraph_format.alignment = WD_ALIGN_PARAGRAPH.JUSTIFY
+doc.styles['DedicationBody'].paragraph_format.line_spacing = 1.3
+cover_style('DedicationLead', 14, bold=True, italic=True, before=60, after=24)
+cover_style('DedicationSign', 13, bold=True, italic=True, before=120, after=0)
+doc.styles['DedicationSign'].paragraph_format.alignment = WD_ALIGN_PARAGRAPH.RIGHT
+cover_style('AckBody', 12.5, bold=False, before=0, after=12)
+doc.styles['AckBody'].paragraph_format.alignment = WD_ALIGN_PARAGRAPH.JUSTIFY
+doc.styles['AckBody'].paragraph_format.line_spacing = 1.3
+doc.styles['AckBody'].paragraph_format.first_line_indent = Cm(1)
+
 # Reference look: the theme title sits in a light-blue box with a navy border, and the promotion in
 # its own box (colours/borders only — fonts and sizes are unchanged). Title and case line share one box.
 def box_style(name, fill='EAF2FB', edges=('top', 'left', 'bottom', 'right'), sz='18'):

@@ -607,11 +607,25 @@ Table III.26 lists the relationships between entities, their cardinalities and t
 
 ## III.12 Project Planning (Gantt Chart)
 
-> **Gantt chart — placeholder (real dates pending).** The project was carried out in the phases listed below; the **start dates and durations are to be provided by the student** and the Gantt chart inserted here (Figure III.16). The chart is intentionally left out rather than drawn with invented dates.
->
-> Planned phases: (1) analysis and requirements; (2) design (UML models, database); (3) backend development (Laravel API, payment and VPN provisioning); (4) frontend development (Next.js); (5) security hardening; (6) testing; (7) documentation (mémoire); (8) deployment.
+Figure III.16 shows the activities of the project over the period for which dated evidence exists. The project was placed under version control (Git) on 05/10/2026, with the code already written at that point; each bar therefore runs from the first to the last day on which a commit concerns the activity, and the first bar corresponds to the working sessions of 04–05/10/2026 recorded in the project's development history. The mobile client, started and then postponed, is shown in a lighter colour.
 
-**Figure III.16 — Gantt chart of the project.** *Source: prepared by the authors.*
+![Gantt chart of the project](../figures/gantt-en.png)
+
+**Figure III.16 — Gantt chart of the project.** *Source: prepared by the authors, from the Git history of the project.*
+
+The earlier phases of the project took place before version control and have no dated record that can be verified; they are listed in Table III.27 and will be added to the chart once their dates are confirmed.
+
+| Phase | Indication available | Dates |
+|---|---|---|
+| Analysis and requirements | — | «to confirm» |
+| Design (UML models, database schema) | — | «to confirm» |
+| Back-end development (Laravel API: accounts, offers, subscriptions, payments) | Migration file names dated 18/06/2026, 15/09/2026 and 01/10/2026 (indicative only) | «to confirm» |
+| Front-end development (Next.js) | — | «to confirm» |
+| VPN provisioning (WireGuard keys and configuration files) | Present in the first commit (05/10/2026); migration dated 05/10/2026 | «to confirm» |
+| Internship at EADN | — | «to confirm» |
+| Production deployment | Not yet carried out (future work) | — |
+
+**Table III.27 — Phases whose dates are to be confirmed.** *Source: prepared by the authors.*
 
 ## Conclusion
 

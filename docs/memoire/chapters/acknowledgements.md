@@ -1,13 +1,15 @@
 # Acknowledgements
 
-*To be written by the authors. A suggested template follows — replace the bracketed text and keep the people and institutions that actually helped.*
+::: {custom-style="AckBody"}
+First and foremost, we thank God, the Almighty, for granting us the health, the strength and the patience to carry this work through to the end.
 
-First and foremost, we thank God for giving us the strength and patience to complete this work.
+We express our deep gratitude to our supervisor, «supervisor full name + grade», for agreeing to supervise this thesis, and for the guidance, the availability and the valuable advice that shaped it at every stage.
 
-We express our sincere gratitude to our supervisor, «supervisor full name + grade», for the guidance, availability and valuable advice that shaped this project.
+We warmly thank the team of the Entreprise d'Appui au Développement du Numérique (EADN), and in particular our internship supervisor, «internship supervisor — name + title», for welcoming us, for the time devoted to us and for the information that made this case study possible.
 
-We warmly thank «the EADN internship supervisor — name + title» and the whole team of the **Entreprise d'Appui au Développement du Numérique (EADN)** for welcoming us, for their time, and for the information that made the case study possible.
+Our sincere thanks also go to all the teachers of the National Specialized Institute of Vocational Training — Bou-Ismaïl, for the knowledge and the working methods they passed on to us throughout our training.
 
-We also thank the teaching staff of the **National Specialized Institute of Vocational Training — Bou-Ismaïl** for the training received throughout these two years, and the members of the jury for agreeing to evaluate our work.
+We are honoured that the members of the jury have agreed to examine and evaluate this work, and we thank them for their time and their attention.
 
-Finally, we thank our families and friends for their constant encouragement and support.
+Finally, we thank our families for their unfailing love and support, and everyone who, directly or indirectly, contributed to the completion of this thesis.
+:::
