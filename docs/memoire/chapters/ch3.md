@@ -72,7 +72,7 @@ Access control is **enforced on the server** by the authenticated session togeth
 | Add / remove team members (within the seat limit) | — | — | ✓ | — |
 | Manage users / plans / payments / subscriptions / testimonials, view the audit log, provision a team subscription | — | — | — | ✓ |
 
-**Table III.2 — Role / permission matrix (server-enforced by session + role, `EnsureUserIsAdmin`, and `proxy.ts`).** *Source: prepared by the authors, from the routes and middleware.*
+**Table III.2 — Role / permission matrix.** *Source: prepared by the authors, from the routes and middleware (enforced on the server by session + role, `EnsureUserIsAdmin`, and `proxy.ts`).*
 
 ## III.4 Use Case Specifications
 
@@ -461,7 +461,9 @@ Mapping the class model to a relational schema gives the following relations (pr
 
 ![Entity-relationship diagram — teams, support and audit](../figures/erd-collab-en.png)
 
-**Figure III.14b — Entity-relationship diagram (teams, support, audit and mobile tokens). The team-coverage link (a subscription covers a team) is shown in Figure III.14a and in the relations above.** *Source: prepared by the authors.*
+**Figure III.14b — Entity-relationship diagram (teams, support, audit and mobile tokens).** *Source: prepared by the authors.*
+
+The team-coverage link (a subscription covers a team) is shown in Figure III.14a and in the relations above.
 
 ## III.9 Data Dictionary
 
@@ -609,7 +611,7 @@ Table III.26 lists the relationships between entities, their cardinalities and t
 >
 > Planned phases: (1) analysis and requirements; (2) design (UML models, database); (3) backend development (Laravel API, payment and VPN provisioning); (4) frontend development (Next.js); (5) security hardening; (6) testing; (7) documentation (mémoire); (8) deployment.
 
-**Figure III.16 — Gantt chart of the project (to be inserted when the real dates are available).** *Source: prepared by the authors.*
+**Figure III.16 — Gantt chart of the project.** *Source: prepared by the authors.*
 
 ## Conclusion
 

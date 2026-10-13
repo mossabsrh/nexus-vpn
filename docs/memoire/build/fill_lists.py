@@ -5,6 +5,7 @@ Run: python -I fill_lists.py <pdf> <chapters_dir>
 """
 import sys
 import io
+import glob
 import re
 import pymupdf
 
@@ -31,7 +32,7 @@ def _lines(page, min_size=0):
     for b in page.get_text('dict')['blocks']:
         for ln in b.get('lines', []):
             spans = [s for s in ln['spans'] if s['size'] >= min_size]
-            t = ''.join(s['text'] for s in spans).strip()
+            t = ''.join(s['text'] for s in spans).replace(' ', ' ').strip()
             if t:
                 out.append(t)
     return out
@@ -74,6 +75,34 @@ def contents_key(label):  # the part's Heading 1 text
     if mc:
         return 'CHAPTER ' + mc.group(1) + ' —'
     return label.split(' (')[0].strip()
+
+# Every list entry must match its caption in the chapters exactly ("Figure X — Title." <-> "Figure X : Title").
+caps = {}
+for f in sorted(glob.glob(chdir + '/ch*.md')):
+    for m in re.finditer(r'^\*\*((?:Figure|Table) [IVXLCDM]+\.[0-9]+[a-z]?) — (.+?)\.\*\*',
+                         io.open(f, encoding='utf-8').read(), re.M):
+        caps[m.group(1)] = m.group(2)
+# The caption is the source of truth: a list title that differs is rewritten from it.
+listed, synced = set(), 0
+for name in ('list-of-figures.md', 'list-of-tables.md'):
+    path = chdir + '/' + name
+    text = io.open(path, encoding='utf-8').read()
+    def _sync(m):
+        global synced
+        num, title = m.group(1), m.group(2)
+        listed.add(num)
+        if num not in caps:
+            print('fill_lists: NO CAPTION for list entry %s' % num)
+            return m.group(0)
+        if caps[num] != title:
+            synced += 1
+            print('fill_lists: list title synced from caption: %s' % num)
+        return '| %s : %s |' % (num, caps[num])
+    text = re.sub(r'^\| ((?:Figure|Table) [^ |]+) : (.+?) \|', _sync, text, flags=re.M)
+    io.open(path, 'w', encoding='utf-8', newline='\n').write(text)
+for num in sorted(set(caps) - listed):
+    print('fill_lists: NOT LISTED: %s — %s' % (num, caps[num]))
+print('fill_lists: %d captions, %d list entries, %d titles synced' % (len(caps), len(listed), synced))
 
 nf = fill('list-of-figures.md', caption_key)
 nt = fill('list-of-tables.md', caption_key)

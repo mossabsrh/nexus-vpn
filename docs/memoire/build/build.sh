@@ -41,6 +41,7 @@ fi
 combined="build/out/combined.md"
 docx="build/out/memoire-${slug}.docx"
 pdf="build/out/memoire-${slug}.pdf"
+workpdf="build/out/_pdf/memoire-${slug}.pdf"
 
 # 1. (Re)build the reference.docx from pandoc's default + the methodology-guide styles.
 if [ ! -f build/reference-default.docx ]; then
@@ -60,9 +61,14 @@ build_once() {
   echo "docx written: $docx"
 
   # 4. Word -> PDF.
-  rm -f "$pdf"
-  "$SOFFICE" --headless --convert-to pdf --outdir build/out "$docx" >/dev/null 2>&1 || true
-  [ -f "$pdf" ] && echo "pdf written:  $pdf"
+  # Convert into a work folder first (a PDF viewer may hold a lock on the published copy), then copy;
+  # the checks below always read the fresh work copy, so a locked viewer copy never stops the build.
+  mkdir -p build/out/_pdf
+  rm -f "$workpdf"
+  "$SOFFICE" --headless --convert-to pdf --outdir build/out/_pdf "$docx" >/dev/null 2>&1 || true
+  [ -f "$workpdf" ] || { echo "PDF conversion failed" >&2; exit 1; }
+  if cp -f "$workpdf" "$pdf" 2>/dev/null; then echo "pdf written:  $pdf"
+  else echo "WARNING: $pdf is locked (open in a viewer?) - fresh PDF is at $workpdf"; fi
 }
 
 build_once
@@ -70,13 +76,13 @@ build_once
 # 4b. Full build only: read the printed page numbers of every caption / part heading from the PDF,
 # write them into the lists of figures / tables and the short contents, then rebuild once.
 if [ "$slug" = "full" ]; then
-  python -I build/fill_lists.py "$pdf" chapters
+  python -I build/fill_lists.py "$workpdf" chapters
   build_once
 fi
 
 # 5. PDF -> one PNG per page (for visual review).
 rm -f build/out/pages/*.png
-python -I - "$pdf" build/out/pages <<'PY'
+python -I - "$workpdf" build/out/pages <<'PY'
 import sys, pymupdf
 doc = pymupdf.open(sys.argv[1]); out = sys.argv[2]
 for i, page in enumerate(doc, 1):

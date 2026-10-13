@@ -99,6 +99,9 @@ def process(text, base_dir):
 
     text = re.sub(r'!\[([^\]]*)\]\(([^)]+)\)(\{[^}]*\})?', repl, text)
     text = split_captions(text)
+    # Keep the label and its number together ("Table III.8", "Figure IV.1", "Listing IV.7"): a
+    # non-breaking space stops a line break between them in captions, list entries and references.
+    text = re.sub(r'\b(Figure|Table|Listing) (?=[IVXLCDM]+\.[0-9])', '\\1\u00a0', text)
     return text.strip() + '\n'
 
 
